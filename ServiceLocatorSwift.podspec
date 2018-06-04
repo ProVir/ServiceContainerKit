@@ -1,13 +1,12 @@
 Pod::Spec.new do |s|
-  s.name         = "ServiceProvider"
+  s.name         = "ServiceLocatorSwift"
   s.version      = "1.0.0"
-  s.summary      = "Wrapper for the service for swift to hide the details of its creation."
+  s.summary      = "ServiceLocator for Swift"
   s.description  = <<-DESC
 			Written in Swift.
-			Wrapper for the service to hide the details of its creation.
-            Allows you to create your custom IoC Container or ServiceLocator.
+			ServiceLocator used ServiceProvider.
                    DESC
-
+ 
   s.homepage     = "https://github.com/ProVir/ServiceProvider"
   s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author       = { "ViR (Vitaliy Korotkiy)" => "admin@provir.ru" }
@@ -20,7 +19,7 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '9.0'
   s.watchos.deployment_target = '2.0'
 
-  s.source_files = 'ServiceProvider/*.{h,swift}'
-  s.public_header_files = 'ServiceProvider/*.h'
-
+  s.source_files = ['ServiceLocator/*.{h,swift}', 'ServiceProvider/*.swift']
+  s.public_header_files = 'ServiceLocator/*.h'
+  
 end

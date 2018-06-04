@@ -1,6 +1,6 @@
 //
 //  ServiceLocator.swift
-//  ServiceProvider 1.0.0
+//  ServiceLocatorSwift 1.0.0
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -18,6 +18,7 @@ public enum ServiceLocatorError: Error {
 /// ServiceLocator as storage ServiceProviders.
 open class ServiceLocator {
     public private(set) static var shared: ServiceLocator?
+    public private(set) static var readOnlyShared: Bool = false
     
     public required init() { }
     
@@ -43,7 +44,7 @@ open class ServiceLocator {
     }
     
     
-    public func tryService<T>(settings: ServiceFactorySettings? = nil) throws -> T {
+    open func tryService<T>(settings: ServiceFactorySettings? = nil) throws -> T {
         lock.lock()
         defer { lock.unlock() }
         
@@ -56,11 +57,11 @@ open class ServiceLocator {
         }
     }
     
-    public func getService<T>(settings: ServiceFactorySettings? = nil) -> T? {
+    open func getService<T>(settings: ServiceFactorySettings? = nil) -> T? {
         return try? tryService(settings: settings)
     }
     
-    public func getServiceProvider<T>() -> ServiceProvider<T>? {
+    open func getServiceProvider<T>() -> ServiceProvider<T>? {
         lock.lock()
         defer { lock.unlock() }
         
@@ -70,17 +71,20 @@ open class ServiceLocator {
     
     
     //MARK: Setup
-    public static func setupShared(serviceLocator: ServiceLocator) {
+    public static func setupShared(serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true) {
+        if readOnlyShared { fatalError("Don't support setupShared in readOnly regime") }
+        
         shared = serviceLocator
+        readOnlyShared = readOnlySharedAfter
     }
     
-    public func setReadOnly() {
+    open func setReadOnly() {
         lock.lock()
         readOnly = true
         lock.unlock()
     }
     
-    public func addService<T>(provider: ServiceProvider<T>) {
+    open func addService<T>(provider: ServiceProvider<T>) {
         lock.lock()
         defer { lock.unlock() }
         
@@ -90,23 +94,23 @@ open class ServiceLocator {
         providers[typeName] = provider
     }
     
-    public func addService<T>(_ service: T) {
+    open func addService<T>(_ service: T) {
         addService(provider: ServiceProvider<T>(service))
     }
     
-    public func addService<T, FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.TypeService == T {
+    open func addService<T, FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.TypeService == T {
         addService(provider: ServiceProvider<T>(factory: factory))
     }
     
-    public func addService<T>(lazy:@escaping () throws ->T) {
+    open func addService<T>(lazy:@escaping () throws ->T) {
         addService(provider: ServiceProvider<T>(lazy: lazy))
     }
     
-    public func addService<T>(factory closure:@escaping (ServiceFactorySettings?) throws ->T) {
+    open func addService<T>(factory closure:@escaping (ServiceFactorySettings?) throws ->T) {
         addService(provider: ServiceProvider<T>.init(factory: closure))
     }
     
-    public func removeService<T>(serviceType: T.Type) {
+    open func removeService<T>(serviceType: T.Type) {
         lock.lock()
         defer { lock.unlock() }
         
@@ -115,7 +119,7 @@ open class ServiceLocator {
         providers.removeValue(forKey: "\(T.self)")
     }
     
-    public func clone<T: ServiceLocator>(type: T.Type = T.self) -> T {
+    open func clone<T: ServiceLocator>(type: T.Type = T.self) -> T {
         let locator = T.init()
         
         lock.lock()
