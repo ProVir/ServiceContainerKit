@@ -12,9 +12,26 @@ import Foundation
 ///Protocol for settings types, used for factory services as parameter for create service.
 public protocol ServiceFactorySettings { }
 
+/// Factory type. Used only when added to provider.
+public enum ServiceFactoryType {
+    /// Create service at one when added to provider.
+    case single
+    
+    /// Create service at one after first need and reused next.
+    case lazy
+    
+    /// Create a new instance service for each request.
+    case multiple
+}
+
 ///Factory services for ServiceProvider.
 public protocol ServiceFactory: ServiceCoreFactory {
     associatedtype TypeService
+    
+    /// Factory type. Used only when added to provider.
+    var factoryType: ServiceFactoryType { get }
+    
+    /// Create new instance service. Parameter settings use only for multiple factory. 
     func createService(settings: ServiceFactorySettings?) throws -> TypeService
 }
 
@@ -22,37 +39,40 @@ public protocol ServiceFactory: ServiceCoreFactory {
 ///Factory for ServiceLocator with generate service in closure. Also can used for lazy create services.
 public class ServiceClosureFactory<T>: ServiceFactory {
     public let closure: (ServiceFactorySettings?) throws -> T
-    public let lazyRegime: Bool
-    
-    private var lazyInstance: T?
+    public let factoryType: ServiceFactoryType = .multiple
     
     /**
      Constructor for ServiceFactory used closure for create service
      
-     - Parameters:
-        - closureFactory: Closure with logic create service.
-        - lazyRegime: If `true`, service will be created only once on the first get and re-used on the next call get.
+     - Parameter closureFactory: Closure with logic create service.
      */
-    public init(closureFactory closure: @escaping (ServiceFactorySettings?) throws -> T, lazyRegime: Bool = false) {
+    public init(closureFactory closure: @escaping (ServiceFactorySettings?) throws -> T) {
         self.closure = closure
-        self.lazyRegime = lazyRegime
     }
     
    public  func createService(settings: ServiceFactorySettings?) throws -> T {
-        if lazyRegime {
-            if let instance = lazyInstance {
-                return instance
-            } else {
-                let instance = try closure(settings)
-                lazyInstance = instance
-                return instance
-            }
-        } else {
-            return try closure(settings)
-        }
+        return try closure(settings)
     }
 }
 
+///Factory for ServiceLocator with generate service in closure. Also can used for lazy create services.
+public class ServiceClosureLazyFactory<T>: ServiceFactory {
+    public let closure: () throws -> T
+    public let factoryType: ServiceFactoryType = .lazy
+    
+    /**
+     Constructor for ServiceFactory used closure for create service
+     
+     - Parameter closureFactory: Closure with logic create service.
+     */
+    public init(closureFactory closure: @escaping () throws -> T) {
+        self.closure = closure
+    }
+    
+    public func createService(settings: ServiceFactorySettings?) throws -> T {
+        return try closure()
+    }
+}
 
 //MARK: - Core protocols
 public protocol ServiceCoreFactory {

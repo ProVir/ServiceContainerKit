@@ -102,11 +102,11 @@ open class ServiceLocator {
         addService(provider: ServiceProvider<T>(factory: factory))
     }
     
-    open func addService<T>(lazy:@escaping () throws ->T) {
+    open func addService<T>(lazy: @escaping () throws ->T) {
         addService(provider: ServiceProvider<T>(lazy: lazy))
     }
     
-    open func addService<T>(factory closure:@escaping (ServiceFactorySettings?) throws ->T) {
+    open func addService<T>(factory closure: @escaping (ServiceFactorySettings?) throws ->T) {
         addService(provider: ServiceProvider<T>.init(factory: closure))
     }
     
@@ -134,7 +134,7 @@ open class ServiceLocator {
 //MARK: - Provider binding to Locator
 
 /// Base protocol for ServiceProvider<T>
-fileprivate protocol ServiceLocatorProviderBinding {
+private protocol ServiceLocatorProviderBinding {
     func tryServiceBinding<T>(settings: ServiceFactorySettings?) throws -> T
 }
 

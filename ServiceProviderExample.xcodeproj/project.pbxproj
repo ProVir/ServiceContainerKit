@@ -14,6 +14,7 @@
 		507A050220C4F641003CA147 /* ServiceBaseTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */; };
 		507A050320C4F644003CA147 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160820C4509E00B756B3 /* ServiceProvider.swift */; };
 		507A050420C4FA50003CA147 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50DA160420C4501300B756B3 /* Foundation.framework */; };
+		50B2CCB320C908660027E832 /* ServiceProviderObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CF20C44AF700B756B3 /* ViewController.swift */; };
 		50DA15D320C44AF700B756B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D120C44AF700B756B3 /* Main.storyboard */; };
@@ -63,6 +64,7 @@
 		507A04F520C4F616003CA147 /* ServiceLocator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ServiceLocator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		507A04F720C4F616003CA147 /* ServiceLocatorSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceLocatorSwift.h; sourceTree = "<group>"; };
 		507A04F820C4F616003CA147 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderObjC.swift; sourceTree = "<group>"; };
 		50DA15CA20C44AF700B756B3 /* ServiceProviderExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ServiceProviderExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50DA15CD20C44AF700B756B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50DA15CF20C44AF700B756B3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 				50DA15E720C44C8D00B756B3 /* Info.plist */,
 				50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */,
 				50DA160820C4509E00B756B3 /* ServiceProvider.swift */,
+				50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */,
 			);
 			path = ServiceProvider;
 			sourceTree = "<group>";
@@ -348,6 +351,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50B2CCB320C908660027E832 /* ServiceProviderObjC.swift in Sources */,
 				50DA160920C4509E00B756B3 /* ServiceProvider.swift in Sources */,
 				50DA160720C4507D00B756B3 /* ServiceBaseTypes.swift in Sources */,
 			);
