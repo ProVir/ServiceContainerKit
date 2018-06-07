@@ -10,11 +10,11 @@
 		507A04F920C4F616003CA147 /* ServiceLocatorSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 507A04F720C4F616003CA147 /* ServiceLocatorSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		507A04FC20C4F616003CA147 /* ServiceLocator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 507A04F520C4F616003CA147 /* ServiceLocator.framework */; };
 		507A04FD20C4F616003CA147 /* ServiceLocator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 507A04F520C4F616003CA147 /* ServiceLocator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		507A050120C4F639003CA147 /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */; };
 		507A050220C4F641003CA147 /* ServiceBaseTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */; };
 		507A050320C4F644003CA147 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160820C4509E00B756B3 /* ServiceProvider.swift */; };
 		507A050420C4FA50003CA147 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50DA160420C4501300B756B3 /* Foundation.framework */; };
-		50B2CCB320C908660027E832 /* ServiceProviderObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */; };
+		50AA75A620C970FA003ED4CC /* ServiceProviderObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */; };
+		50AA75A720C97300003ED4CC /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CF20C44AF700B756B3 /* ViewController.swift */; };
 		50DA15D320C44AF700B756B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D120C44AF700B756B3 /* Main.storyboard */; };
@@ -332,9 +332,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50AA75A720C97300003ED4CC /* ServiceLocator.swift in Sources */,
 				507A050320C4F644003CA147 /* ServiceProvider.swift in Sources */,
 				507A050220C4F641003CA147 /* ServiceBaseTypes.swift in Sources */,
-				507A050120C4F639003CA147 /* ServiceLocator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,7 +351,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50B2CCB320C908660027E832 /* ServiceProviderObjC.swift in Sources */,
+				50AA75A620C970FA003ED4CC /* ServiceProviderObjC.swift in Sources */,
 				50DA160920C4509E00B756B3 /* ServiceProvider.swift in Sources */,
 				50DA160720C4507D00B756B3 /* ServiceBaseTypes.swift in Sources */,
 			);

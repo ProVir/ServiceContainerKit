@@ -12,31 +12,44 @@ import Foundation
 /// Wrapper ServiceProvider for use in ObjC code.
 public class PVServiceProvider: NSObject {
     private let swiftProvider: ServiceProviderBindingObjC
+
+    public init<ServiceType: NSObject>(_ provider: ServiceProvider<ServiceType>) {
+        self.swiftProvider = provider
+        super.init()
+    }
+
+    public func provider<ServiceType>() -> ServiceProvider<ServiceType>? {
+        return swiftProvider as? ServiceProvider<ServiceType>
+    }
+
+    @objc public func tryService() throws -> NSObject {
+        return try swiftProvider.tryServiceBindingObjC(params: Void())
+    }
+
+    @objc public func getService() -> NSObject? {
+        return try? swiftProvider.tryServiceBindingObjC(params: Void())
+    }
+}
+
+/// Wrapper ServiceParamsProvider for use in ObjC code.
+public class PVServiceParamsProvider: NSObject {
+    private let swiftProvider: ServiceProviderBindingObjC
     
-    public init<T: NSObject>(_ provider: ServiceProvider<T>) {
+    public init<ServiceType: NSObject, ParamsType: NSObject>(_ provider: ServiceParamsProvider<ServiceType, ParamsType>) {
         self.swiftProvider = provider
         super.init()
     }
     
-    public func provider<T>() -> ServiceProvider<T>? {
-        return swiftProvider as? ServiceProvider<T>
+    public func provider<ServiceType>() -> ServiceProvider<ServiceType>? {
+        return swiftProvider as? ServiceProvider<ServiceType>
     }
     
-    
-    @objc public func tryService(settings: Any) throws -> NSObject {
-        return try swiftProvider.tryServiceBindingObjC(settings: settings as? ServiceFactorySettings)
+    @objc public func tryService(params: Any) throws -> NSObject {
+        return try swiftProvider.tryServiceBindingObjC(params: params)
     }
     
-    @objc public func tryService() throws -> NSObject {
-        return try swiftProvider.tryServiceBindingObjC(settings: nil)
-    }
-    
-    @objc public func getService(settings: Any) -> NSObject? {
-        return try? swiftProvider.tryServiceBindingObjC(settings: settings as? ServiceFactorySettings)
-    }
-    
-    @objc public func getService() -> NSObject? {
-        return try? swiftProvider.tryServiceBindingObjC(settings: nil)
+    @objc public func getService(params: Any) -> NSObject? {
+        return try? swiftProvider.tryServiceBindingObjC(params: params)
     }
 }
 
@@ -45,12 +58,26 @@ public class PVServiceProvider: NSObject {
 
 /// Base protocol for ServiceProvider<T>
 private protocol ServiceProviderBindingObjC {
-    func tryServiceBindingObjC(settings: ServiceFactorySettings?) throws -> NSObject
+    func tryServiceBindingObjC(params: Any) throws -> NSObject
 }
 
 extension ServiceProvider: ServiceProviderBindingObjC {
-    fileprivate func tryServiceBindingObjC(settings: ServiceFactorySettings?) throws -> NSObject {
-        if let service = try tryService(settings: settings) as? NSObject {
+    fileprivate func tryServiceBindingObjC(params: Any) throws -> NSObject {
+        if let service = try tryService() as? NSObject {
+            return service
+        } else {
+            fatalError("Service require support Objective-C")
+        }
+    }
+}
+
+extension ServiceParamsProvider: ServiceProviderBindingObjC {
+    fileprivate func tryServiceBindingObjC(params: Any) throws -> NSObject {
+        guard let params = params as? ParamsType else {
+            throw ServiceProviderError.wrongParams
+        }
+        
+        if let service = try tryService(params: params) as? NSObject {
             return service
         } else {
             fatalError("Service require support Objective-C")

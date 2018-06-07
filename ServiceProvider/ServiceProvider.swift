@@ -9,110 +9,147 @@
 import Foundation
 
 public extension ServiceFactory {
-    func createServiceProvider() -> ServiceProvider<TypeService> {
-        return ServiceProvider<TypeService>.init(factory: self)
+    func createServiceProvider() -> ServiceProvider<ServiceType> {
+        return ServiceProvider<ServiceType>.init(factory: self)
+    }
+}
+
+public extension ServiceParamsFactory {
+    func createServiceProvider() -> ServiceParamsProvider<ServiceType, ParamsType> {
+        return ServiceParamsProvider<ServiceType, ParamsType>.init(factory: self)
     }
 }
 
 /// ServiceProvider with information for create service (static or factory)
-public struct ServiceProvider<T> {
+public struct ServiceProvider<ServiceType> {
+    fileprivate let storage: ServiceProviderStorage<ServiceType>
     
-    public init(_ service: T) {
-        self.storage = Storage.single(service)
+    public init(_ service: ServiceType) {
+        self.storage = .single(service)
     }
     
-    public init<FactoryType: ServiceFactory>(tryFactory factory: FactoryType) throws where FactoryType.TypeService == T {
+    public init<FactoryType: ServiceFactory>(tryFactory factory: FactoryType) throws where FactoryType.ServiceType == ServiceType {
         self.storage = try ServiceProvider.createStorage(factory: factory)
     }
     
-    public init<FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.TypeService == T {
+    public init<FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
         do {
             self.storage = try ServiceProvider.createStorage(factory: factory)
         } catch {
-            self.storage = Storage.singleError(error)
+            self.storage = .singleError(error)
         }
     }
     
-    public init(lazy: @escaping () throws -> T) {
-        self.storage = Storage.factory(ServiceClosureLazyFactory(closureFactory: lazy))
+    public init(lazy: @escaping () throws -> ServiceType) {
+        self.storage = .factory(ServiceClosureFactory(closureFactory: lazy, lazyRegime: true))
     }
     
-    public init(factory closure:@escaping (ServiceFactorySettings?) throws ->T) {
-        self.storage = Storage.factory(ServiceClosureFactory(closureFactory: closure))
+    public init(factory closure: @escaping () throws -> ServiceType) {
+        self.storage = .factory(ServiceClosureFactory(closureFactory: closure, lazyRegime: false))
     }
     
-    public func tryService(settings: ServiceFactorySettings? = nil) throws -> T {
+    public func tryService() throws -> ServiceType {
+        return try internalTryService(params: Void())
+    }
+    
+    public func getService() -> ServiceType? {
+        return try? internalTryService(params: Void())
+    }
+}
+
+/// ServiceProvider with information for create service (static or factory)
+public struct ServiceParamsProvider<ServiceType, ParamsType> {
+    fileprivate let storage: ServiceProviderStorage<ServiceType>
+    
+    public init<FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
+        self.storage = .factory(factory)
+    }
+    
+    public func tryService(params: ParamsType) throws -> ServiceType {
+        return try internalTryService(params: params)
+    }
+    
+    public func getService(params: ParamsType) -> ServiceType? {
+        return try? internalTryService(params: params)
+    }
+}
+
+//MARK: - Private
+private enum ServiceProviderStorage<ServiceType> {
+    case single(ServiceType)
+    case lazy(Lazy)
+    case factory(ServiceCoreFactory)
+    case singleError(Error)
+    
+    class Lazy {
+        var factory: ServiceCoreFactory?
+        var instance: ServiceType?
+    }
+}
+
+private protocol ServiceProviderPrivate {
+    associatedtype ServiceType
+    var storage: ServiceProviderStorage<ServiceType> { get }
+}
+
+extension ServiceProvider: ServiceProviderPrivate {
+    private static func createStorage<FactoryType: ServiceFactory>(factory: FactoryType) throws -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
+        switch factory.factoryType {
+        case .single:
+            if let service = try factory.coreCreateService(params: Void()) as? ServiceType {
+                return .single(service)
+            } else {
+                throw ServiceProviderError.wrongService
+            }
+            
+        case .lazy:
+            let lazy = ServiceProviderStorage<ServiceType>.Lazy()
+            lazy.factory = factory
+            return .lazy(lazy)
+            
+        case .multiple:
+            return .factory(factory)
+        }
+    }
+}
+
+extension ServiceParamsProvider: ServiceProviderPrivate { }
+
+extension ServiceProviderPrivate {
+    func internalTryService(params: Any) throws -> ServiceType {
         switch storage {
-            // Return single instance
+        // Return single instance
         case .single(let service):
             return service
             
         case .singleError(let error):
             throw error
             
-            // Lazy service
+        // Lazy service
         case .lazy(let lazy):
             if let service = lazy.instance {
                 return service
             } else if let factory = lazy.factory {
-                if let service = try factory.coreCreateService(settings: nil) as? T {
+                if let service = try factory.coreCreateService(params: params) as? ServiceType {
                     lazy.instance = service
                     lazy.factory = nil
                     
                     return service
                 } else {
-                    fatalError("Created service with invalid type. Use only createService(), you can not use coreCreateService().")
+                    throw ServiceProviderError.wrongService
                 }
             } else {
-                fatalError()
+                fatalError("ServiceProvider: Internal error")
             }
             
-            //Multiple service
+        //Multiple service
         case .factory(let factory):
-            if let service = try factory.coreCreateService(settings: settings) as? T {
+            if let service = try factory.coreCreateService(params: params) as? ServiceType {
                 return service
             } else {
-                fatalError("Created service with invalid type. Use only createService(), you can not use coreCreateService().")
+                throw ServiceProviderError.wrongService
             }
-        }
-    }
-    
-    public func getService(settings: ServiceFactorySettings? = nil) -> T? {
-        return try? tryService(settings: settings)
-    }
-    
-    //MARK: - Private
-    private enum Storage {
-        case single(T)
-        case lazy(Lazy)
-        case factory(ServiceCoreFactory)
-        case singleError(Error)
-    }
-    
-    private class Lazy {
-        var factory: ServiceCoreFactory?
-        var instance: T?
-    }
-    
-    private let storage: Storage
-    
-    
-    private static func createStorage<FactoryType: ServiceFactory>(factory: FactoryType) throws -> Storage where FactoryType.TypeService == T {
-        switch factory.factoryType {
-        case .single:
-            if let service = try factory.coreCreateService(settings: nil) as? T {
-                return Storage.single(service)
-            } else {
-                fatalError("Created service with invalid type. Use only createService(), you can not use coreCreateService().")
-            }
-            
-        case .lazy:
-            let lazy = Lazy()
-            lazy.factory = factory
-            return Storage.lazy(lazy)
-            
-        case .multiple:
-            return Storage.factory(factory)
         }
     }
 }
+

@@ -30,35 +30,35 @@ open class ServiceLocator {
     
     
     //MARK: Get
-    public static func tryServiceFromShared<T>(settings: ServiceFactorySettings? = nil) throws -> T {
+    public static func tryServiceFromShared<T>(params: Any = Void()) throws -> T {
         guard let shared = shared else {
             throw ServiceLocatorError.sharedRequireSetup
         }
         
-        return try shared.tryService(settings: settings)
+        return try shared.tryService(params: params)
     }
     
-    public static func getServiceFromShared<T>(settings: ServiceFactorySettings? = nil) -> T? {
+    public static func getServiceFromShared<T>(params: Any = Void()) -> T? {
         guard let shared = shared else { return nil }
-        return try? shared.tryService(settings: settings)
+        return try? shared.tryService(params: params)
     }
     
     
-    open func tryService<T>(settings: ServiceFactorySettings? = nil) throws -> T {
+    open func tryService<T>(params: Any = Void()) throws -> T {
         lock.lock()
         defer { lock.unlock() }
         
         let typeName = "\(T.self)"
         
         if let provider = providers[typeName] {
-            return try provider.tryServiceBinding(settings: settings)
+            return try provider.tryServiceBinding(params: params)
         } else {
             throw ServiceLocatorError.serviceNotFound
         }
     }
     
-    open func getService<T>(settings: ServiceFactorySettings? = nil) -> T? {
-        return try? tryService(settings: settings)
+    open func getService<T>(params: Any = Void()) -> T? {
+        return try? tryService(params: params)
     }
     
     open func getServiceProvider<T>() -> ServiceProvider<T>? {
@@ -98,7 +98,7 @@ open class ServiceLocator {
         addService(provider: ServiceProvider<T>(service))
     }
     
-    open func addService<T, FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.TypeService == T {
+    open func addService<T, FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == T {
         addService(provider: ServiceProvider<T>(factory: factory))
     }
     
@@ -106,7 +106,7 @@ open class ServiceLocator {
         addService(provider: ServiceProvider<T>(lazy: lazy))
     }
     
-    open func addService<T>(factory closure: @escaping (ServiceFactorySettings?) throws ->T) {
+    open func addService<T>(factory closure: @escaping () throws -> T) {
         addService(provider: ServiceProvider<T>.init(factory: closure))
     }
     
@@ -135,12 +135,12 @@ open class ServiceLocator {
 
 /// Base protocol for ServiceProvider<T>
 private protocol ServiceLocatorProviderBinding {
-    func tryServiceBinding<T>(settings: ServiceFactorySettings?) throws -> T
+    func tryServiceBinding<T>(params: Any) throws -> T
 }
 
 extension ServiceProvider: ServiceLocatorProviderBinding {
-    fileprivate func tryServiceBinding<BT>(settings: ServiceFactorySettings?) throws -> BT {
-        if let service = try tryService(settings: settings) as? BT {
+    fileprivate func tryServiceBinding<BT>(params: Any) throws -> BT {
+        if let service = try tryService() as? BT {
             return service
         } else {
             throw ServiceLocatorError.serviceNotFound
