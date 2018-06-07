@@ -15,10 +15,6 @@ public enum ServiceProviderError: Error {
 }
 
 
-/// Protocol for settings types, used for factory services as parameter for create service.
-public protocol ServiceFactorySettings { }
-
-
 /// Factory type. Used only when added to provider.
 public enum ServiceFactoryType {
     /// Create service at one when added to provider.
