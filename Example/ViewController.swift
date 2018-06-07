@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import ServiceLocator
+import ServiceLocatorSwift
 
 class ViewController: UIViewController {
 
@@ -15,10 +15,16 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         let locator = ServiceLocator()
-        locator.addService(factory: ServiceTestFactory())
+        ServiceLocator.setupShared(serviceLocator: locator)
         
-        let service: ServiceTest = try! locator.tryService(params: "Test")
-        let service2: ServiceTest = try! locator.tryService()
+        locator.addService(factory: ServiceTestFactory())
+        locator.addService(ObjCService() as ServiceObjC)
+        
+        
+        
+//        let service: ServiceTest = try! locator.tryService(params: "Test")
+//        let service2: ServiceTest = try! locator.tryService()
+
         
     }
 
@@ -26,7 +32,7 @@ class ViewController: UIViewController {
 
 
 
-class ServiceTest {
+class ServiceTest: NSObject {
     
 }
 

@@ -189,6 +189,27 @@ open class ServiceLocator {
         return locator
     }
     
+    //MARK: PVServiceLocator ObjC support
+    static func tryServiceObjC(typeName: String, params: Any) throws -> NSObject {
+        guard let shared = shared else {
+            throw ServiceLocatorError.sharedRequireSetup
+        }
+        
+        return try shared.tryServiceObjC(typeName: typeName, params: params)
+    }
+    
+    func tryServiceObjC(typeName: String, params: Any) throws -> NSObject {
+        lock.lock()
+        defer { lock.unlock() }
+        
+        if let provider = providers[typeName] {
+            do { return try provider.tryServiceBinding(params: params) }
+            catch { throw convertError(error) }
+        } else {
+            throw ServiceLocatorError.serviceNotFound
+        }
+    }
+    
     //MARK: - Private
     private func convertError(_ error: Error) -> Error {
         if let error = error as? ServiceProviderError {

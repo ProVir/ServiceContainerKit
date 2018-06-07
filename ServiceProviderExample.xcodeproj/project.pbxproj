@@ -8,13 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		507A04F920C4F616003CA147 /* ServiceLocatorSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 507A04F720C4F616003CA147 /* ServiceLocatorSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		507A04FC20C4F616003CA147 /* ServiceLocator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 507A04F520C4F616003CA147 /* ServiceLocator.framework */; };
-		507A04FD20C4F616003CA147 /* ServiceLocator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 507A04F520C4F616003CA147 /* ServiceLocator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		507A04FC20C4F616003CA147 /* ServiceLocatorSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */; };
+		507A04FD20C4F616003CA147 /* ServiceLocatorSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		507A050220C4F641003CA147 /* ServiceBaseTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */; };
 		507A050320C4F644003CA147 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160820C4509E00B756B3 /* ServiceProvider.swift */; };
 		507A050420C4FA50003CA147 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50DA160420C4501300B756B3 /* Foundation.framework */; };
 		50AA75A620C970FA003ED4CC /* ServiceProviderObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */; };
 		50AA75A720C97300003ED4CC /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */; };
+		50AA75A920C98169003ED4CC /* ServiceLocatorObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75A820C98169003ED4CC /* ServiceLocatorObjC.swift */; };
+		50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75AC20C98643003ED4CC /* ObjCViewController.m */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CF20C44AF700B756B3 /* ViewController.swift */; };
 		50DA15D320C44AF700B756B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D120C44AF700B756B3 /* Main.storyboard */; };
@@ -53,7 +55,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				50DA15EC20C44C8D00B756B3 /* ServiceProvider.framework in Embed Frameworks */,
-				507A04FD20C4F616003CA147 /* ServiceLocator.framework in Embed Frameworks */,
+				507A04FD20C4F616003CA147 /* ServiceLocatorSwift.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -61,9 +63,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		507A04F520C4F616003CA147 /* ServiceLocator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ServiceLocator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ServiceLocatorSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		507A04F720C4F616003CA147 /* ServiceLocatorSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceLocatorSwift.h; sourceTree = "<group>"; };
 		507A04F820C4F616003CA147 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50AA75A820C98169003ED4CC /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
+		50AA75AA20C98642003ED4CC /* ServiceProviderExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ServiceProviderExample-Bridging-Header.h"; sourceTree = "<group>"; };
+		50AA75AB20C98643003ED4CC /* ObjCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCViewController.h; sourceTree = "<group>"; };
+		50AA75AC20C98643003ED4CC /* ObjCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCViewController.m; sourceTree = "<group>"; };
 		50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderObjC.swift; sourceTree = "<group>"; };
 		50DA15CA20C44AF700B756B3 /* ServiceProviderExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ServiceProviderExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50DA15CD20C44AF700B756B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -98,7 +104,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				50DA15EB20C44C8D00B756B3 /* ServiceProvider.framework in Frameworks */,
-				507A04FC20C4F616003CA147 /* ServiceLocator.framework in Frameworks */,
+				507A04FC20C4F616003CA147 /* ServiceLocatorSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +125,7 @@
 				507A04F720C4F616003CA147 /* ServiceLocatorSwift.h */,
 				507A04F820C4F616003CA147 /* Info.plist */,
 				50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */,
+				50AA75A820C98169003ED4CC /* ServiceLocatorObjC.swift */,
 			);
 			path = ServiceLocator;
 			sourceTree = "<group>";
@@ -142,7 +149,7 @@
 			children = (
 				50DA15CA20C44AF700B756B3 /* ServiceProviderExample.app */,
 				50DA15E420C44C8D00B756B3 /* ServiceProvider.framework */,
-				507A04F520C4F616003CA147 /* ServiceLocator.framework */,
+				507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -152,10 +159,13 @@
 			children = (
 				50DA15CD20C44AF700B756B3 /* AppDelegate.swift */,
 				50DA15CF20C44AF700B756B3 /* ViewController.swift */,
+				50AA75AB20C98643003ED4CC /* ObjCViewController.h */,
+				50AA75AC20C98643003ED4CC /* ObjCViewController.m */,
 				50DA15D120C44AF700B756B3 /* Main.storyboard */,
 				50DA15D420C44AF800B756B3 /* Assets.xcassets */,
 				50DA15D620C44AF800B756B3 /* LaunchScreen.storyboard */,
 				50DA15D920C44AF800B756B3 /* Info.plist */,
+				50AA75AA20C98642003ED4CC /* ServiceProviderExample-Bridging-Header.h */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -202,9 +212,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		507A04F420C4F616003CA147 /* ServiceLocator */ = {
+		507A04F420C4F616003CA147 /* ServiceLocatorSwift */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 507A04FE20C4F616003CA147 /* Build configuration list for PBXNativeTarget "ServiceLocator" */;
+			buildConfigurationList = 507A04FE20C4F616003CA147 /* Build configuration list for PBXNativeTarget "ServiceLocatorSwift" */;
 			buildPhases = (
 				507A04F020C4F616003CA147 /* Sources */,
 				507A04F120C4F616003CA147 /* Frameworks */,
@@ -215,9 +225,9 @@
 			);
 			dependencies = (
 			);
-			name = ServiceLocator;
+			name = ServiceLocatorSwift;
 			productName = ServiceLocator;
-			productReference = 507A04F520C4F616003CA147 /* ServiceLocator.framework */;
+			productReference = 507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		50DA15C920C44AF700B756B3 /* ServiceProviderExample */ = {
@@ -273,6 +283,7 @@
 					};
 					50DA15C920C44AF700B756B3 = {
 						CreatedOnToolsVersion = 9.4;
+						LastSwiftMigration = 0940;
 					};
 					50DA15E320C44C8D00B756B3 = {
 						CreatedOnToolsVersion = 9.4;
@@ -295,7 +306,7 @@
 			targets = (
 				50DA15C920C44AF700B756B3 /* ServiceProviderExample */,
 				50DA15E320C44C8D00B756B3 /* ServiceProvider */,
-				507A04F420C4F616003CA147 /* ServiceLocator */,
+				507A04F420C4F616003CA147 /* ServiceLocatorSwift */,
 			);
 		};
 /* End PBXProject section */
@@ -334,6 +345,7 @@
 			files = (
 				50AA75A720C97300003ED4CC /* ServiceLocator.swift in Sources */,
 				507A050320C4F644003CA147 /* ServiceProvider.swift in Sources */,
+				50AA75A920C98169003ED4CC /* ServiceLocatorObjC.swift in Sources */,
 				507A050220C4F641003CA147 /* ServiceBaseTypes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,6 +356,7 @@
 			files = (
 				50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */,
 				50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */,
+				50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,7 +375,7 @@
 /* Begin PBXTargetDependency section */
 		507A04FB20C4F616003CA147 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 507A04F420C4F616003CA147 /* ServiceLocator */;
+			target = 507A04F420C4F616003CA147 /* ServiceLocatorSwift */;
 			targetProxy = 507A04FA20C4F616003CA147 /* PBXContainerItemProxy */;
 		};
 		50DA15EA20C44C8D00B756B3 /* PBXTargetDependency */ = {
@@ -569,6 +582,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/Info.plist";
@@ -579,6 +593,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceProviderExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Example/ServiceProviderExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -589,6 +605,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/Info.plist";
@@ -599,6 +616,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceProviderExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Example/ServiceProviderExample-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -627,7 +645,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -668,7 +685,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		507A04FE20C4F616003CA147 /* Build configuration list for PBXNativeTarget "ServiceLocator" */ = {
+		507A04FE20C4F616003CA147 /* Build configuration list for PBXNativeTarget "ServiceLocatorSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				507A04FF20C4F616003CA147 /* Debug */,

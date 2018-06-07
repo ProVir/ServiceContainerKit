@@ -22,7 +22,7 @@ public class PVServiceProvider: NSObject {
         return swiftProvider as? ServiceProvider<ServiceType>
     }
 
-    @objc public func tryService() throws -> NSObject {
+    @objc public func getService() throws -> NSObject {
         return try swiftProvider.tryServiceBindingObjC(params: Void())
     }
 
@@ -44,7 +44,7 @@ public class PVServiceParamsProvider: NSObject {
         return swiftProvider as? ServiceProvider<ServiceType>
     }
     
-    @objc public func tryService(params: Any) throws -> NSObject {
+    @objc public func getService(params: Any) throws -> NSObject {
         return try swiftProvider.tryServiceBindingObjC(params: params)
     }
     
