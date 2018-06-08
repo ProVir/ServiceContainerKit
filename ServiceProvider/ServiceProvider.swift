@@ -9,14 +9,18 @@
 import Foundation
 
 public extension ServiceFactory {
-    func createServiceProvider() -> ServiceProvider<ServiceType> {
+    func serviceProvider() -> ServiceProvider<ServiceType> {
         return ServiceProvider<ServiceType>.init(factory: self)
     }
 }
 
 public extension ServiceParamsFactory {
-    func createServiceProvider() -> ServiceParamsProvider<ServiceType, ParamsType> {
+    func serviceProvider() -> ServiceParamsProvider<ServiceType, ParamsType> {
         return ServiceParamsProvider<ServiceType, ParamsType>.init(factory: self)
+    }
+    
+    func serviceProvider(params: ParamsType) -> ServiceProvider<ServiceType> {
+        return ServiceProvider<ServiceType>.init(factory: self, params: params)
     }
 }
 
@@ -38,6 +42,10 @@ public struct ServiceProvider<ServiceType> {
         } catch {
             self.storage = .singleError(error)
         }
+    }
+    
+    public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, params: FactoryType.ParamsType) where FactoryType.ServiceType == ServiceType {
+        self.storage = .factoryParams(factory, params)
     }
     
     public init(lazy: @escaping () throws -> ServiceType) {
@@ -72,6 +80,15 @@ public struct ServiceParamsProvider<ServiceType, ParamsType> {
     public func getService(params: ParamsType) -> ServiceType? {
         return try? internalTryService(params: params)
     }
+    
+    public func convert(params: ParamsType) -> ServiceProvider<ServiceType> {
+        switch storage {
+        case .factory(let factory):
+            return ServiceProvider<ServiceType>.init(coreFactory: factory, params: params)
+        default:
+            fatalError("Internal error: Invalid provider")
+        }
+    }
 }
 
 //MARK: - Private
@@ -79,6 +96,7 @@ private enum ServiceProviderStorage<ServiceType> {
     case single(ServiceType)
     case lazy(Lazy)
     case factory(ServiceCoreFactory)
+    case factoryParams(ServiceCoreFactory, Any)
     case singleError(Error)
     
     class Lazy {
@@ -93,10 +111,14 @@ private protocol ServiceProviderPrivate {
 }
 
 extension ServiceProvider: ServiceProviderPrivate {
-    private static func createStorage<FactoryType: ServiceFactory>(factory: FactoryType) throws -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
+    fileprivate init(coreFactory: ServiceCoreFactory, params: Any)  {
+        self.storage = .factoryParams(coreFactory, params)
+    }
+    
+    private static func createStorage<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) throws -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
         switch factory.factoryType {
         case .single:
-            if let service = try factory.coreCreateService(params: Void()) as? ServiceType {
+            if let service = try factory.coreCreateService(params: params) as? ServiceType {
                 return .single(service)
             } else {
                 throw ServiceProviderError.wrongService
@@ -116,7 +138,7 @@ extension ServiceProvider: ServiceProviderPrivate {
 extension ServiceParamsProvider: ServiceProviderPrivate { }
 
 extension ServiceProviderPrivate {
-    func internalTryService(params: Any) throws -> ServiceType {
+    fileprivate func internalTryService(params: Any) throws -> ServiceType {
         switch storage {
         // Return single instance
         case .single(let service):
@@ -144,6 +166,13 @@ extension ServiceProviderPrivate {
             
         //Multiple service
         case .factory(let factory):
+            if let service = try factory.coreCreateService(params: params) as? ServiceType {
+                return service
+            } else {
+                throw ServiceProviderError.wrongService
+            }
+        
+        case .factoryParams(let factory, let params):
             if let service = try factory.coreCreateService(params: params) as? ServiceType {
                 return service
             } else {
