@@ -10,7 +10,8 @@ import Foundation
 
 
 /// Wrapper ServiceProvider for use in ObjC code.
-public class PVServiceProvider: NSObject {
+@objc(ServiceProvider)
+public class ServiceProviderObjC: NSObject {
     private let swiftProvider: ServiceProviderBindingObjC
 
     public init<ServiceType: NSObject>(_ provider: ServiceProvider<ServiceType>) {
@@ -32,7 +33,8 @@ public class PVServiceProvider: NSObject {
 }
 
 /// Wrapper ServiceParamsProvider for use in ObjC code.
-public class PVServiceParamsProvider: NSObject {
+@objc(ServiceParamsProvider)
+public class ServiceParamsProviderObjC: NSObject {
     private let swiftProvider: ServiceProviderBindingObjC
     
     public init<ServiceType: NSObject, ParamsType: NSObject>(_ provider: ServiceParamsProvider<ServiceType, ParamsType>) {

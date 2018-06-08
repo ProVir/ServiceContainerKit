@@ -10,39 +10,39 @@ import Foundation
 
 
 //MARK: Shared
-extension PVServiceLocator {
+extension ServiceLocatorObjC {
     //Without params
-    @objc public static func getService(class type: AnyClass) throws -> NSObject {
+    @objc public static func getService(class type: AnyClass) throws -> Any {
         return try ServiceLocator.tryServiceObjC(typeName: "\(type)", params: Optional<Any>.none as Any)
     }
     
-    @objc public static func getService(protocol proto: Protocol) throws -> NSObject {
+    @objc public static func getService(protocol proto: Protocol) throws -> Any {
         return try ServiceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: Optional<Any>.none as Any)
     }
     
-    @objc public static func getService(class type: AnyClass) -> NSObject? {
+    @objc public static func getService(class type: AnyClass) -> Any? {
         return try? ServiceLocator.tryServiceObjC(typeName: "\(type)", params: Optional<Any>.none as Any)
     }
     
-    @objc public static func getService(protocol proto: Protocol) -> NSObject? {
+    @objc public static func getService(protocol proto: Protocol) -> Any? {
         return try? ServiceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: Optional<Any>.none as Any)
     }
     
     
     //With params
-    @objc public static func getService(class type: AnyClass, params: Any) throws -> NSObject {
+    @objc public static func getService(class type: AnyClass, params: Any) throws -> Any {
         return try ServiceLocator.tryServiceObjC(typeName: "\(type)", params: params)
     }
     
-    @objc public static func getService(protocol proto: Protocol, params: Any) throws -> NSObject {
+    @objc public static func getService(protocol proto: Protocol, params: Any) throws -> Any {
         return try ServiceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
     }
     
-    @objc public static func getService(class type: AnyClass, params: Any) -> NSObject? {
+    @objc public static func getService(class type: AnyClass, params: Any) -> Any? {
         return try? ServiceLocator.tryServiceObjC(typeName: "\(type)", params: params)
     }
     
-    @objc public static func getService(protocol proto: Protocol, params: Any) -> NSObject? {
+    @objc public static func getService(protocol proto: Protocol, params: Any) -> Any? {
         return try? ServiceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
     }
 }
@@ -51,7 +51,8 @@ extension PVServiceLocator {
 //MARK: ServiceLocator Object
 
 /// Wrapper ServiceLocator for ObjC
-public class PVServiceLocator: NSObject {
+@objc(ServiceLocator)
+public class ServiceLocatorObjC: NSObject {
     public let serviceLocator: ServiceLocator
     
     public init(_ serviceLocator: ServiceLocator) {
@@ -66,37 +67,37 @@ public class PVServiceLocator: NSObject {
     
     
     //Without Params
-    @objc public func getService(class type: AnyClass) throws -> NSObject {
+    @objc public func getService(class type: AnyClass) throws -> Any {
         return try serviceLocator.tryServiceObjC(typeName: "\(type)", params: Optional<Any>.none as Any)
     }
     
-    @objc public func getService(protocol proto: Protocol) throws -> NSObject {
+    @objc public func getService(protocol proto: Protocol) throws -> Any {
         return try serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: Optional<Any>.none as Any)
     }
     
-    @objc public func getService(class type: AnyClass) -> NSObject? {
+    @objc public func getService(class type: AnyClass) -> Any? {
         return try? serviceLocator.tryServiceObjC(typeName: "\(type)", params: Optional<Any>.none as Any)
     }
     
-    @objc public func getService(protocol proto: Protocol) -> NSObject? {
+    @objc public func getService(protocol proto: Protocol) -> Any? {
         return try? serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: Optional<Any>.none as Any)
     }
     
     
     //With Params
-    @objc public func getService(class type: AnyClass, params: Any) throws -> NSObject {
+    @objc public func getService(class type: AnyClass, params: Any) throws -> Any {
         return try serviceLocator.tryServiceObjC(typeName: "\(type)", params: params)
     }
     
-    @objc public func getService(protocol proto: Protocol, params: Any) throws -> NSObject {
+    @objc public func getService(protocol proto: Protocol, params: Any) throws -> Any {
         return try serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
     }
     
-    @objc public func getService(class type: AnyClass, params: Any) -> NSObject? {
+    @objc public func getService(class type: AnyClass, params: Any) -> Any? {
         return try? serviceLocator.tryServiceObjC(typeName: "\(type)", params: params)
     }
     
-    @objc public func getService(protocol proto: Protocol, params: Any) -> NSObject? {
+    @objc public func getService(protocol proto: Protocol, params: Any) -> Any? {
         return try? serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
     }
     
