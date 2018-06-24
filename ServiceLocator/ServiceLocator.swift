@@ -96,7 +96,7 @@ open class ServiceLocator {
     }
     
     open func getService<ServiceType: ServiceSupportFactoryParams>(params: ServiceType.ParamsType) -> ServiceType? {
-        return try? tryService()
+        return try? tryService(params: params)
     }
     
     open func getServiceProvider<ServiceType>() -> ServiceProvider<ServiceType>? {
