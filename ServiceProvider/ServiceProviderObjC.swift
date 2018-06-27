@@ -14,19 +14,23 @@ import Foundation
 public class ServiceProviderObjC: NSObject {
     private let swiftProvider: ServiceProviderBindingObjC
 
+    /// Create ServiceProviderObjC with Swift ServiceProvider
     public init<ServiceType: NSObject>(_ provider: ServiceProvider<ServiceType>) {
         self.swiftProvider = provider
         super.init()
     }
 
+    /// Get Swift ServiceProvider. Returned nil if wrong service type.
     public func provider<ServiceType>() -> ServiceProvider<ServiceType>? {
         return swiftProvider as? ServiceProvider<ServiceType>
     }
 
+    /// Get Service with detail information throwed error.
     @objc public func getService() throws -> NSObject {
         return try swiftProvider.tryServiceBindingObjC(params: Void())
     }
 
+    /// Get Service if there are no errors.
     @objc public func getService() -> NSObject? {
         return try? swiftProvider.tryServiceBindingObjC(params: Void())
     }
@@ -37,19 +41,23 @@ public class ServiceProviderObjC: NSObject {
 public class ServiceParamsProviderObjC: NSObject {
     private let swiftProvider: ServiceProviderBindingObjC
     
+    /// Create ServiceParamsProviderObjC with Swift ServiceParamsProvider
     public init<ServiceType: NSObject, ParamsType: NSObject>(_ provider: ServiceParamsProvider<ServiceType, ParamsType>) {
         self.swiftProvider = provider
         super.init()
     }
     
+    /// Get Swift ServiceParamsProvider. Returned nil if wrong service type.
     public func provider<ServiceType>() -> ServiceProvider<ServiceType>? {
         return swiftProvider as? ServiceProvider<ServiceType>
     }
     
+    /// Get Service with detail information throwed error.
     @objc public func getService(params: Any) throws -> NSObject {
         return try swiftProvider.tryServiceBindingObjC(params: params)
     }
     
+    /// Get Service if there are no errors.
     @objc public func getService(params: Any) -> NSObject? {
         return try? swiftProvider.tryServiceBindingObjC(params: params)
     }
@@ -58,7 +66,7 @@ public class ServiceParamsProviderObjC: NSObject {
 
 //MARK: - Private
 
-/// Base protocol for ServiceProvider<T>
+/// Base protocol for Service[Params]Provider<T>
 private protocol ServiceProviderBindingObjC {
     func tryServiceBindingObjC(params: Any) throws -> NSObject
 }

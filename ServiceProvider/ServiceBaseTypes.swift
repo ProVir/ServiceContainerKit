@@ -18,27 +18,27 @@ public enum ServiceProviderError: Error {
 /// Factory type. Used only when added to provider.
 public enum ServiceFactoryType {
     /// Create service at one when added to provider.
-    case single
+    case atOne
     
     /// Create service at one after first need and reused next.
     case lazy
     
     /// Create a new instance service for each request.
-    case multiple
+    case many
 }
 
-///Factory services for ServiceProvider.
+///Factory services for ServiceProvider or ServiceLocator.
 public protocol ServiceFactory: ServiceCoreFactory {
     associatedtype ServiceType
     
-    /// Factory type. Used only when added to provider.
+    /// Factory type. Used only when added to provider. Recommendation use as constant (let).
     var factoryType: ServiceFactoryType { get }
     
     /// Create new instance service. Parameter settings use only for multiple factory. 
     func createService() throws -> ServiceType
 }
 
-///Factory services with params for ServiceProvider. Always factoryType = .multiple
+///Factory services with params for ServiceProvider or ServiceLocator. Always factoryType = .many
 public protocol ServiceParamsFactory: ServiceCoreFactory {
     associatedtype ServiceType
     associatedtype ParamsType
@@ -48,7 +48,7 @@ public protocol ServiceParamsFactory: ServiceCoreFactory {
 }
 
 
-///Factory for ServiceLocator with generate service in closure. Also can used for lazy create services.
+///Factory for ServiceProvider or ServiceLocator with generate service in closure. Also can used for lazy create singleton instance services.
 public class ServiceClosureFactory<T>: ServiceFactory {
     public let closure: () throws -> T
     public let factoryType: ServiceFactoryType
@@ -56,11 +56,13 @@ public class ServiceClosureFactory<T>: ServiceFactory {
     /**
      Constructor for ServiceFactory used closure for create service
      
-     - Parameter closureFactory: Closure with logic create service.
+     - Parameters:
+        - closureFactory: Closure with logic create service.
+        - lazyRegime: If `true` - Create service at one after first need and reused next. Default false.
      */
     public init(closureFactory closure: @escaping () throws -> T, lazyRegime: Bool = false) {
         self.closure = closure
-        self.factoryType = lazyRegime ? .lazy : .multiple
+        self.factoryType = lazyRegime ? .lazy : .many
     }
     
    public  func createService() throws -> T {

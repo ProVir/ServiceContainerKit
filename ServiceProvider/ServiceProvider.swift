@@ -9,57 +9,68 @@
 import Foundation
 
 public extension ServiceFactory {
+    /// Wrap the factory in ServiceProvider
     func serviceProvider() -> ServiceProvider<ServiceType> {
         return ServiceProvider<ServiceType>.init(factory: self)
     }
 }
 
 public extension ServiceParamsFactory {
+    /// Wrap the factory in ServiceParamsProvider
     func serviceProvider() -> ServiceParamsProvider<ServiceType, ParamsType> {
         return ServiceParamsProvider<ServiceType, ParamsType>.init(factory: self)
     }
     
+    /// Wrap the factory in ServiceProvider with specific params.
     func serviceProvider(params: ParamsType) -> ServiceProvider<ServiceType> {
         return ServiceProvider<ServiceType>.init(factory: self, params: params)
     }
 }
 
-/// ServiceProvider with information for create service (static or factory)
+/// ServiceProvider with information for create service (singleton or many instances)
 public struct ServiceProvider<ServiceType> {
     fileprivate let storage: ServiceProviderStorage<ServiceType>
     
+    /// ServiceProvider with at one instance services.
     public init(_ service: ServiceType) {
-        self.storage = .single(service)
+        self.storage = .atOne(service)
     }
     
+    /// ServiceProvider with factory. If service factoryType == .atOne and throw error when create - throw this error from constructor.
     public init<FactoryType: ServiceFactory>(tryFactory factory: FactoryType) throws where FactoryType.ServiceType == ServiceType {
         self.storage = try ServiceProvider.createStorage(factory: factory)
     }
     
+    /// ServiceProvider with factory.
     public init<FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
         do {
             self.storage = try ServiceProvider.createStorage(factory: factory)
         } catch {
-            self.storage = .singleError(error)
+            self.storage = .atOneError(error)
         }
     }
     
+    /// ServiceProvider with factory, use specific params.
     public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, params: FactoryType.ParamsType) where FactoryType.ServiceType == ServiceType {
         self.storage = .factoryParams(factory, params)
     }
     
+    /// ServiceProvider with lazy create service in closure.
     public init(lazy: @escaping () throws -> ServiceType) {
         self.storage = .factory(ServiceClosureFactory(closureFactory: lazy, lazyRegime: true))
     }
     
+    /// ServiceProvider with many instance service type, create service in closure.
     public init(factory closure: @escaping () throws -> ServiceType) {
         self.storage = .factory(ServiceClosureFactory(closureFactory: closure, lazyRegime: false))
     }
     
+    /// Get Service with detail information throwed error.
     public func tryService() throws -> ServiceType {
         return try internalTryService(params: Void())
     }
     
+    /// Get Service if there are no errors.
     public func getService() -> ServiceType? {
         return try? internalTryService(params: Void())
     }
@@ -69,18 +80,22 @@ public struct ServiceProvider<ServiceType> {
 public struct ServiceParamsProvider<ServiceType, ParamsType> {
     fileprivate let storage: ServiceProviderStorage<ServiceType>
     
+    /// ServiceProvider with factory.
     public init<FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
         self.storage = .factory(factory)
     }
     
+    /// Get Service with detail information throwed error.
     public func tryService(params: ParamsType) throws -> ServiceType {
         return try internalTryService(params: params)
     }
     
+    /// Get Service if there are no errors.
     public func getService(params: ParamsType) -> ServiceType? {
         return try? internalTryService(params: params)
     }
     
+    /// Get ServiceProvider without params with specific params.
     public func convert(params: ParamsType) -> ServiceProvider<ServiceType> {
         switch storage {
         case .factory(let factory):
@@ -93,11 +108,11 @@ public struct ServiceParamsProvider<ServiceType, ParamsType> {
 
 //MARK: - Private
 private enum ServiceProviderStorage<ServiceType> {
-    case single(ServiceType)
+    case atOne(ServiceType)
     case lazy(Lazy)
     case factory(ServiceCoreFactory)
     case factoryParams(ServiceCoreFactory, Any)
-    case singleError(Error)
+    case atOneError(Error)
     
     class Lazy {
         var factory: ServiceCoreFactory?
@@ -105,11 +120,13 @@ private enum ServiceProviderStorage<ServiceType> {
     }
 }
 
+//MARK: Private base functional for ServiceProvider and ServiceParamsProvider
 private protocol ServiceProviderPrivate {
     associatedtype ServiceType
     var storage: ServiceProviderStorage<ServiceType> { get }
 }
 
+/// Private constructors for ServiceProvider
 extension ServiceProvider: ServiceProviderPrivate {
     fileprivate init(coreFactory: ServiceCoreFactory, params: Any)  {
         self.storage = .factoryParams(coreFactory, params)
@@ -117,9 +134,9 @@ extension ServiceProvider: ServiceProviderPrivate {
     
     private static func createStorage<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) throws -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
         switch factory.factoryType {
-        case .single:
+        case .atOne:
             if let service = try factory.coreCreateService(params: params) as? ServiceType {
-                return .single(service)
+                return .atOne(service)
             } else {
                 throw ServiceProviderError.wrongService
             }
@@ -129,7 +146,7 @@ extension ServiceProvider: ServiceProviderPrivate {
             lazy.factory = factory
             return .lazy(lazy)
             
-        case .multiple:
+        case .many:
             return .factory(factory)
         }
     }
@@ -138,13 +155,14 @@ extension ServiceProvider: ServiceProviderPrivate {
 extension ServiceParamsProvider: ServiceProviderPrivate { }
 
 extension ServiceProviderPrivate {
+    /// Get Services with core implementation
     fileprivate func internalTryService(params: Any) throws -> ServiceType {
         switch storage {
         // Return single instance
-        case .single(let service):
+        case .atOne(let service):
             return service
             
-        case .singleError(let error):
+        case .atOneError(let error):
             throw error
             
         // Lazy service
