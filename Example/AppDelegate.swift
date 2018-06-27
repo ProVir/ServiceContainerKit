@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ServiceContainerKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        //Variant 1: ServiceLocator setup as singleton
+        ServiceLocator.setupSharedDefault()
+        
+        //Variant 2: DI Container with inject in root ViewController
+        let container = ServiceContainer.createDefault()
+        
+        let viewController = (window?.rootViewController as? UINavigationController)?.viewControllers.first as? ViewController
+        viewController?.serviceContainer = container
+        
+        
         return true
     }
 

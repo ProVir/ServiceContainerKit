@@ -12,7 +12,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="ServiceProviderExample" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="WaS-At-3RL"/>
                         <viewControllerLayoutGuide type="bottom" id="QOT-XT-kOL"/>
@@ -25,7 +25,7 @@
                     <navigationItem key="navigationItem" id="tLW-3l-Aej">
                         <barButtonItem key="rightBarButtonItem" title="Next" id="chF-PZ-Jot">
                             <connections>
-                                <segue destination="Jqt-bK-Xpp" kind="show" id="gTG-zb-9ol"/>
+                                <segue destination="Jqt-bK-Xpp" kind="show" identifier="objc" id="gTG-zb-9ol"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

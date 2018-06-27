@@ -16,6 +16,16 @@
 		506F9F2F20E3EA0C00E44CBD /* ServiceProviderObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */; };
 		506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160820C4509E00B756B3 /* ServiceProvider.swift */; };
 		506F9F3120E3EA1100E44CBD /* ServiceBaseTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */; };
+		506F9F3420E3F48E00E44CBD /* SingletonService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F3320E3F48E00E44CBD /* SingletonService.swift */; };
+		506F9F3620E3F4F500E44CBD /* LazyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F3520E3F4F500E44CBD /* LazyService.swift */; };
+		506F9F3820E3F56500E44CBD /* FirstService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F3720E3F56500E44CBD /* FirstService.swift */; };
+		506F9F3A20E3F5E300E44CBD /* SecondService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F3920E3F5E300E44CBD /* SecondService.swift */; };
+		506F9F3D20E3F6CF00E44CBD /* ServiceContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F3C20E3F6CF00E44CBD /* ServiceContainer.swift */; };
+		506F9F3F20E3F78B00E44CBD /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F3E20E3F78B00E44CBD /* ServiceLocator.swift */; };
+		506F9F4120E3F81600E44CBD /* SingletonServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4020E3F81600E44CBD /* SingletonServiceFactory.swift */; };
+		506F9F4320E3F88700E44CBD /* LazyServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4220E3F88700E44CBD /* LazyServiceFactory.swift */; };
+		506F9F4520E3F92900E44CBD /* FirstServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */; };
+		506F9F4720E3F9C900E44CBD /* SecondServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */; };
 		50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75AC20C98643003ED4CC /* ObjCViewController.m */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CF20C44AF700B756B3 /* ViewController.swift */; };
@@ -62,6 +72,16 @@
 		506F9F0620E3E3F100E44CBD /* ServiceContainerKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContainerKitTests.swift; sourceTree = "<group>"; };
 		506F9F0820E3E3F100E44CBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ServiceContainerKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		506F9F3320E3F48E00E44CBD /* SingletonService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingletonService.swift; sourceTree = "<group>"; };
+		506F9F3520E3F4F500E44CBD /* LazyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyService.swift; sourceTree = "<group>"; };
+		506F9F3720E3F56500E44CBD /* FirstService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstService.swift; sourceTree = "<group>"; };
+		506F9F3920E3F5E300E44CBD /* SecondService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondService.swift; sourceTree = "<group>"; };
+		506F9F3C20E3F6CF00E44CBD /* ServiceContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContainer.swift; sourceTree = "<group>"; };
+		506F9F3E20E3F78B00E44CBD /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
+		506F9F4020E3F81600E44CBD /* SingletonServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingletonServiceFactory.swift; sourceTree = "<group>"; };
+		506F9F4220E3F88700E44CBD /* LazyServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyServiceFactory.swift; sourceTree = "<group>"; };
+		506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstServiceFactory.swift; sourceTree = "<group>"; };
+		506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondServiceFactory.swift; sourceTree = "<group>"; };
 		50AA75A820C98169003ED4CC /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
 		50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		50AA75AB20C98643003ED4CC /* ObjCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCViewController.h; sourceTree = "<group>"; };
@@ -139,6 +159,41 @@
 			path = ServiceLocator;
 			sourceTree = "<group>";
 		};
+		506F9F3220E3F45F00E44CBD /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				506F9F3320E3F48E00E44CBD /* SingletonService.swift */,
+				506F9F3520E3F4F500E44CBD /* LazyService.swift */,
+				506F9F3720E3F56500E44CBD /* FirstService.swift */,
+				506F9F3920E3F5E300E44CBD /* SecondService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		506F9F3B20E3F6B400E44CBD /* ServiceContainers */ = {
+			isa = PBXGroup;
+			children = (
+				506F9F3C20E3F6CF00E44CBD /* ServiceContainer.swift */,
+				506F9F3E20E3F78B00E44CBD /* ServiceLocator.swift */,
+				506F9F4020E3F81600E44CBD /* SingletonServiceFactory.swift */,
+				506F9F4220E3F88700E44CBD /* LazyServiceFactory.swift */,
+				506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */,
+				506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */,
+			);
+			path = ServiceContainers;
+			sourceTree = "<group>";
+		};
+		506F9F4820E3FEE400E44CBD /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				50DA15D420C44AF800B756B3 /* Assets.xcassets */,
+				50DA15D620C44AF800B756B3 /* LaunchScreen.storyboard */,
+				50DA15D920C44AF800B756B3 /* Info.plist */,
+				50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */,
+			);
+			name = "Support Files";
+			sourceTree = "<group>";
+		};
 		50DA15C120C44AF700B756B3 = {
 			isa = PBXGroup;
 			children = (
@@ -170,10 +225,9 @@
 				50AA75AB20C98643003ED4CC /* ObjCViewController.h */,
 				50AA75AC20C98643003ED4CC /* ObjCViewController.m */,
 				50DA15D120C44AF700B756B3 /* Main.storyboard */,
-				50DA15D420C44AF800B756B3 /* Assets.xcassets */,
-				50DA15D620C44AF800B756B3 /* LaunchScreen.storyboard */,
-				50DA15D920C44AF800B756B3 /* Info.plist */,
-				50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */,
+				506F9F3B20E3F6B400E44CBD /* ServiceContainers */,
+				506F9F3220E3F45F00E44CBD /* Services */,
+				506F9F4820E3FEE400E44CBD /* Support Files */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -350,9 +404,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				506F9F3F20E3F78B00E44CBD /* ServiceLocator.swift in Sources */,
+				506F9F4520E3F92900E44CBD /* FirstServiceFactory.swift in Sources */,
+				506F9F4720E3F9C900E44CBD /* SecondServiceFactory.swift in Sources */,
+				506F9F4320E3F88700E44CBD /* LazyServiceFactory.swift in Sources */,
 				50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */,
+				506F9F3420E3F48E00E44CBD /* SingletonService.swift in Sources */,
+				506F9F3820E3F56500E44CBD /* FirstService.swift in Sources */,
+				506F9F3620E3F4F500E44CBD /* LazyService.swift in Sources */,
 				50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */,
+				506F9F4120E3F81600E44CBD /* SingletonServiceFactory.swift in Sources */,
+				506F9F3D20E3F6CF00E44CBD /* ServiceContainer.swift in Sources */,
 				50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */,
+				506F9F3A20E3F5E300E44CBD /* SecondService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

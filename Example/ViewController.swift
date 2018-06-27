@@ -10,39 +10,20 @@ import UIKit
 import ServiceContainerKit
 
 class ViewController: UIViewController {
+    
+    var serviceContainer: ServiceContainer!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let locator = ServiceLocator()
-        ServiceLocator.setupShared(serviceLocator: locator)
-        
-        locator.addService(factory: ServiceTestFactory())
-        locator.addService(ObjCService() as ServiceObjC)
-        
-        
-        
-//        let service: ServiceTest = try! locator.tryService(params: "Test")
-//        let service2: ServiceTest = try! locator.tryService()
-
         
     }
 
-}
-
-
-
-class ServiceTest: NSObject {
-    
-}
-
-extension ServiceTest: ServiceSupportFactoryParams {
-    typealias ParamsType = String
-}
-
-struct ServiceTestFactory: ServiceParamsFactory {
-    
-    func createService(params: String?) throws -> ServiceTest {
-        return ServiceTest()
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "objc", let vc = segue.destination as? ObjCViewController {
+            vc.setup(withContainer: ServiceContainerObjC(container: serviceContainer))
+        }
     }
+    
 }

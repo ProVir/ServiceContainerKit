@@ -8,14 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+
 @interface ObjCViewController : UIViewController
 
-@end
-
-@protocol ServiceObjC
-
-@end
-
-@interface ObjCService : NSObject<ServiceObjC>
+- (void) setupWithContainer:(id)container;
 
 @end

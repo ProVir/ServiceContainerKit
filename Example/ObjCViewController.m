@@ -13,15 +13,18 @@
 
 @interface ObjCViewController ()
 
+@property (nonatomic, readonly) ServiceContainer* serviceContainer;
+
 @end
 
 @implementation ObjCViewController
 
+- (void) setupWithContainer:(id)container {
+    _serviceContainer = container;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-//    ServiceTest* service1 = [PVServiceLocator getServiceWithClass:ServiceTest.class];
-//    ObjCService* service2 = [PVServiceLocator getServiceWithProtocol:@protocol(ServiceObjC) error:nil];
     
     
 }
@@ -29,9 +32,3 @@
 
 @end
 
-
-
-@implementation ObjCService
-
-
-@end
