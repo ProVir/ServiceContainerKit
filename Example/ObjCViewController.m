@@ -7,8 +7,7 @@
 //
 
 #import "ObjCViewController.h"
-@import ServiceLocatorSwift;
-//@import ServiceProvider;
+@import ServiceContainerKit;
 
 #import "Example-Swift.h"
 

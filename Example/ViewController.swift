@@ -7,9 +7,7 @@
 //
 
 import UIKit
-import ServiceLocatorSwift 
-//import ServiceProvider
-//import ServiceContainerKit
+import ServiceContainerKit
 
 class ViewController: UIViewController {
 

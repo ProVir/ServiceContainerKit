@@ -11,6 +11,11 @@
 		506F9F2620E3E4B400E44CBD /* ServiceContainerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; };
 		506F9F2720E3E4B400E44CBD /* ServiceContainerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		506F9F2B20E3E69500E44CBD /* ServiceContainerKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		506F9F2D20E3EA0600E44CBD /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */; };
+		506F9F2E20E3EA0800E44CBD /* ServiceLocatorObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75A820C98169003ED4CC /* ServiceLocatorObjC.swift */; };
+		506F9F2F20E3EA0C00E44CBD /* ServiceProviderObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */; };
+		506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160820C4509E00B756B3 /* ServiceProvider.swift */; };
+		506F9F3120E3EA1100E44CBD /* ServiceBaseTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */; };
 		50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75AC20C98643003ED4CC /* ObjCViewController.m */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CF20C44AF700B756B3 /* ViewController.swift */; };
@@ -333,6 +338,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */,
+				506F9F2F20E3EA0C00E44CBD /* ServiceProviderObjC.swift in Sources */,
+				506F9F3120E3EA1100E44CBD /* ServiceBaseTypes.swift in Sources */,
+				506F9F2E20E3EA0800E44CBD /* ServiceLocatorObjC.swift in Sources */,
+				506F9F2D20E3EA0600E44CBD /* ServiceLocator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "507A04F420C4F616003CA147"
-               BuildableName = "ServiceLocatorSwift.framework"
-               BlueprintName = "ServiceLocatorSwift"
+               BlueprintIdentifier = "506F9F1E20E3E4B400E44CBD"
+               BuildableName = "ServiceContainerKit.framework"
+               BlueprintName = "ServiceContainerKit"
                ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "507A04F420C4F616003CA147"
-            BuildableName = "ServiceLocatorSwift.framework"
-            BlueprintName = "ServiceLocatorSwift"
+            BlueprintIdentifier = "506F9F1E20E3E4B400E44CBD"
+            BuildableName = "ServiceContainerKit.framework"
+            BlueprintName = "ServiceContainerKit"
             ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "507A04F420C4F616003CA147"
-            BuildableName = "ServiceLocatorSwift.framework"
-            BlueprintName = "ServiceLocatorSwift"
+            BlueprintIdentifier = "506F9F1E20E3E4B400E44CBD"
+            BuildableName = "ServiceContainerKit.framework"
+            BlueprintName = "ServiceContainerKit"
             ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
