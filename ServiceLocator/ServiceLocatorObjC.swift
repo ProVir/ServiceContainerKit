@@ -10,6 +10,8 @@ import Foundation
 
 
 //MARK: Shared
+
+/// Support singleton ServiceLocator.
 extension ServiceLocatorObjC {
     //Without params
     @objc public static func getService(class type: AnyClass) throws -> Any {
@@ -53,15 +55,21 @@ extension ServiceLocatorObjC {
 /// Wrapper ServiceLocator for ObjC
 @objc(ServiceLocator)
 public class ServiceLocatorObjC: NSObject {
-    public let serviceLocator: ServiceLocator
+    private let serviceLocatorInstance: ServiceLocator?
+    
+    /// Original Swift ServiceLocator
+    public var serviceLocator: ServiceLocator {
+        return serviceLocatorInstance ?? ServiceLocator.shared ?? ServiceLocator()
+    }
     
     public init(_ serviceLocator: ServiceLocator) {
-        self.serviceLocator = serviceLocator
+        self.serviceLocatorInstance = serviceLocator
         super.init()
     }
     
+    /// [ServiceLocator new] used swift singleton or empty ServiceLocator.
     @objc public override init() {
-        self.serviceLocator = ServiceLocator.shared ?? ServiceLocator()
+        self.serviceLocatorInstance = nil
         super.init()
     }
     

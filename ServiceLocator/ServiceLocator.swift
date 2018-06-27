@@ -10,32 +10,143 @@ import Foundation
 
 ///Errors for ServiceLocator
 public enum ServiceLocatorError: Error {
+    /// Service not found in ServiceLocator
     case serviceNotFound
+    
+    /// Params type invalid for ServiceParamsFactory
     case wrongParams
+    
+    /// ServiceLocator don't setuped for use as share (singleton)
     case sharedRequireSetup
 }
 
+/// Protocol for Service, use when used ServiceParamsFactory as factory for service. Added getService function for ServiceLocator with params.
 public protocol ServiceSupportFactoryParams {
     associatedtype ParamsType
 }
 
 
-
 /// ServiceLocator as storage ServiceProviders.
 open class ServiceLocator {
+    /// ServiceLocator as singleton
     public private(set) static var shared: ServiceLocator?
+    
+    /// ServiceLocator.shared don't can replace other instance. Also it can also be used to prohibit the use of a singleton&
     public private(set) static var readOnlyShared: Bool = false
+    
+    /// Services list support and factoryes don't can change if is `true`.
+    public private(set) var readOnly: Bool = false
     
     public required init() { }
     
-    ///Use for all public methods
+    /// Lock used for all public methods
     public let lock = NSRecursiveLock()
-    public private(set) var readOnly: Bool = false
     
+    /// Private list providers with services
     private var providers = [String : ServiceLocatorProviderBinding]()
     
     
-    //MARK: Get
+    //MARK: Setup
+    
+    /// Setup ServiceLocator as singleton. If `readOnlySharedAfter = true` (default) - don't change singleton instance after.
+    public static func setupShared(serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true) {
+        if readOnlyShared {
+            assertionFailure("Don't support setupShared in readOnly regime")
+            return
+        }
+        
+        shared = serviceLocator
+        readOnlyShared = readOnlySharedAfter
+    }
+    
+    /// In readOnly regime can't use addService and removeService.
+    open func setReadOnly() {
+        lock.lock()
+        readOnly = true
+        lock.unlock()
+    }
+    
+    /// Add ServiceProvider with service for ServiceLocator
+    open func addService<ServiceType>(provider: ServiceProvider<ServiceType>) {
+        lock.lock()
+        defer { lock.unlock() }
+        
+        if readOnly {
+            assertionFailure("Don't support addService in readOnly regime")
+            return
+        }
+        
+        let typeName = "\(ServiceType.self)"
+        providers[typeName] = provider
+    }
+    
+    /// Add ServiceParamsProvider with service for ServiceLocator
+    open func addService<ServiceType, ParamsType>(provider: ServiceParamsProvider<ServiceType, ParamsType>) {
+        lock.lock()
+        defer { lock.unlock() }
+        
+        if readOnly {
+            assertionFailure("Don't support addService in readOnly regime")
+            return
+        }
+        
+        let typeName = "\(ServiceType.self)"
+        providers[typeName] = provider
+    }
+    
+    /// Add service at one instance.
+    open func addService<ServiceType>(_ service: ServiceType) {
+        addService(provider: ServiceProvider<ServiceType>(service))
+    }
+    
+    /// Add factory service
+    open func addService<ServiceType, FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
+        addService(provider: ServiceProvider<ServiceType>(factory: factory))
+    }
+    
+    /// Add factory service with params when created instance
+    open func addService<ServiceType, ParamsType, FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
+        addService(provider: ServiceParamsProvider<ServiceType, ParamsType>(factory: factory))
+    }
+    
+    /// Add service with lazy create service in closure.
+    open func addService<ServiceType>(lazy: @escaping () throws -> ServiceType) {
+        addService(provider: ServiceProvider<ServiceType>(lazy: lazy))
+    }
+    
+    /// Add service with many instance service type, create service in closure.
+    open func addService<ServiceType>(factory closure: @escaping () throws -> ServiceType) {
+        addService(provider: ServiceProvider<ServiceType>.init(factory: closure))
+    }
+    
+    /// Remove service from ServiceLocator.
+    open func removeService<ServiceType>(serviceType: ServiceType.Type) {
+        lock.lock()
+        defer { lock.unlock() }
+        
+        if readOnly {
+            assertionFailure("Don't support removeService in readOnly regime")
+            return
+        }
+        
+        providers.removeValue(forKey: "\(ServiceType.self)")
+    }
+    
+    /// Clone ServiceLocator with all providers, but with readOnly = false in new instance.
+    open func clone<T: ServiceLocator>(type: T.Type = T.self) -> T {
+        let locator = T.init()
+        
+        lock.lock()
+        locator.providers = self.providers
+        lock.unlock()
+        
+        return locator
+    }
+    
+    
+    //MARK: Get from shared
+    
+    /// Get Service with detail information throwed error from ServiceLocator.share.
     public static func tryServiceFromShared<ServiceType>() throws -> ServiceType {
         guard let shared = shared else {
             throw ServiceLocatorError.sharedRequireSetup
@@ -44,6 +155,7 @@ open class ServiceLocator {
         return try shared.tryService()
     }
     
+    /// Get Service with params with detail information throwed error from ServiceLocator.share.
     public static func tryServiceFromShared<ServiceType: ServiceSupportFactoryParams>(params: ServiceType.ParamsType) throws -> ServiceType {
         guard let shared = shared else {
             throw ServiceLocatorError.sharedRequireSetup
@@ -52,17 +164,22 @@ open class ServiceLocator {
         return try shared.tryService(params: params)
     }
     
+    /// Get Service if there are no errors from ServiceLocator.share.
     public static func getServiceFromShared<ServiceType>() -> ServiceType? {
         guard let shared = shared else { return nil }
         return try? shared.tryService()
     }
     
+    /// Get Service with params if there are no errors from ServiceLocator.share.
     public static func getServiceFromShared<ServiceType: ServiceSupportFactoryParams>(params: ServiceType.ParamsType) -> ServiceType? {
         guard let shared = shared else { return nil }
         return try? shared.tryService(params: params)
     }
     
     
+    //MARK: Get
+    
+    /// Get Service with detail information throwed error.
     open func tryService<ServiceType>() throws -> ServiceType {
         lock.lock()
         defer { lock.unlock() }
@@ -77,6 +194,7 @@ open class ServiceLocator {
         }
     }
     
+    /// Get Service with params with detail information throwed error.
     open func tryService<ServiceType: ServiceSupportFactoryParams>(params: ServiceType.ParamsType) throws -> ServiceType {
         lock.lock()
         defer { lock.unlock() }
@@ -91,14 +209,17 @@ open class ServiceLocator {
         }
     }
     
+    /// Get Service if there are no errors.
     open func getService<ServiceType>() -> ServiceType? {
         return try? tryService()
     }
     
+    /// Get Service with params if there are no errors
     open func getService<ServiceType: ServiceSupportFactoryParams>(params: ServiceType.ParamsType) -> ServiceType? {
         return try? tryService(params: params)
     }
     
+    /// Get ServiceProvider with service
     open func getServiceProvider<ServiceType>() -> ServiceProvider<ServiceType>? {
         lock.lock()
         defer { lock.unlock() }
@@ -107,6 +228,7 @@ open class ServiceLocator {
         return providers[typeName] as? ServiceProvider<ServiceType>
     }
     
+    /// Get ServiceParamsProvider with service
     open func getServiceProvider<ServiceType, ParamsType>() -> ServiceParamsProvider<ServiceType, ParamsType>? {
         lock.lock()
         defer { lock.unlock() }
@@ -116,80 +238,8 @@ open class ServiceLocator {
     }
     
     
-    //MARK: Setup
-    public static func setupShared(serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true) {
-        if readOnlyShared { fatalError("Don't support setupShared in readOnly regime") }
-        
-        shared = serviceLocator
-        readOnlyShared = readOnlySharedAfter
-    }
     
-    open func setReadOnly() {
-        lock.lock()
-        readOnly = true
-        lock.unlock()
-    }
-    
-    open func addService<ServiceType>(provider: ServiceProvider<ServiceType>) {
-        lock.lock()
-        defer { lock.unlock() }
-        
-        if readOnly { fatalError("Don't support addService in readOnly regime") }
-        
-        let typeName = "\(ServiceType.self)"
-        providers[typeName] = provider
-    }
-    
-    open func addService<ServiceType, ParamsType>(provider: ServiceParamsProvider<ServiceType, ParamsType>) {
-        lock.lock()
-        defer { lock.unlock() }
-        
-        if readOnly { fatalError("Don't support addService in readOnly regime") }
-        
-        let typeName = "\(ServiceType.self)"
-        providers[typeName] = provider
-    }
-    
-    open func addService<ServiceType>(_ service: ServiceType) {
-        addService(provider: ServiceProvider<ServiceType>(service))
-    }
-    
-    open func addService<ServiceType, FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
-        addService(provider: ServiceProvider<ServiceType>(factory: factory))
-    }
-    
-    open func addService<ServiceType, ParamsType, FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
-        addService(provider: ServiceParamsProvider<ServiceType, ParamsType>(factory: factory))
-    }
-    
-    open func addService<ServiceType>(lazy: @escaping () throws -> ServiceType) {
-        addService(provider: ServiceProvider<ServiceType>(lazy: lazy))
-    }
-    
-    open func addService<ServiceType>(factory closure: @escaping () throws -> ServiceType) {
-        addService(provider: ServiceProvider<ServiceType>.init(factory: closure))
-    }
-    
-    open func removeService<ServiceType>(serviceType: ServiceType.Type) {
-        lock.lock()
-        defer { lock.unlock() }
-        
-        if readOnly { fatalError("Don't support removeService in readOnly regime") }
-        
-        providers.removeValue(forKey: "\(ServiceType.self)")
-    }
-    
-    open func clone<T: ServiceLocator>(type: T.Type = T.self) -> T {
-        let locator = T.init()
-        
-        lock.lock()
-        locator.providers = self.providers
-        lock.unlock()
-        
-        return locator
-    }
-    
-    //MARK: PVServiceLocator ObjC support
+    //MARK: - ServiceLocatorObjC support
     static func tryServiceObjC(typeName: String, params: Any) throws -> NSObject {
         guard let shared = shared else {
             throw ServiceLocatorError.sharedRequireSetup
@@ -211,6 +261,8 @@ open class ServiceLocator {
     }
     
     //MARK: - Private
+    
+    /// Convert errors from ServiceProviderError to ServiceLocatorError
     private func convertError(_ error: Error) -> Error {
         if let error = error as? ServiceProviderError {
             switch error {
@@ -224,7 +276,7 @@ open class ServiceLocator {
 }
 
 
-//MARK: Provider binding to Locator
+//MARK: Provider binding to ServiceLocator
 
 /// Base protocol for ServiceProvider<T>
 private protocol ServiceLocatorProviderBinding {
