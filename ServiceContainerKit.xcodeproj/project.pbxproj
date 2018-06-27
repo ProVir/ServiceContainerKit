@@ -7,43 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		507A04F920C4F616003CA147 /* ServiceLocatorSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 507A04F720C4F616003CA147 /* ServiceLocatorSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		507A04FC20C4F616003CA147 /* ServiceLocatorSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */; };
-		507A04FD20C4F616003CA147 /* ServiceLocatorSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		507A050220C4F641003CA147 /* ServiceBaseTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */; };
-		507A050320C4F644003CA147 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160820C4509E00B756B3 /* ServiceProvider.swift */; };
-		507A050420C4FA50003CA147 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50DA160420C4501300B756B3 /* Foundation.framework */; };
-		50AA75A620C970FA003ED4CC /* ServiceProviderObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */; };
-		50AA75A720C97300003ED4CC /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */; };
-		50AA75A920C98169003ED4CC /* ServiceLocatorObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75A820C98169003ED4CC /* ServiceLocatorObjC.swift */; };
+		506F9F0720E3E3F100E44CBD /* ServiceContainerKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F0620E3E3F100E44CBD /* ServiceContainerKitTests.swift */; };
+		506F9F2620E3E4B400E44CBD /* ServiceContainerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; };
+		506F9F2720E3E4B400E44CBD /* ServiceContainerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		506F9F2B20E3E69500E44CBD /* ServiceContainerKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75AC20C98643003ED4CC /* ObjCViewController.m */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CF20C44AF700B756B3 /* ViewController.swift */; };
 		50DA15D320C44AF700B756B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D120C44AF700B756B3 /* Main.storyboard */; };
 		50DA15D520C44AF800B756B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D420C44AF800B756B3 /* Assets.xcassets */; };
 		50DA15D820C44AF800B756B3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D620C44AF800B756B3 /* LaunchScreen.storyboard */; };
-		50DA15E820C44C8D00B756B3 /* ServiceProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 50DA15E620C44C8D00B756B3 /* ServiceProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		50DA15EB20C44C8D00B756B3 /* ServiceProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50DA15E420C44C8D00B756B3 /* ServiceProvider.framework */; };
-		50DA15EC20C44C8D00B756B3 /* ServiceProvider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50DA15E420C44C8D00B756B3 /* ServiceProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		50DA160520C4501300B756B3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50DA160420C4501300B756B3 /* Foundation.framework */; };
-		50DA160720C4507D00B756B3 /* ServiceBaseTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */; };
-		50DA160920C4509E00B756B3 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA160820C4509E00B756B3 /* ServiceProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		507A04FA20C4F616003CA147 /* PBXContainerItemProxy */ = {
+		506F9F0320E3E3F100E44CBD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 50DA15C220C44AF700B756B3 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 507A04F420C4F616003CA147;
-			remoteInfo = ServiceLocator;
+			remoteGlobalIDString = 50DA15C920C44AF700B756B3;
+			remoteInfo = ServiceProviderExample;
 		};
-		50DA15E920C44C8D00B756B3 /* PBXContainerItemProxy */ = {
+		506F9F2420E3E4B400E44CBD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 50DA15C220C44AF700B756B3 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 50DA15E320C44C8D00B756B3;
-			remoteInfo = ServiceProvider;
+			remoteGlobalIDString = 506F9F1E20E3E4B400E44CBD;
+			remoteInfo = ServiceContainerKit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -54,8 +43,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				50DA15EC20C44C8D00B756B3 /* ServiceProvider.framework in Embed Frameworks */,
-				507A04FD20C4F616003CA147 /* ServiceLocatorSwift.framework in Embed Frameworks */,
+				506F9F2720E3E4B400E44CBD /* ServiceContainerKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -63,39 +51,44 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ServiceLocatorSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		507A04F720C4F616003CA147 /* ServiceLocatorSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceLocatorSwift.h; sourceTree = "<group>"; };
-		507A04F820C4F616003CA147 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceContainerKit.h; sourceTree = "<group>"; };
+		506F9EFA20E3E3F100E44CBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		506F9EFF20E3E3F100E44CBD /* ServiceContainerKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ServiceContainerKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		506F9F0620E3E3F100E44CBD /* ServiceContainerKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContainerKitTests.swift; sourceTree = "<group>"; };
+		506F9F0820E3E3F100E44CBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ServiceContainerKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50AA75A820C98169003ED4CC /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
-		50AA75AA20C98642003ED4CC /* ServiceProviderExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ServiceProviderExample-Bridging-Header.h"; sourceTree = "<group>"; };
+		50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		50AA75AB20C98643003ED4CC /* ObjCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCViewController.h; sourceTree = "<group>"; };
 		50AA75AC20C98643003ED4CC /* ObjCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCViewController.m; sourceTree = "<group>"; };
 		50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderObjC.swift; sourceTree = "<group>"; };
-		50DA15CA20C44AF700B756B3 /* ServiceProviderExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ServiceProviderExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		50DA15CA20C44AF700B756B3 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50DA15CD20C44AF700B756B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50DA15CF20C44AF700B756B3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		50DA15D220C44AF700B756B3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		50DA15D420C44AF800B756B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		50DA15D720C44AF800B756B3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		50DA15D920C44AF800B756B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		50DA15E420C44C8D00B756B3 /* ServiceProvider.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ServiceProvider.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		50DA15E620C44C8D00B756B3 /* ServiceProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceProvider.h; sourceTree = "<group>"; };
-		50DA15E720C44C8D00B756B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50DA160420C4501300B756B3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceBaseTypes.swift; sourceTree = "<group>"; };
 		50DA160820C4509E00B756B3 /* ServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
 		50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		50DA160E20C4D9B600B756B3 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		50DA160F20C4DB6700B756B3 /* ServiceProvider.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = ServiceProvider.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		50DA161320C4F4C600B756B3 /* ServiceLocatorSwift.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = ServiceLocatorSwift.podspec; sourceTree = "<group>"; };
+		50DA160F20C4DB6700B756B3 /* ServiceContainerKit.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = ServiceContainerKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		507A04F120C4F616003CA147 /* Frameworks */ = {
+		506F9EFC20E3E3F100E44CBD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				507A050420C4FA50003CA147 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		506F9F1B20E3E4B400E44CBD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,27 +96,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50DA15EB20C44C8D00B756B3 /* ServiceProvider.framework in Frameworks */,
-				507A04FC20C4F616003CA147 /* ServiceLocatorSwift.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		50DA15E020C44C8D00B756B3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				50DA160520C4501300B756B3 /* Foundation.framework in Frameworks */,
+				506F9F2620E3E4B400E44CBD /* ServiceContainerKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		507A04F620C4F616003CA147 /* ServiceLocator */ = {
+		506F9EF820E3E3F100E44CBD /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				507A04F720C4F616003CA147 /* ServiceLocatorSwift.h */,
-				507A04F820C4F616003CA147 /* Info.plist */,
+				506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */,
+				506F9EFA20E3E3F100E44CBD /* Info.plist */,
+				50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */,
+				50DA160820C4509E00B756B3 /* ServiceProvider.swift */,
+				50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */,
+				506F9F1720E3E44D00E44CBD /* ServiceLocator */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		506F9F0520E3E3F100E44CBD /* ServiceContainerKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				506F9F0620E3E3F100E44CBD /* ServiceContainerKitTests.swift */,
+				506F9F0820E3E3F100E44CBD /* Info.plist */,
+			);
+			path = ServiceContainerKitTests;
+			sourceTree = "<group>";
+		};
+		506F9F1720E3E44D00E44CBD /* ServiceLocator */ = {
+			isa = PBXGroup;
+			children = (
 				50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */,
 				50AA75A820C98169003ED4CC /* ServiceLocatorObjC.swift */,
 			);
@@ -134,11 +138,10 @@
 			isa = PBXGroup;
 			children = (
 				50DA160E20C4D9B600B756B3 /* README.md */,
-				50DA160F20C4DB6700B756B3 /* ServiceProvider.podspec */,
-				50DA161320C4F4C600B756B3 /* ServiceLocatorSwift.podspec */,
+				50DA160F20C4DB6700B756B3 /* ServiceContainerKit.podspec */,
 				50DA15CC20C44AF700B756B3 /* Example */,
-				50DA15E520C44C8D00B756B3 /* ServiceProvider */,
-				507A04F620C4F616003CA147 /* ServiceLocator */,
+				506F9EF820E3E3F100E44CBD /* Source */,
+				506F9F0520E3E3F100E44CBD /* ServiceContainerKitTests */,
 				50DA15CB20C44AF700B756B3 /* Products */,
 				50DA160220C4500100B756B3 /* Frameworks */,
 			);
@@ -147,9 +150,9 @@
 		50DA15CB20C44AF700B756B3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				50DA15CA20C44AF700B756B3 /* ServiceProviderExample.app */,
-				50DA15E420C44C8D00B756B3 /* ServiceProvider.framework */,
-				507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */,
+				50DA15CA20C44AF700B756B3 /* Example.app */,
+				506F9EFF20E3E3F100E44CBD /* ServiceContainerKitTests.xctest */,
+				506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -165,21 +168,9 @@
 				50DA15D420C44AF800B756B3 /* Assets.xcassets */,
 				50DA15D620C44AF800B756B3 /* LaunchScreen.storyboard */,
 				50DA15D920C44AF800B756B3 /* Info.plist */,
-				50AA75AA20C98642003ED4CC /* ServiceProviderExample-Bridging-Header.h */,
+				50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */,
 			);
 			path = Example;
-			sourceTree = "<group>";
-		};
-		50DA15E520C44C8D00B756B3 /* ServiceProvider */ = {
-			isa = PBXGroup;
-			children = (
-				50DA15E620C44C8D00B756B3 /* ServiceProvider.h */,
-				50DA15E720C44C8D00B756B3 /* Info.plist */,
-				50DA160620C4507D00B756B3 /* ServiceBaseTypes.swift */,
-				50DA160820C4509E00B756B3 /* ServiceProvider.swift */,
-				50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */,
-			);
-			path = ServiceProvider;
 			sourceTree = "<group>";
 		};
 		50DA160220C4500100B756B3 /* Frameworks */ = {
@@ -193,46 +184,56 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		507A04F220C4F616003CA147 /* Headers */ = {
+		506F9F1C20E3E4B400E44CBD /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				507A04F920C4F616003CA147 /* ServiceLocatorSwift.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		50DA15E120C44C8D00B756B3 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				50DA15E820C44C8D00B756B3 /* ServiceProvider.h in Headers */,
+				506F9F2B20E3E69500E44CBD /* ServiceContainerKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		507A04F420C4F616003CA147 /* ServiceLocatorSwift */ = {
+		506F9EFE20E3E3F100E44CBD /* ServiceContainerKitTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 507A04FE20C4F616003CA147 /* Build configuration list for PBXNativeTarget "ServiceLocatorSwift" */;
+			buildConfigurationList = 506F9F1320E3E3F100E44CBD /* Build configuration list for PBXNativeTarget "ServiceContainerKitTests" */;
 			buildPhases = (
-				507A04F020C4F616003CA147 /* Sources */,
-				507A04F120C4F616003CA147 /* Frameworks */,
-				507A04F220C4F616003CA147 /* Headers */,
-				507A04F320C4F616003CA147 /* Resources */,
+				506F9EFB20E3E3F100E44CBD /* Sources */,
+				506F9EFC20E3E3F100E44CBD /* Frameworks */,
+				506F9EFD20E3E3F100E44CBD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				506F9F0420E3E3F100E44CBD /* PBXTargetDependency */,
+			);
+			name = ServiceContainerKitTests;
+			productName = ServiceContainerKitTests;
+			productReference = 506F9EFF20E3E3F100E44CBD /* ServiceContainerKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		506F9F1E20E3E4B400E44CBD /* ServiceContainerKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 506F9F2820E3E4B400E44CBD /* Build configuration list for PBXNativeTarget "ServiceContainerKit" */;
+			buildPhases = (
+				506F9F1A20E3E4B400E44CBD /* Sources */,
+				506F9F1B20E3E4B400E44CBD /* Frameworks */,
+				506F9F1C20E3E4B400E44CBD /* Headers */,
+				506F9F1D20E3E4B400E44CBD /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = ServiceLocatorSwift;
-			productName = ServiceLocator;
-			productReference = 507A04F520C4F616003CA147 /* ServiceLocatorSwift.framework */;
+			name = ServiceContainerKit;
+			productName = ServiceContainerKit;
+			productReference = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		50DA15C920C44AF700B756B3 /* ServiceProviderExample */ = {
+		50DA15C920C44AF700B756B3 /* Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 50DA15DC20C44AF800B756B3 /* Build configuration list for PBXNativeTarget "ServiceProviderExample" */;
+			buildConfigurationList = 50DA15DC20C44AF800B756B3 /* Build configuration list for PBXNativeTarget "Example" */;
 			buildPhases = (
 				50DA15C620C44AF700B756B3 /* Sources */,
 				50DA15C720C44AF700B756B3 /* Frameworks */,
@@ -242,31 +243,12 @@
 			buildRules = (
 			);
 			dependencies = (
-				50DA15EA20C44C8D00B756B3 /* PBXTargetDependency */,
-				507A04FB20C4F616003CA147 /* PBXTargetDependency */,
+				506F9F2520E3E4B400E44CBD /* PBXTargetDependency */,
 			);
-			name = ServiceProviderExample;
+			name = Example;
 			productName = ServiceProviderExample;
-			productReference = 50DA15CA20C44AF700B756B3 /* ServiceProviderExample.app */;
+			productReference = 50DA15CA20C44AF700B756B3 /* Example.app */;
 			productType = "com.apple.product-type.application";
-		};
-		50DA15E320C44C8D00B756B3 /* ServiceProvider */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 50DA15ED20C44C8D00B756B3 /* Build configuration list for PBXNativeTarget "ServiceProvider" */;
-			buildPhases = (
-				50DA15DF20C44C8D00B756B3 /* Sources */,
-				50DA15E020C44C8D00B756B3 /* Frameworks */,
-				50DA15E120C44C8D00B756B3 /* Headers */,
-				50DA15E220C44C8D00B756B3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ServiceProvider;
-			productName = ServiceProvider;
-			productReference = 50DA15E420C44C8D00B756B3 /* ServiceProvider.framework */;
-			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -278,20 +260,20 @@
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = ProVir;
 				TargetAttributes = {
-					507A04F420C4F616003CA147 = {
-						CreatedOnToolsVersion = 9.4;
+					506F9EFE20E3E3F100E44CBD = {
+						CreatedOnToolsVersion = 9.4.1;
+						TestTargetID = 50DA15C920C44AF700B756B3;
+					};
+					506F9F1E20E3E4B400E44CBD = {
+						CreatedOnToolsVersion = 9.4.1;
 					};
 					50DA15C920C44AF700B756B3 = {
 						CreatedOnToolsVersion = 9.4;
 						LastSwiftMigration = 0940;
 					};
-					50DA15E320C44C8D00B756B3 = {
-						CreatedOnToolsVersion = 9.4;
-						LastSwiftMigration = 0940;
-					};
 				};
 			};
-			buildConfigurationList = 50DA15C520C44AF700B756B3 /* Build configuration list for PBXProject "ServiceProviderExample" */;
+			buildConfigurationList = 50DA15C520C44AF700B756B3 /* Build configuration list for PBXProject "ServiceContainerKit" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -304,15 +286,22 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				50DA15C920C44AF700B756B3 /* ServiceProviderExample */,
-				50DA15E320C44C8D00B756B3 /* ServiceProvider */,
-				507A04F420C4F616003CA147 /* ServiceLocatorSwift */,
+				50DA15C920C44AF700B756B3 /* Example */,
+				506F9F1E20E3E4B400E44CBD /* ServiceContainerKit */,
+				506F9EFE20E3E3F100E44CBD /* ServiceContainerKitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		507A04F320C4F616003CA147 /* Resources */ = {
+		506F9EFD20E3E3F100E44CBD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		506F9F1D20E3E4B400E44CBD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -329,24 +318,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		50DA15E220C44C8D00B756B3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		507A04F020C4F616003CA147 /* Sources */ = {
+		506F9EFB20E3E3F100E44CBD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50AA75A720C97300003ED4CC /* ServiceLocator.swift in Sources */,
-				507A050320C4F644003CA147 /* ServiceProvider.swift in Sources */,
-				50AA75A920C98169003ED4CC /* ServiceLocatorObjC.swift in Sources */,
-				507A050220C4F641003CA147 /* ServiceBaseTypes.swift in Sources */,
+				506F9F0720E3E3F100E44CBD /* ServiceContainerKitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		506F9F1A20E3E4B400E44CBD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,28 +346,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		50DA15DF20C44C8D00B756B3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				50AA75A620C970FA003ED4CC /* ServiceProviderObjC.swift in Sources */,
-				50DA160920C4509E00B756B3 /* ServiceProvider.swift in Sources */,
-				50DA160720C4507D00B756B3 /* ServiceBaseTypes.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		507A04FB20C4F616003CA147 /* PBXTargetDependency */ = {
+		506F9F0420E3E3F100E44CBD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 507A04F420C4F616003CA147 /* ServiceLocatorSwift */;
-			targetProxy = 507A04FA20C4F616003CA147 /* PBXContainerItemProxy */;
+			target = 50DA15C920C44AF700B756B3 /* Example */;
+			targetProxy = 506F9F0320E3E3F100E44CBD /* PBXContainerItemProxy */;
 		};
-		50DA15EA20C44C8D00B756B3 /* PBXTargetDependency */ = {
+		506F9F2520E3E4B400E44CBD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 50DA15E320C44C8D00B756B3 /* ServiceProvider */;
-			targetProxy = 50DA15E920C44C8D00B756B3 /* PBXContainerItemProxy */;
+			target = 506F9F1E20E3E4B400E44CBD /* ServiceContainerKit */;
+			targetProxy = 506F9F2420E3E4B400E44CBD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -405,7 +381,53 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		507A04FF20C4F616003CA147 /* Debug */ = {
+		506F9F1020E3E3F100E44CBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = ServiceContainerKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Example";
+			};
+			name = Debug;
+		};
+		506F9F1120E3E3F100E44CBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = ServiceContainerKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Example";
+			};
+			name = Release;
+		};
+		506F9F2920E3E4B400E44CBD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
@@ -416,14 +438,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = ServiceLocator/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceLocator;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -434,7 +456,7 @@
 			};
 			name = Debug;
 		};
-		507A050020C4F616003CA147 /* Release */ = {
+		506F9F2A20E3E4B400E44CBD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
@@ -445,14 +467,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = ServiceLocator/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceLocator;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -583,6 +605,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/Info.plist";
@@ -590,10 +613,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceProviderExample;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKitExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Example/ServiceProviderExample-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Example/Example-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -606,6 +630,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Example/Info.plist";
@@ -613,88 +638,37 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceProviderExample;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKitExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Example/ServiceProviderExample-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Example/Example-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		50DA15EE20C44C8D00B756B3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/ServiceProvider/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceProvider;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		50DA15EF20C44C8D00B756B3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/ServiceProvider/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceProvider;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		507A04FE20C4F616003CA147 /* Build configuration list for PBXNativeTarget "ServiceLocatorSwift" */ = {
+		506F9F1320E3E3F100E44CBD /* Build configuration list for PBXNativeTarget "ServiceContainerKitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				507A04FF20C4F616003CA147 /* Debug */,
-				507A050020C4F616003CA147 /* Release */,
+				506F9F1020E3E3F100E44CBD /* Debug */,
+				506F9F1120E3E3F100E44CBD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		50DA15C520C44AF700B756B3 /* Build configuration list for PBXProject "ServiceProviderExample" */ = {
+		506F9F2820E3E4B400E44CBD /* Build configuration list for PBXNativeTarget "ServiceContainerKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				506F9F2920E3E4B400E44CBD /* Debug */,
+				506F9F2A20E3E4B400E44CBD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50DA15C520C44AF700B756B3 /* Build configuration list for PBXProject "ServiceContainerKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				50DA15DA20C44AF800B756B3 /* Debug */,
@@ -703,20 +677,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		50DA15DC20C44AF800B756B3 /* Build configuration list for PBXNativeTarget "ServiceProviderExample" */ = {
+		50DA15DC20C44AF800B756B3 /* Build configuration list for PBXNativeTarget "Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				50DA15DD20C44AF800B756B3 /* Debug */,
 				50DA15DE20C44AF800B756B3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		50DA15ED20C44C8D00B756B3 /* Build configuration list for PBXNativeTarget "ServiceProvider" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				50DA15EE20C44C8D00B756B3 /* Debug */,
-				50DA15EF20C44C8D00B756B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

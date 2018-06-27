@@ -17,7 +17,7 @@
                BlueprintIdentifier = "507A04F420C4F616003CA147"
                BuildableName = "ServiceLocatorSwift.framework"
                BlueprintName = "ServiceLocatorSwift"
-               ReferencedContainer = "container:ServiceProviderExample.xcodeproj">
+               ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -48,7 +48,7 @@
             BlueprintIdentifier = "507A04F420C4F616003CA147"
             BuildableName = "ServiceLocatorSwift.framework"
             BlueprintName = "ServiceLocatorSwift"
-            ReferencedContainer = "container:ServiceProviderExample.xcodeproj">
+            ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -66,7 +66,7 @@
             BlueprintIdentifier = "507A04F420C4F616003CA147"
             BuildableName = "ServiceLocatorSwift.framework"
             BlueprintName = "ServiceLocatorSwift"
-            ReferencedContainer = "container:ServiceProviderExample.xcodeproj">
+            ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

@@ -17,7 +17,7 @@
                BlueprintIdentifier = "50DA15E320C44C8D00B756B3"
                BuildableName = "ServiceProvider.framework"
                BlueprintName = "ServiceProvider"
-               ReferencedContainer = "container:ServiceProviderExample.xcodeproj">
+               ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -48,7 +48,7 @@
             BlueprintIdentifier = "50DA15E320C44C8D00B756B3"
             BuildableName = "ServiceProvider.framework"
             BlueprintName = "ServiceProvider"
-            ReferencedContainer = "container:ServiceProviderExample.xcodeproj">
+            ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -66,7 +66,7 @@
             BlueprintIdentifier = "50DA15E320C44C8D00B756B3"
             BuildableName = "ServiceProvider.framework"
             BlueprintName = "ServiceProvider"
-            ReferencedContainer = "container:ServiceProviderExample.xcodeproj">
+            ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

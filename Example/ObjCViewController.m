@@ -10,7 +10,7 @@
 @import ServiceLocatorSwift;
 //@import ServiceProvider;
 
-#import "ServiceProviderExample-Swift.h"
+#import "Example-Swift.h"
 
 @interface ObjCViewController ()
 
