@@ -18,10 +18,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         //Variant 1: ServiceLocator setup as singleton
+        print("Begin setup ServiceLocator")
         ServiceLocator.setupSharedDefault()
+        print("End setup ServiceLocator")
         
         //Variant 2: DI Container with inject in root ViewController
+        print("Begin setup ServiceContainer")
         let container = ServiceContainer.createDefault()
+        print("End setup ServiceContainer")
         
         let viewController = (window?.rootViewController as? UINavigationController)?.viewControllers.first as? ViewController
         viewController?.serviceContainer = container

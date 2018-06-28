@@ -252,12 +252,23 @@ open class ServiceLocator {
         lock.lock()
         defer { lock.unlock() }
         
+        //Find for standart name
         if let provider = providers[typeName] {
             do { return try provider.tryServiceBinding(params: params) }
             catch { throw convertError(error) }
-        } else {
-            throw ServiceLocatorError.serviceNotFound
         }
+        
+        //FIndo without bundle name (Bundle.ServiceName - remove Bundle.)
+        if let pointIndex = typeName.index(of: ".") {
+            let typeNameWithoutBundle = String(typeName[typeName.index(after: pointIndex)..<typeName.endIndex])
+            
+            if let provider = providers[typeNameWithoutBundle] {
+                do { return try provider.tryServiceBinding(params: params) }
+                catch { throw convertError(error) }
+            }
+        }
+        
+        throw ServiceLocatorError.serviceNotFound
     }
     
     //MARK: - Private

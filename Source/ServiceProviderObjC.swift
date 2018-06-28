@@ -26,12 +26,12 @@ public class ServiceProviderObjC: NSObject {
     }
 
     /// Get Service with detail information throwed error.
-    @objc public func getService() throws -> NSObject {
+    @objc public func getService() throws -> Any {
         return try swiftProvider.tryServiceBindingObjC(params: Void())
     }
 
     /// Get Service if there are no errors.
-    @objc public func getService() -> NSObject? {
+    @objc public func getService() -> Any? {
         return try? swiftProvider.tryServiceBindingObjC(params: Void())
     }
 }
@@ -53,12 +53,12 @@ public class ServiceParamsProviderObjC: NSObject {
     }
     
     /// Get Service with detail information throwed error.
-    @objc public func getService(params: Any) throws -> NSObject {
+    @objc public func getService(params: Any) throws -> Any {
         return try swiftProvider.tryServiceBindingObjC(params: params)
     }
     
     /// Get Service if there are no errors.
-    @objc public func getService(params: Any) -> NSObject? {
+    @objc public func getService(params: Any) -> Any? {
         return try? swiftProvider.tryServiceBindingObjC(params: params)
     }
 }

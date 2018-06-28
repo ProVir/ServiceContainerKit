@@ -19,15 +19,15 @@ class SecondService {
         self.lazyService = lazyService
         self.firstService = firstService
         
-        print("Created SecondService")
+        print("> Created SecondService")
     }
     
     deinit {
-        print("Removed SecondService")
+        print("< Removed SecondService")
     }
     
     func test() {
-        print("test second service, number = \(number)")
+        print("  test second service, number = \(number)")
         lazyService.test()
         firstService.test()
     }

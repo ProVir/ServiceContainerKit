@@ -12,14 +12,14 @@ class SingletonService {
     var value: String = ""
     
     init() {
-        print("Created SingletonService")
+        print("> Created SingletonService")
     }
     
     deinit {
-        print("Removed SingletonService")
+        print("< Removed SingletonService")
     }
     
     func test() {
-        print("test singleton service, value = \(value)")
+        print("  test singleton service, value = \(value)")
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 import ServiceContainerKit
 
-protocol FirstServiceShared { }
+@objc protocol FirstServiceShared: NSObjectProtocol { }
 extension FirstService: FirstServiceShared { }
 
 

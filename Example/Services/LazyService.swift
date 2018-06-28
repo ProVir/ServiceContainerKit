@@ -12,14 +12,14 @@ class LazyService {
     var value: String = ""
     
     init() {
-        print("Created LazyService")
+        print("> Created LazyService")
     }
     
     deinit {
-        print("Removed LazyService")
+        print("< Removed LazyService")
     }
     
     func test() {
-        print("test lazy service, value = \(value)")
+        print("  test lazy service, value = \(value)")
     }
 }

@@ -16,15 +16,15 @@ class FirstService: NSObject {
         self.singletonService = singletonService
         super.init()
         
-        print("Created FirstService")
+        print("> Created FirstService")
     }
     
     deinit {
-        print("Removed FirstService")
+        print("< Removed FirstService")
     }
     
     @objc func test() {
-        print("test first service")
+        print("  test first service")
         singletonService.test()
     }
 }
