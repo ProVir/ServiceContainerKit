@@ -21,10 +21,8 @@
 - [Requirements](#requirements)
 - [Communication](#communication)
 - [Installation](#installation)
-- [Usage IoC Container and ServiceProvider](#usage-serviceprovider-english--%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)
-- [Usage ServiceLocator](#usage-servicelocator-english--%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)
-- [Simple File Storage](#simple-file-storage)
-- [Mock Engine](#mock-engine)
+- [Usage IoC Container and ServiceProvider (English / Русский)](#usage-ioc-container-and-serviceprovider)
+- [Usage ServiceLocator (English / Русский)](#usage-servicelocator)
 - [Author](#author)
 - [License](#license)
 
@@ -138,7 +136,7 @@ Copy files from directory `Source` in your project.
 
 ---
 
-## Usage IoC Container and ServiceProvider (English / Русский)
+## Usage IoC Container and ServiceProvider
 
 
 
@@ -146,7 +144,7 @@ Copy files from directory `Source` in your project.
 
 
 
-## Usage ServiceLocator (English / Русский)
+## Usage ServiceLocator
 
 
 
