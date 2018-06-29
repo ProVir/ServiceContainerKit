@@ -5,13 +5,24 @@
 [![Platform](https://cocoapod-badges.herokuapp.com/p/ServiceContainerKit/badge.png)](http://cocoapods.org/pods/ServiceContainerKit)
 [![License](https://cocoapod-badges.herokuapp.com/l/ServiceContainerKit/badge.png)](https://github.com/ProVir/ServiceContainerKit/blob/master/LICENSE)
 
-Kit to create your own IoC Container or ServiceLocator. Also includes a ServiceLocator as an option. Require Swift 4 and above, support Objective-C in readOnly regime. 
+  Kit to create your own IoC Container or ServiceLocator. Also includes a ServiceLocator as an option. Require Swift 4 and above, support Objective-C in readOnly regime. 
+
+  *Dependency Inversion Principle (DIP from SOLI**D**)* allows you to create classes as independent as possible between each other. But writing the services using Dependency Injection, you are faced with the difficulty - how and where to set up services and communications, and how to provide these services to objects that are created during the application process, usually a presentation layer.
+  One way to solve this problem is to use *Dependency Injection Container* frameworks that create services for the dependencies and settings that you specify, and also if necessary, injected them in the right parts of the application. The use of such side-by-side frameworks draws certain dependencies throughout the architecture of the application and provides its functionality with certain limitations, which are discussed by the nuances of the programming language, platforms, and as a payment for their universality.
+  You can create your own container for a specific project, taking into account its specific features and architecture. One simple way to create your own container is to use a structure with a set of pre-configured services or their factories. Better yet, use a wrapper over services (`ServiceProvider`), which hides the way to create a service - for earlier or as needed, as well as its dependencies and the settings used. Also, as a container, you can use `ServiceLocator`, which is usually a singletone itself.
+
+
+*Dependency Inversion Principle (DIP из SOLI**D**)* позволяет создавать классы максимально независимыми между собой. Но писав сервисы используя DIP вы сталкиваетесь с трудностью - как и где настроить сервисы и связи, а также как предоставить эти сервисы объектам, которые создаются в процессе работы приложения, как правило это слой представления. 
+  Один из способов решить эту проблему - это использование фреймворков *Dependency Injection Container*, которые создают сервисы по указываемым вами зависисмостям и настройкам, а также внедряют их по необходимости в нужные части приложения. Использование подобных стороних фреймворков тянет за собой наличие определенных зависимостей во всей архитекртуре приложения и предоставляет свой функционал с определенными ограничениями, которые обсуловлены нюансами языка программирования, платформы и как плата за их универсальность.  
+  Вы можете создать свой собственный контейнер для конкретного проекта с учетом его специфики и архитектуры. Один из простых способов создать свой контейнер - это использовать структуру с набором созданных и настроенных заранее сервисов либо их фабрик. А еще лучше - использовать обертку над сервисами (`ServiceProvider`), скрывающую способ создания сервиса - за ранее или по необходимости, а также его заисимости и используемые настройки. Также в качестве контейнера можно использовать `ServiceLocator`, как правило являющийся сам по себе синглетоном. 
+
 
 - [Features](#features)
 - [Requirements](#requirements)
 - [Communication](#communication)
 - [Installation](#installation)
-- [Usage (English / Русский)](#usage-english--%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)
+- [Usage IoC Container and ServiceProvider](#usage-serviceprovider-english--%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)
+- [Usage ServiceLocator](#usage-servicelocator-english--%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)
 - [Simple File Storage](#simple-file-storage)
 - [Mock Engine](#mock-engine)
 - [Author](#author)
@@ -71,13 +82,13 @@ platform :ios, '8.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-pod 'ServiceContainerKit', '~> 1.0'
+  pod 'ServiceContainerKit', '~> 1.0'
 end
 ```
 If you also need to use ServiceLocator, then use:
 ```ruby
 target '<Your Target Name>' do
-pod 'ServiceContainerKit/ServiceLocator', '~> 1.0'
+  pod 'ServiceContainerKit/ServiceLocator', '~> 1.0'
 end
 ```
 
@@ -114,7 +125,7 @@ Once you have your Swift package set up, adding ServiceContainerKit as a depende
 
 ```swift
 dependencies: [
-.Package(url: "https://github.com/ProVir/ServiceContainerKit.git", majorVersion: 1)
+  .Package(url: "https://github.com/ProVir/ServiceContainerKit.git", majorVersion: 1)
 ]
 ```
 
@@ -127,8 +138,15 @@ Copy files from directory `Source` in your project.
 
 ---
 
-## Usage (English / Русский)
+## Usage IoC Container and ServiceProvider (English / Русский)
 
+
+
+
+
+
+
+## Usage ServiceLocator (English / Русский)
 
 
 
