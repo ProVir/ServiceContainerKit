@@ -39,7 +39,7 @@ class ServiceContainerObjC: NSObject {
 extension ServiceContainer {
     static func createDefault() -> ServiceContainer {
         let singletonServiceProvider = SingletonServiceFactory().serviceProvider()
-        let lazyServiceProvider = LazyServiceFactory().serviceProvider()
+        let lazyServiceProvider = ServiceProvider(factory: LazyServiceFactory())
 
         let firstServiceProvider = FirstServiceFactory(singletonServiceProvider: singletonServiceProvider).serviceProvider()
         let secondServiceProvider = SecondServiceFactory(lazyServiceProvider: lazyServiceProvider,
