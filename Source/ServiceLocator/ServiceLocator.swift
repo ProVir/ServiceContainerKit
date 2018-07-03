@@ -95,41 +95,57 @@ open class ServiceLocator {
     }
     
     /// Add service at one instance.
-    open func addService<ServiceType>(_ service: ServiceType) {
-        addService(provider: ServiceProvider<ServiceType>(service))
+    @discardableResult
+    open func addService<ServiceType>(_ service: ServiceType) -> ServiceProvider<ServiceType> {
+        let provider = ServiceProvider<ServiceType>(service)
+        addService(provider: provider)
+        return provider
     }
     
     /// Add factory service
-    open func addService<ServiceType, FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
-        addService(provider: ServiceProvider<ServiceType>(factory: factory))
+    @discardableResult
+    open func addService<ServiceType, FactoryType: ServiceFactory>(factory: FactoryType) -> ServiceProvider<ServiceType> where FactoryType.ServiceType == ServiceType {
+        let provider = ServiceProvider<ServiceType>(factory: factory)
+        addService(provider: provider)
+        return provider
     }
     
     /// Add factory service with params when created instance
-    open func addService<ServiceType, ParamsType, FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
-        addService(provider: ServiceParamsProvider<ServiceType, ParamsType>(factory: factory))
+    @discardableResult
+    open func addService<ServiceType, ParamsType, FactoryType: ServiceParamsFactory>(factory: FactoryType) -> ServiceParamsProvider<ServiceType, ParamsType> where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
+        let provider = ServiceParamsProvider<ServiceType, ParamsType>(factory: factory)
+        addService(provider: provider)
+        return provider
     }
     
     /// Add service with lazy create service in closure.
-    open func addService<ServiceType>(lazy: @escaping () throws -> ServiceType) {
-        addService(provider: ServiceProvider<ServiceType>(lazy: lazy))
+    @discardableResult
+    open func addService<ServiceType>(lazy: @escaping () throws -> ServiceType) -> ServiceProvider<ServiceType> {
+        let provider = ServiceProvider<ServiceType>(lazy: lazy)
+        addService(provider: provider)
+        return provider
     }
     
     /// Add service with many instance service type, create service in closure.
-    open func addService<ServiceType>(factory closure: @escaping () throws -> ServiceType) {
-        addService(provider: ServiceProvider<ServiceType>.init(factory: closure))
+    @discardableResult
+    open func addService<ServiceType>(factory closure: @escaping () throws -> ServiceType) -> ServiceProvider<ServiceType> {
+        let provider = ServiceProvider<ServiceType>(factory: closure)
+        addService(provider: provider)
+        return provider
     }
     
     /// Remove service from ServiceLocator.
-    open func removeService<ServiceType>(serviceType: ServiceType.Type) {
+    @discardableResult
+    open func removeService<ServiceType>(serviceType: ServiceType.Type) -> Bool {
         lock.lock()
         defer { lock.unlock() }
         
         if readOnly {
             assertionFailure("Don't support removeService in readOnly regime")
-            return
+            return false
         }
         
-        providers.removeValue(forKey: "\(ServiceType.self)")
+        return providers.removeValue(forKey: "\(ServiceType.self)") != nil
     }
     
     /// Clone ServiceLocator with all providers, but with readOnly = false in new instance.
