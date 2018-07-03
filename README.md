@@ -1,4 +1,4 @@
-# ServiceContainerKit
+![ServiceContainerKit](https://raw.githubusercontent.com/ProVir/ServiceContainerKit/dev/ServiceContainerKitLogo.png) 
 
 [![CocoaPods Compatible](https://cocoapod-badges.herokuapp.com/v/ServiceContainerKit/badge.png)](http://cocoapods.org/pods/ServiceContainerKit)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/ProVir/ServiceContainerKit)
@@ -17,6 +17,7 @@
   Один из способов решить эту проблему - это использование фреймворков *Dependency Injection Container*, которые создают сервисы по указываемым вами зависисмостям и настройкам, а также внедряют их по необходимости в нужные части приложения. Использование подобных стороних фреймворков тянет за собой наличие определенных зависимостей во всей архитекртуре приложения и предоставляют свой функционал с определенными ограничениями, которые обсуловлены нюансами языка программирования, платформы и как плата за их универсальность.  
   Вы можете создать свой собственный контейнер для конкретного проекта с учетом его специфики и архитектуры. Один из простых способов создать свой контейнер - это использовать структуру с набором созданных и настроенных заранее сервисов либо их фабрик. А еще лучше - использовать обертку над сервисами (`ServiceProvider`), скрывающую способ создания сервиса - за ранее или по необходимости, а также его заисимости и используемые настройки. Также в качестве контейнера можно использовать `ServiceLocator`, как правило являющийся сам по себе синглетоном. 
 
+#
 
 - [Features](#features)
 - [Requirements](#requirements)
@@ -286,6 +287,8 @@ You can create `ServiceParamsProvider` only by using a factory with parameters (
 
 Examples of creating `Service[Params]Provider` are shown in the example above with the IoC Container.
 
+To get the service it is enough to call the function `Service[Params]Provider.getService()` which returns the service as an option, `nil` will be returned in case of a service error. You can also use `Service[Params]Provider.tryService()` - then the service is returned not as an option and can generate an error why the service was not getted (unlike `getService()`, which simply returns `nil`).
+
 #
 
 Создать `ServiceProvider` можно несколькими способами:
@@ -299,9 +302,6 @@ Examples of creating `Service[Params]Provider` are shown in the example above wi
 
 Примеры создания `Service[Params]Provider` приведены в примере выше с IoC Container.
 
-#
-
-To get the service it is enough to call the function `Service[Params]Provider.getService()` which returns the service as an option, `nil` will be returned in case of a service error. You can also use `Service[Params]Provider.tryService()` - then the service is returned not as an option and can generate an error why the service was not getted (unlike `getService()`, which simply returns `nil`).
 
 Для получения сервиса достаточно вызвать функцию `Service[Params]Provider.getService()` которая возвращает сервис как опционал, `nil` будет возвращен в случае ошибки получения сервиса. Также можно использовать `Service[Params]Provider.tryService()` - тогда сервис возвращается не как опционал и может генерировать ошибку почему сервис не был получен (в отличие от `getService()`, который просто вернет `nil`). 
 
@@ -416,6 +416,8 @@ serviceLocator.setReadOnly()
 ### Share ServiceLocator
 
 ServiceLocator can be used as a singleton. Singleton is available using the static property `ServiceLocator.shared`. It can be set with a static function `ServiceLocator.setupShared(serviceLocator:ServiceLocator,readOnlySharedAfter:Bool=true)`. The parameter `readOnlySharedAfter` with the value `true` (default) forbids changing the singleton itself. To prevent a full change to the ServiceLocator, remember to call `setReadOnly()`.
+
+#
 
   ServiceLocator можно использовать как синглетон. Синглетон доступен по статичному свойству `ServiceLocator.shared`. Его можно задать статитичной функцией `ServiceLocator.setupShared(serviceLocator:ServiceLocator,readOnlySharedAfter:Bool=true)`. Параметр `readOnlySharedAfter` со значением `true` (default) запрещает менять сам синглетон. Чтобы запретить полное изменение ServiceLocator следует не забыть вызвать `setReadOnly()`.  
 
