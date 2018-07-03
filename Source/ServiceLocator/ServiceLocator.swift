@@ -120,7 +120,7 @@ open class ServiceLocator {
     
     /// Add service with lazy create service in closure.
     @discardableResult
-    open func addService<ServiceType>(lazy: @escaping () throws -> ServiceType) -> ServiceProvider<ServiceType> {
+    open func addLazyService<ServiceType>(_ lazy: @escaping () throws -> ServiceType) -> ServiceProvider<ServiceType> {
         let provider = ServiceProvider<ServiceType>(lazy: lazy)
         addService(provider: provider)
         return provider

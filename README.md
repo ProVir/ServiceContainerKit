@@ -277,23 +277,23 @@ extension ServiceContainer {
 
 You can create `ServiceProvider` in several ways:
 - using a regular factory: by calling function `ServiceFactory().serviceProvider()` (recommended) or through constructors `ServiceProvider(factory:)` and `ServiceProvider(tryFactory:)`;
-- using factory with parameters: by calling function `ServiceFactory().serviceProvider(params:)` (recommended) or through constructor `ServiceProvider(factory:params:)`;
+- using factory with parameters: by calling function `ServiceFactory().serviceProvider(params:)` (recommended) or through constructor `ServiceProvider(factory:,params:)`;
 - using provider with parameters: `ServiceParamsProvider.convert(params:)`;
 - using an already created service, passing it to the constructor: `ServiceProvider()`, factory equivalent of `atOne` type;
-- using closures in lazy mode or generating a new instance each time: `ServiceProvider(lazy:)` и `ServiceProvider(factory:)`, factory equivalent of  `lazy` and `many` types.
+- using closures in lazy mode or generating a new instance each time: `ServiceProvider(lazy:{ })` и `ServiceProvider(factory:{ })`, factory equivalent of  `lazy` and `many` types.
 
 You can create `ServiceParamsProvider` only by using a factory with parameters (`ServiceParamsFactory`): `ServiceParamsProvider(factory:)`.
 
-Examples of creating `Service [Params] Provider` are shown in the example above with the IoC Container.
+Examples of creating `Service[Params]Provider` are shown in the example above with the IoC Container.
 
 #
 
 Создать `ServiceProvider` можно несколькими способами:
 - используя обычную фабрику: через вызов `ServiceFactory().serviceProvider()` (рекомендуется) или через конструкторы `ServiceProvider(factory:)` и `ServiceProvider(tryFactory:)`;
-- используя фабрику с параметрами: через вызов `ServiceFactory().serviceProvider(params:)` (рекомендуется) или через конструктор `ServiceProvider(factory:params:)`;
+- используя фабрику с параметрами: через вызов `ServiceFactory().serviceProvider(params:)` (рекомендуется) или через конструктор `ServiceProvider(factory:,params:)`;
 - используя провайдер с параметрами: `ServiceParamsProvider.convert(params:)`;
 - используя уже созданный сервис, передав его в конструктор: `ServiceProvider()`, эквивалент фабрики типа `atOne`;
-- используя кложуры в lazy режиме или генерируя каждый раз новый экземпляр: `ServiceProvider(lazy:)` и `ServiceProvider(factory:)`, эквиваленты фабрик типов `lazy` и `many`.
+- используя кложуры в lazy режиме или генерируя каждый раз новый экземпляр: `ServiceProvider(lazy:{ })` и `ServiceProvider(factory:{ })`, эквиваленты фабрик типов `lazy` и `many`.
 
 Создать `ServiceParamsProvider` можно только используя фабрику с параметрами (`ServiceParamsFactory`): `ServiceParamsProvider(factory:)`.
 
@@ -301,7 +301,7 @@ Examples of creating `Service [Params] Provider` are shown in the example above 
 
 #
 
-To get the service it is enough to call the function `Service [Params] Provider.getService ()` which returns the service as an option, `nil` will be returned in case of a service error. You can also use `Service[Params]Provider.tryService ()` - then the service is returned not as an option and can generate an error why the service was not getted (unlike `getService ()`, which simply returns `nil`).
+To get the service it is enough to call the function `Service[Params]Provider.getService()` which returns the service as an option, `nil` will be returned in case of a service error. You can also use `Service[Params]Provider.tryService()` - then the service is returned not as an option and can generate an error why the service was not getted (unlike `getService()`, which simply returns `nil`).
 
 Для получения сервиса достаточно вызвать функцию `Service[Params]Provider.getService()` которая возвращает сервис как опционал, `nil` будет возвращен в случае ошибки получения сервиса. Также можно использовать `Service[Params]Provider.tryService()` - тогда сервис возвращается не как опционал и может генерировать ошибку почему сервис не был получен (в отличие от `getService()`, который просто вернет `nil`). 
 
@@ -340,7 +340,163 @@ ThirdService* thirdService = [self.serviceContainer.thirdServiceProvider getServ
 
 ## Usage ServiceLocator
 
+If you use CocoaPods, then to use ServiceLocator it should be enabled explicitly:
+```ruby
+target '<Your Target Name>' do
+  pod 'ServiceContainerKit/ServiceLocator'
+end
+```
 
+ServiceLocator is IoC Container, but unlike its implementation above, the services in it are stored by the key, which is the name of the class or service protocol. We simply add services to ServiceLocator and get them on demand based on the return type using generics. Also ServiceLocator is often used as a singleton - that solves the problem of dependency injection, because we can get any service from anywhere in the code. It is well suited for quick solutions or in small projects, but it can create problems in large projects, over which several developers work.
+
+From the minuses - in one ServiceLocator we can store only one instance of a service or factory, while in our custom IoC Container we are not limited to this. Also do not forget that ServiceLocator is an antipattern and it should be used very carefully and do not forget about compliance with *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceLocator, unlike its IoC Container, does not tell us directly which services it contains, but if you store services based on protocols, then there is generally no exact information on how to get the service - by protocol or a specific implementation.
+
+As a solution "somewhere in the middle" when choosing between its IoC Container and the proposed ServiceLocator in framework, write your ServiceLocator singleton, in which all services will be as separate ServiceProviders, as described in the IoC Container section.
+
+#
+
+  ServiceLocator - это IoC Container, но в отличие от своей реализации приведенной выше, сервисы в нем хранятся по ключу, в качестве которого выступает имя класса или протокола сервиса. Мы просто добавляем сервисы в ServiceLocator и получаем их по требованию на основе выводимого типа используя дженерики. Также ServiceLocator часто используется как синглетон - что решает проблему внедрения зависимостей, т.к. мы можем получить любой сервис из любого места в коде. Он хорошо подходит для быстрого решения или в небольших проектах, но может создать проблемы в больших проектах, над которыми работают несколько разработчиков. 
+  
+  Из минусов - в одном ServiceLocator мы можем хранить только один экземпляр сервиса или фабрики, в то время как в своем IoC Container мы этим не ограничиваемся. Также не стоит забывать что ServiceLocator - это антипаттерн и его следует использовать очень осторожно и не забывать про соблюдение *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceLocator в отличие от своего IoC Container не сообщает нам напрямую какие именно сервисы он в себе содержит, а если хранить сервисы на основе протоколов, то вообще нет точной информации как получить сервис - по протоколу или конкретной реализации. 
+
+  В качестве решения "где-то по середине" при выборе между своим IoC Container и предлагаемой фреймворком ServiceLocator - написать свой синглетон ServiceLocator, в котором все сервисы будут в качестве отдельных ServiceProvider, как приведено в разделе о IoC Container. 
+
+
+### Add and remove Services
+
+ServiceLocator for storing services always uses ServiceProvider. You can always get not only the service itself, but also its ServiceProvider. To add services, you can use:
+- using the already created `ServiceProvider` or` ServiceParamsProvider` (recommended): `ServiceLocator.addService(provider:)`;
+- using a factory:  `ServiceLocator.addService(factory:)`;
+- using an already created service: `ServiceLocator.addService()`, factory equivalent of `atOne` type;
+- using closures in lazy mode or generating a new instance each time:  `ServiceLocator.addLazyService { }` and  `ServiceLocator.addService { }`, factory equivalent of `lazy` and `many` types.
+
+To remove a service, use `ServiceLocator.removeService(serviceType:)`.
+
+To protect ServiceLocator from changes after configuration, call `ServiceLocator.setReadOnly()`. In the ReadOnly mode, any change will generate assert.
+Any ServiceLocator can be cloned with its services with the possibility of further modification - `ServiceLocator.clone()`. 
+
+#
+
+  ServiceLocator для хранения сервисов всегда использует ServiceProvider. Всегда можно получить не только сам сервис, но и его ServiceProvider. Для добавления сервисов вы можете использовать:
+- используя уже созданный `ServiceProvider` или  `ServiceParamsProvider` (рекомендуется): `ServiceLocator.addService(provider:)`;
+- используя фабрику:  `ServiceLocator.addService(factory:)`;
+- используя уже созданный сервис: `ServiceLocator.addService()`, эквивалент фабрики типа `atOne`;
+- используя кложуры в lazy режиме или генерируя каждый раз новый экземпляр:  `ServiceLocator.addLazyService { }` и  `ServiceLocator.addService { }`, эквиваленты фабрик типов `lazy` и `many`.
+
+  Для удаления сервиса используйте `ServiceLocator.removeService(serviceType:)`.
+
+  Чтобы защитить ServiceLocator от изменений после настройки, следует вызвать `ServiceLocator.setReadOnly()`. В ReadOnly режиме любое изменение будет генерировать assert. 
+  Любой ServiceLocator можно клонировать с его сервисами с возможностью дальнейшего изменения - `ServiceLocator.clone()`. 
+
+
+#### An example add services to ServiceLocator:
+```swift
+let singletonServiceProvider = SingletonServiceFactory().serviceProvider()
+let lazyServiceProvider = LazyServiceFactory().serviceProvider()
+
+let serviceLocator = ServiceLocator()
+
+serviceLocator.addService(provider: singletonServiceProvider)
+serviceLocator.addService(provider: lazyServiceProvider)
+
+serviceLocator.addService(factory: FirstServiceFactory(singletonServiceProvider: singletonServiceProvider))
+serviceLocator.addService(sharedTestService as TestServiceShared) //TestServiceShared is protocol
+
+serviceLocator.addLazyService {
+    LazySecondService()
+}
+
+serviceLocator.addService {
+    ThirdService()
+}
+
+serviceLocator.setReadOnly()
+```
+
+### Share ServiceLocator
+
+ServiceLocator can be used as a singleton. Singleton is available using the static property `ServiceLocator.shared`. It can be set with a static function `ServiceLocator.setupShared(serviceLocator:ServiceLocator,readOnlySharedAfter:Bool=true)`. The parameter `readOnlySharedAfter` with the value `true` (default) forbids changing the singleton itself. To prevent a full change to the ServiceLocator, remember to call `setReadOnly()`.
+
+  ServiceLocator можно использовать как синглетон. Синглетон доступен по статичному свойству `ServiceLocator.shared`. Его можно задать статитичной функцией `ServiceLocator.setupShared(serviceLocator:ServiceLocator,readOnlySharedAfter:Bool=true)`. Параметр `readOnlySharedAfter` со значением `true` (default) запрещает менять сам синглетон. Чтобы запретить полное изменение ServiceLocator следует не забыть вызвать `setReadOnly()`.  
+
+#### An example setup shared ServiceLocator:
+```swift
+serviceLocator.setReadOnly()
+ServiceLocator.setupShared(serviceLocator: serviceLocator, readOnlySharedAfter: true)
+```
+
+### Get Services
+
+To get the service it is enough to call the function `ServiceLocator.getService()` which returns the service as an option, `nil` will be returned in case of a service error. The type of the service is displayed itself, but you can use `as` to specify the type yourself. You can also use `ServiceLocator.tryService()` - then the service is returned not as an option and can generate an error why the service was not received (unlike `getService()`, which simply returns `nil`).
+To get a service from a singleton, you can use the static functions `ServiceLocator.getServiceFromShared()` and `ServiceLocator.tryServiceFromShared()`, or get the ServiceLocator itself via `ServiceLocator.shared`.
+To get ServiceProvider of a specific service - `ServiceLocator.getServiceProvider()`. 
+
+#
+
+  Для получения сервиса достаточно вызвать функцию `ServiceLocator.getService()` которая возвращает сервис как опционал, `nil` будет возвращен в случае ошибки получения сервиса. Тип сервиса выводится сам, но можно воспользоваться `as` для указания типа самостоятельно. Также можно использовать `ServiceLocator.tryService()` - тогда сервис возвращается не как опционал и может генерировать ошибку почему сервис не был получен (в отличие от `getService()`, который просто вернет `nil`). 
+  Для получени сервиса из синглетона можно воспользоваться статичными функциями `ServiceLocator.getServiceFromShared()` и `ServiceLocator.tryServiceFromShared()`, либо получить сам ServiceLocator через `ServiceLocator.shared`. 
+  Для получения ServiceProvider конкретного сервиса - `ServiceLocator.getServiceProvider()`. 
+  
+#### An example get services:
+```swift
+let firstService: FirstService = serviceLocator.getService()!
+let secondService = (ServiceLocator.getServiceFromShared() as SecondService?)!
+
+let thirdService: ThirdServicing
+do {
+    thirdService = ServiceLocator.tryServiceFromShared() as ThirdServicing
+} catch {
+    fatalError("Error get thirdService: \(error)")
+}
+
+let paramsService: ParamsService = serviceLocator.getService(params: "test")!
+```
+
+If a factory with parameters is used for the service, then to support its parameters in the ServiceLocator, it should be indicated through the protocol that the service itself can be getted with certain parameters. In order for ServiceLocator to getting the service without passing parameters, the parameter type in the factory must be optional.
+
+Если для сервиса используется фабрика с параметрами, то для поддержки ее параметров в ServiceLocator следует через протокол указать что сам сервис может быть получен с определнными параметрами. Для того чтобы ServiceLocator мог получить сервис без передачи параметров, тип параметра в фабрике должен быть опциональным. 
+
+#### An example params factory:
+```swift
+//Support params for ServiceLocator (not optional).
+extension ParamsService: ServiceSupportFactoryParams {
+    typealias ParamsType = String
+}
+
+struct ParamsServiceFactory: ServiceParamsFactory {
+    /// Optional params for support get service without params in ServiceLocator. 
+    func createService(params: String?) throws -> ParamsService {
+        return ParamsService(text: params ?? "")
+    }
+}
+```
+
+### Support Objective-C
+
+Creating and configuring the ServiceLocator is only available for swift code, but for objective-c, you can only get the services.
+
+`ServiceLocatorObjC` (in Objective-C is visible as `ServiceLocator`) can be created from any `ServiceLocator`, passing it (swift option) to the constructor in the swift code. Also use empty contructor (available in objective-c code) for use ServiceLocator.shared. Avaialble static selectors used equalent `ServiceLocator.getServiceFromShared()` and `ServiceLocator.tryServiceFromShared()`.
+
+
+You can get the service through selectors (from instance or class):
+- Get service as class: `[ServiceLocator getServiceWithClass:]` and `[ServiceLocator getServiceWithClass:error:]`; 
+- Get service as protocol: `[ServiceLocator getServiceWithProtocol:@protocol()]` and `[ServiceLocator getServiceWithProtocol:@protocol() error:]`; 
+- Get service as class with parameters: `[ServiceLocator getServiceWithClass:params:]` and `[ServiceLocator getServiceWithClass:params:error:]`; 
+- Get service as protocol with parameters: `[ServiceLocator getServiceWithProtocol:@protocol() params:]` and `[ServiceLocator getServiceWithProtocol:@protocol() params: error:]`; 
+
+
+#### An example use ServiceLocator:
+```objc
+ServiceLocator* locator = [ServiceLocator new]; //Used ServiceLocator.shared
+FirstService* firstService = [locator getServiceWithClass:FirstService.class];
+
+NSError* error = nil;
+SecondService* secondService = [ServiceLocator getServiceWithClass:SecondService.class error:&error];
+
+id<ThirdServicing> thirdService = [ServiceLocator getServiceWithProtocol:@protocol(ThirdServicing)];
+
+ParamsService* paramsService = [ServiceLocator getServiceWithClass:ParamsService.class params:@"test"];
+```
 
 
 ## Author

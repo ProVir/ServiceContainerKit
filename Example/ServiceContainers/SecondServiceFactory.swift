@@ -13,7 +13,7 @@ struct SecondServiceParams {
     let number: Int
 }
 
-//Support params for ServiceLocator.
+//Support params for ServiceLocator (not optional).
 extension SecondService: ServiceSupportFactoryParams {
     typealias ParamsType = SecondServiceParams
 }
