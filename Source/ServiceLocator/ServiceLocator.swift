@@ -1,6 +1,6 @@
 //
 //  ServiceLocator.swift
-//  ServiceLocatorSwift 1.0.0
+//  ServiceLocatorSwift 1.0.2
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -275,7 +275,7 @@ open class ServiceLocator {
         }
         
         //FIndo without bundle name (Bundle.ServiceName - remove Bundle.)
-        if let pointIndex = typeName.index(of: ".") {
+        if let pointIndex = typeName.firstIndex(of: ".") {
             let typeNameWithoutBundle = String(typeName[typeName.index(after: pointIndex)..<typeName.endIndex])
             
             if let provider = providers[typeNameWithoutBundle] {

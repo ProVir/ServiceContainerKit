@@ -5,7 +5,7 @@
 [![Platform](https://cocoapod-badges.herokuapp.com/p/ServiceContainerKit/badge.png)](http://cocoapods.org/pods/ServiceContainerKit)
 [![License](https://cocoapod-badges.herokuapp.com/l/ServiceContainerKit/badge.png)](https://github.com/ProVir/ServiceContainerKit/blob/master/LICENSE)
 
-  Kit to create your own IoC Container or ServiceLocator. Also includes a ServiceLocator as an option. Require Swift 4 and above, support Objective-C in readOnly regime. 
+  Kit to create your own IoC Container or ServiceLocator. Also includes a ServiceLocator as an option. Require Swift 5 and above, support Objective-C in readOnly regime. 
 
   *Dependency Inversion Principle (DIP from SOLI**D**)* allows you to create classes as independent as possible between each other. But writing the services using Dependency Injection, you are faced with the difficulty - how and where to set up services and communications, and how to provide these services to objects that are created during the application process, usually a presentation layer.
   One way to solve this problem is to use *Dependency Injection Container* frameworks that create services for the dependencies and settings that you specify, and also if necessary, injected them in the right parts of the application. The use of such side-by-side frameworks draws certain dependencies throughout the architecture of the application and provides its functionality with certain limitations, which are discussed by the nuances of the programming language, platforms, and as a payment for their universality.
@@ -51,8 +51,8 @@
 ## Requirements
 
 - iOS 8.0+ / macOS 10.10+ / tvOS 9.0+ / watchOS 2.0+
-- Xcode 9.0 and above
-- Swift 4.0 and above
+- Xcode 10.2 and above
+- Swift 5.0 and above
 
 
 ## Communication
@@ -73,14 +73,13 @@
 $ gem install cocoapods
 ```
 
-> CocoaPods 1.1.0+ is required to build ServiceContainerKit 1.0.0+.
+> CocoaPods 1.6.0+ is required to build ServiceContainerKit 1.0.0+.
 
 To integrate ServiceContainerKit (without ServiceLocator) into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
-use_frameworks!
 
 target '<Your Target Name>' do
   pod 'ServiceContainerKit', '~> 1.0'
