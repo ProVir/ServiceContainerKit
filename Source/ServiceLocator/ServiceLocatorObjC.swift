@@ -1,6 +1,6 @@
 //
 //  ServiceLocatorObjC.swift
-//  ServiceLocator 1.0.0
+//  ServiceLocator 1.1.0
 //
 //  Created by Короткий Виталий (ViR) on 08.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -9,49 +9,62 @@
 import Foundation
 
 
-//MARK: Shared
-
+// MARK: Shared
 /// Support singleton ServiceLocator.
 extension ServiceLocatorObjC {
     //Without params
     @objc public static func getService(class type: AnyClass) throws -> Any {
-        return try ServiceLocator.tryServiceObjC(typeName: "\(type)", params: Optional<Any>.none as Any)
+        let serviceLocator = try ServiceLocator.tryShared()
+        return try serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(for: type),
+                                                 params: Optional<Any>.none as Any)
     }
     
     @objc public static func getService(protocol proto: Protocol) throws -> Any {
-        return try ServiceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: Optional<Any>.none as Any)
+        let serviceLocator = try ServiceLocator.tryShared()
+        return try serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(forObjCProtocol: proto),
+                                                 params: Optional<Any>.none as Any)
     }
     
     @objc public static func getService(class type: AnyClass) -> Any? {
-        return try? ServiceLocator.tryServiceObjC(typeName: "\(type)", params: Optional<Any>.none as Any)
+        guard let serviceLocator = ServiceLocator.shared else { return nil }
+        return try? serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(for: type),
+                                                  params: Optional<Any>.none as Any)
     }
     
     @objc public static func getService(protocol proto: Protocol) -> Any? {
-        return try? ServiceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: Optional<Any>.none as Any)
+        guard let serviceLocator = ServiceLocator.shared else { return nil }
+        return try? serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(forObjCProtocol: proto),
+                                                  params: Optional<Any>.none as Any)
     }
     
     
     //With params
     @objc public static func getService(class type: AnyClass, params: Any) throws -> Any {
-        return try ServiceLocator.tryServiceObjC(typeName: "\(type)", params: params)
+        let serviceLocator = try ServiceLocator.tryShared()
+        return try serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(for: type),
+                                                 params: params)
     }
     
     @objc public static func getService(protocol proto: Protocol, params: Any) throws -> Any {
-        return try ServiceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
+        let serviceLocator = try ServiceLocator.tryShared()
+        return try serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(forObjCProtocol: proto),
+                                                 params: params)
     }
     
     @objc public static func getService(class type: AnyClass, params: Any) -> Any? {
-        return try? ServiceLocator.tryServiceObjC(typeName: "\(type)", params: params)
+        guard let serviceLocator = ServiceLocator.shared else { return nil }
+        return try? serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(for: type),
+                                                  params: params)
     }
     
     @objc public static func getService(protocol proto: Protocol, params: Any) -> Any? {
-        return try? ServiceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
+        guard let serviceLocator = ServiceLocator.shared else { return nil }
+        return try? serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(forObjCProtocol: proto),
+                                                  params: params)
     }
 }
 
-
-//MARK: ServiceLocator Object
-
+// MARK: ServiceLocator Object
 /// Wrapper ServiceLocator for ObjC
 @objc(ServiceLocator)
 public class ServiceLocatorObjC: NSObject {
@@ -76,38 +89,45 @@ public class ServiceLocatorObjC: NSObject {
     
     //Without Params
     @objc public func getService(class type: AnyClass) throws -> Any {
-        return try serviceLocator.tryServiceObjC(typeName: "\(type)", params: Optional<Any>.none as Any)
+        return try serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(for: type),
+                                                 params: Optional<Any>.none as Any)
     }
     
     @objc public func getService(protocol proto: Protocol) throws -> Any {
-        return try serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: Optional<Any>.none as Any)
+        return try serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(forObjCProtocol: proto),
+                                                 params: Optional<Any>.none as Any)
     }
     
     @objc public func getService(class type: AnyClass) -> Any? {
-        return try? serviceLocator.tryServiceObjC(typeName: "\(type)", params: Optional<Any>.none as Any)
+        return try? serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(for: type),
+                                                  params: Optional<Any>.none as Any)
     }
     
     @objc public func getService(protocol proto: Protocol) -> Any? {
-        return try? serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: Optional<Any>.none as Any)
+        return try? serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(forObjCProtocol: proto),
+                                                  params: Optional<Any>.none as Any)
     }
     
     
     //With Params
     @objc public func getService(class type: AnyClass, params: Any) throws -> Any {
-        return try serviceLocator.tryServiceObjC(typeName: "\(type)", params: params)
+        return try serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(for: type),
+                                                 params: params)
     }
     
     @objc public func getService(protocol proto: Protocol, params: Any) throws -> Any {
-        return try serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
+        return try serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(forObjCProtocol: proto),
+                                                 params: params)
     }
     
     @objc public func getService(class type: AnyClass, params: Any) -> Any? {
-        return try? serviceLocator.tryServiceObjC(typeName: "\(type)", params: params)
+        return try? serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(for: type),
+                                                  params: params)
     }
     
     @objc public func getService(protocol proto: Protocol, params: Any) -> Any? {
-        return try? serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
+        return try? serviceLocator.tryServiceObjC(typeName: serviceLocator.serviceTypeName(forObjCProtocol: proto),
+                                                  params: params)
     }
-    
 }
 

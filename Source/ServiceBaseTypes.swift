@@ -1,6 +1,6 @@
 //
 //  ServiceBaseTypes.swift
-//  ServiceProvider 1.0.0
+//  ServiceProvider 1.1.0
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -9,11 +9,19 @@
 import Foundation
 
 /// Errors for ServiceProvider and ServiceFactory
-public enum ServiceProviderError: Error {
+public enum ServiceProviderError: LocalizedError {
     case wrongParams
     case wrongService
-}
+    case notSupportObjC
 
+    public var errorDescription: String? {
+        switch self {
+        case .wrongParams: return "Params type invalid for ServiceParamsFactory"
+        case .wrongService: return "Service type invalid"
+        case .notSupportObjC: return "Service require support Objective-C"
+        }
+    }
+}
 
 /// Factory type. Used only when added to provider.
 public enum ServiceFactoryType {
@@ -47,7 +55,6 @@ public protocol ServiceParamsFactory: ServiceCoreFactory {
     func createService(params: ParamsType) throws -> ServiceType
 }
 
-
 ///Factory for ServiceProvider or ServiceLocator with generate service in closure. Also can used for lazy create singleton instance services.
 public class ServiceClosureFactory<T>: ServiceFactory {
     public let closure: () throws -> T
@@ -65,13 +72,12 @@ public class ServiceClosureFactory<T>: ServiceFactory {
         self.factoryType = lazyRegime ? .lazy : .many
     }
     
-   public  func createService() throws -> T {
+    public func createService() throws -> T {
         return try closure()
     }
 }
 
-
-//MARK: - Core protocols
+// MARK: - Core protocols
 public protocol ServiceCoreFactory {
     /// Can not implementation! Used only with framework implementation. 
     func coreCreateService(params: Any) throws -> Any

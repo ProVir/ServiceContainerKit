@@ -1,13 +1,12 @@
 //
 //  ServiceProviderObjC.swift
-//  ServiceProvider 1.0.0
+//  ServiceProvider 1.1.0
 //
 //  Created by Короткий Виталий (ViR) on 07.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
 //
 
 import Foundation
-
 
 /// Wrapper ServiceProvider for use in ObjC code.
 @objc(ServiceProvider)
@@ -63,8 +62,7 @@ public class ServiceParamsProviderObjC: NSObject {
     }
 }
 
-
-//MARK: - Private
+// MARK: - Private
 
 /// Base protocol for Service[Params]Provider<T>
 private protocol ServiceProviderBindingObjC {
@@ -76,7 +74,7 @@ extension ServiceProvider: ServiceProviderBindingObjC {
         if let service = try tryService() as? NSObject {
             return service
         } else {
-            fatalError("Service require support Objective-C")
+            throw ServiceProviderError.notSupportObjC
         }
     }
 }
@@ -90,7 +88,7 @@ extension ServiceParamsProvider: ServiceProviderBindingObjC {
         if let service = try tryService(params: params) as? NSObject {
             return service
         } else {
-            fatalError("Service require support Objective-C")
+            throw ServiceProviderError.notSupportObjC
         }
     }
 }

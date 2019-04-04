@@ -1,6 +1,6 @@
 //
 //  ServiceProvider.swift
-//  ServiceProvider 1.0.0
+//  ServiceProvider 1.1.0
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -61,8 +61,8 @@ public struct ServiceProvider<ServiceType> {
     }
     
     /// ServiceProvider with many instance service type, create service in closure.
-    public init(factory closure: @escaping () throws -> ServiceType) {
-        self.storage = .factory(ServiceClosureFactory(closureFactory: closure, lazyRegime: false))
+    public init(manyFactory: @escaping () throws -> ServiceType) {
+        self.storage = .factory(ServiceClosureFactory(closureFactory: manyFactory, lazyRegime: false))
     }
     
     /// Get Service with detail information throwed error.
@@ -99,14 +99,14 @@ public struct ServiceParamsProvider<ServiceType, ParamsType> {
     public func convert(params: ParamsType) -> ServiceProvider<ServiceType> {
         switch storage {
         case .factory(let factory):
-            return ServiceProvider<ServiceType>.init(coreFactory: factory, params: params)
+            return .init(coreFactory: factory, params: params)
         default:
             fatalError("Internal error: Invalid provider")
         }
     }
 }
 
-//MARK: - Private
+// MARK: - Private
 private enum ServiceProviderStorage<ServiceType> {
     case atOne(ServiceType)
     case lazy(Lazy)
@@ -120,7 +120,7 @@ private enum ServiceProviderStorage<ServiceType> {
     }
 }
 
-//MARK: Private base functional for ServiceProvider and ServiceParamsProvider
+// MARK: Private base functional for ServiceProvider and ServiceParamsProvider
 private protocol ServiceProviderPrivate {
     associatedtype ServiceType
     var storage: ServiceProviderStorage<ServiceType> { get }

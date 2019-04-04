@@ -1,6 +1,6 @@
 //
 //  ServiceLocator.swift
-//  ServiceLocatorSwift 1.0.2
+//  ServiceLocatorSwift 1.1.0
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -9,15 +9,18 @@
 import Foundation
 
 ///Errors for ServiceLocator
-public enum ServiceLocatorError: Error {
-    /// Service not found in ServiceLocator
+public enum ServiceLocatorError: LocalizedError {
     case serviceNotFound
-    
-    /// Params type invalid for ServiceParamsFactory
     case wrongParams
-    
-    /// ServiceLocator don't setuped for use as share (singleton)
     case sharedRequireSetup
+
+    public var errorDescription: String? {
+        switch self {
+        case .serviceNotFound: return "Service not found in ServiceLocator"
+        case .wrongParams: return "Params type invalid for ServiceParamsFactory"
+        case .sharedRequireSetup: return "ServiceLocator don't setuped for use as share (singleton)"
+        }
+    }
 }
 
 /// Protocol for Service, use when used ServiceParamsFactory as factory for service. Added getService function for ServiceLocator with params.
@@ -25,13 +28,12 @@ public protocol ServiceSupportFactoryParams {
     associatedtype ParamsType
 }
 
-
 /// ServiceLocator as storage ServiceProviders.
 open class ServiceLocator {
     /// ServiceLocator as singleton
     public private(set) static var shared: ServiceLocator?
     
-    /// ServiceLocator.shared don't can replace other instance. Also it can also be used to prohibit the use of a singleton&
+    /// ServiceLocator.shared don't can replace other instance. Also it can also be used to prohibit the use of a singleton
     public private(set) static var readOnlyShared: Bool = false
     
     /// Services list support and factoryes don't can change if is `true`.
@@ -46,8 +48,7 @@ open class ServiceLocator {
     private var providers = [String : ServiceLocatorProviderBinding]()
     
     
-    //MARK: Setup
-    
+    // MARK: Setup
     /// Setup ServiceLocator as singleton. If `readOnlySharedAfter = true` (default) - don't change singleton instance after.
     public static func setupShared(serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true) {
         if readOnlyShared {
@@ -76,7 +77,7 @@ open class ServiceLocator {
             return
         }
         
-        let typeName = "\(ServiceType.self)"
+        let typeName = serviceTypeName(for: ServiceType.self)
         providers[typeName] = provider
     }
     
@@ -90,7 +91,7 @@ open class ServiceLocator {
             return
         }
         
-        let typeName = "\(ServiceType.self)"
+        let typeName = serviceTypeName(for: ServiceType.self)
         providers[typeName] = provider
     }
     
@@ -128,8 +129,8 @@ open class ServiceLocator {
     
     /// Add service with many instance service type, create service in closure.
     @discardableResult
-    open func addService<ServiceType>(factory closure: @escaping () throws -> ServiceType) -> ServiceProvider<ServiceType> {
-        let provider = ServiceProvider<ServiceType>(factory: closure)
+    open func addService<ServiceType>(manyFactory closure: @escaping () throws -> ServiceType) -> ServiceProvider<ServiceType> {
+        let provider = ServiceProvider<ServiceType>(manyFactory: closure)
         addService(provider: provider)
         return provider
     }
@@ -144,8 +145,9 @@ open class ServiceLocator {
             assertionFailure("Don't support removeService in readOnly regime")
             return false
         }
-        
-        return providers.removeValue(forKey: "\(ServiceType.self)") != nil
+
+        let typeName = serviceTypeName(for: ServiceType.self)
+        return providers.removeValue(forKey: typeName) != nil
     }
     
     /// Clone ServiceLocator with all providers, but with readOnly = false in new instance.
@@ -160,50 +162,57 @@ open class ServiceLocator {
     }
     
     
-    //MARK: Get from shared
-    
+    // MARK: Get from shared
+    /// Get shared ServiceLocator or error
+    public static func tryShared() throws -> ServiceLocator {
+        if let shared = shared {
+            return shared
+        } else {
+            throw ServiceLocatorError.sharedRequireSetup
+        }
+    }
+
     /// Get Service with detail information throwed error from ServiceLocator.share.
-    public static func tryServiceFromShared<ServiceType>() throws -> ServiceType {
+    public static func tryServiceFromShared<ServiceType>(_ type: ServiceType.Type = ServiceType.self) throws -> ServiceType {
         guard let shared = shared else {
             throw ServiceLocatorError.sharedRequireSetup
         }
         
-        return try shared.tryService()
+        return try shared.tryService(ServiceType.self)
     }
     
     /// Get Service with params with detail information throwed error from ServiceLocator.share.
-    public static func tryServiceFromShared<ServiceType: ServiceSupportFactoryParams>(params: ServiceType.ParamsType) throws -> ServiceType {
+    public static func tryServiceFromShared<ServiceType: ServiceSupportFactoryParams>(_ type: ServiceType.Type = ServiceType.self,
+                                                                                      params: ServiceType.ParamsType) throws -> ServiceType {
         guard let shared = shared else {
             throw ServiceLocatorError.sharedRequireSetup
         }
         
-        return try shared.tryService(params: params)
+        return try shared.tryService(ServiceType.self, params: params)
     }
     
     /// Get Service if there are no errors from ServiceLocator.share.
-    public static func getServiceFromShared<ServiceType>() -> ServiceType? {
+    public static func getServiceFromShared<ServiceType>(_ type: ServiceType.Type = ServiceType.self) -> ServiceType? {
         guard let shared = shared else { return nil }
-        return try? shared.tryService()
+        return try? shared.tryService(ServiceType.self)
     }
     
     /// Get Service with params if there are no errors from ServiceLocator.share.
-    public static func getServiceFromShared<ServiceType: ServiceSupportFactoryParams>(params: ServiceType.ParamsType) -> ServiceType? {
+    public static func getServiceFromShared<ServiceType: ServiceSupportFactoryParams>(_ type: ServiceType.Type = ServiceType.self,
+                                                                                      params: ServiceType.ParamsType) -> ServiceType? {
         guard let shared = shared else { return nil }
-        return try? shared.tryService(params: params)
+        return try? shared.tryService(ServiceType.self, params: params)
     }
     
-    
-    //MARK: Get
-    
+    // MARK: Get
     /// Get Service with detail information throwed error.
-    open func tryService<ServiceType>() throws -> ServiceType {
+    open func tryService<ServiceType>(_ type: ServiceType.Type = ServiceType.self) throws -> ServiceType {
         lock.lock()
         defer { lock.unlock() }
         
-        let typeName = "\(ServiceType.self)"
-        
+        let typeName = serviceTypeName(for: ServiceType.self)
         if let provider = providers[typeName] {
-            do { return try provider.tryServiceBinding(params: Optional<Any>.none as Any) }
+            do { return try provider.tryServiceBinding(ServiceType.self, params: Optional<Any>.none as Any) }
             catch { throw convertError(error) }
         } else {
             throw ServiceLocatorError.serviceNotFound
@@ -211,14 +220,14 @@ open class ServiceLocator {
     }
     
     /// Get Service with params with detail information throwed error.
-    open func tryService<ServiceType: ServiceSupportFactoryParams>(params: ServiceType.ParamsType) throws -> ServiceType {
+    open func tryService<ServiceType: ServiceSupportFactoryParams>(_ type: ServiceType.Type = ServiceType.self,
+                                                                   params: ServiceType.ParamsType) throws -> ServiceType {
         lock.lock()
         defer { lock.unlock() }
         
-        let typeName = "\(ServiceType.self)"
-        
+        let typeName = serviceTypeName(for: ServiceType.self)
         if let provider = providers[typeName] {
-            do { return try provider.tryServiceBinding(params: params) }
+            do { return try provider.tryServiceBinding(ServiceType.self, params: params) }
             catch { throw convertError(error) }
         } else {
             throw ServiceLocatorError.serviceNotFound
@@ -226,68 +235,72 @@ open class ServiceLocator {
     }
     
     /// Get Service if there are no errors.
-    open func getService<ServiceType>() -> ServiceType? {
-        return try? tryService()
+    open func getService<ServiceType>(_ type: ServiceType.Type = ServiceType.self) -> ServiceType? {
+        return try? tryService(ServiceType.self)
     }
     
     /// Get Service with params if there are no errors
-    open func getService<ServiceType: ServiceSupportFactoryParams>(params: ServiceType.ParamsType) -> ServiceType? {
-        return try? tryService(params: params)
+    open func getService<ServiceType: ServiceSupportFactoryParams>(_ type: ServiceType.Type = ServiceType.self,
+                                                                   params: ServiceType.ParamsType) -> ServiceType? {
+        return try? tryService(ServiceType.self, params: params)
     }
     
     /// Get ServiceProvider with service
-    open func getServiceProvider<ServiceType>() -> ServiceProvider<ServiceType>? {
+    open func getServiceProvider<ServiceType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceProvider<ServiceType>? {
         lock.lock()
         defer { lock.unlock() }
         
-        let typeName = "\(ServiceType.self)"
+        let typeName = serviceTypeName(for: ServiceType.self)
         return providers[typeName] as? ServiceProvider<ServiceType>
     }
     
     /// Get ServiceParamsProvider with service
-    open func getServiceProvider<ServiceType, ParamsType>() -> ServiceParamsProvider<ServiceType, ParamsType>? {
+    open func getServiceProvider<ServiceType, ParamsType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceParamsProvider<ServiceType, ParamsType>? {
         lock.lock()
         defer { lock.unlock() }
         
-        let typeName = "\(ServiceType.self)"
+        let typeName = serviceTypeName(for: ServiceType.self)
         return providers[typeName] as? ServiceParamsProvider<ServiceType, ParamsType>
     }
     
-    
-    
-    //MARK: - ServiceLocatorObjC support
-    static func tryServiceObjC(typeName: String, params: Any) throws -> NSObject {
-        guard let shared = shared else {
-            throw ServiceLocatorError.sharedRequireSetup
-        }
-        
-        return try shared.tryServiceObjC(typeName: typeName, params: params)
-    }
-    
+    // MARK: - ServiceLocatorObjC support
     func tryServiceObjC(typeName: String, params: Any) throws -> NSObject {
         lock.lock()
         defer { lock.unlock() }
         
         //Find for standart name
         if let provider = providers[typeName] {
-            do { return try provider.tryServiceBinding(params: params) }
+            do { return try provider.tryServiceBinding(NSObject.self, params: params) }
             catch { throw convertError(error) }
         }
-        
-        //FIndo without bundle name (Bundle.ServiceName - remove Bundle.)
-        if let pointIndex = typeName.firstIndex(of: ".") {
-            let typeNameWithoutBundle = String(typeName[typeName.index(after: pointIndex)..<typeName.endIndex])
-            
-            if let provider = providers[typeNameWithoutBundle] {
-                do { return try provider.tryServiceBinding(params: params) }
-                catch { throw convertError(error) }
-            }
+
+        if let typeNameWithoutBundle = ServiceLocator.serviceTypeNameWithoutBundle(typeName: typeName),
+            let provider = providers[typeNameWithoutBundle] {
+            do { return try provider.tryServiceBinding(NSObject.self, params: params) }
+            catch { throw convertError(error) }
         }
-        
+
         throw ServiceLocatorError.serviceNotFound
     }
-    
-    //MARK: - Private
+
+    // MARK: Service unique key
+    open func serviceTypeName(for type: Any.Type) -> String {
+        return "\(type)"
+    }
+
+    open func serviceTypeName(forObjCProtocol proto: Protocol) -> String {
+        return NSStringFromProtocol(proto)
+    }
+
+    // MARK: - Private
+    //Find without bundle name (Bundle.ServiceName - remove Bundle)
+    public static func serviceTypeNameWithoutBundle(typeName: String) -> String? {
+        if let pointIndex = typeName.firstIndex(of: ".") {
+            return String(typeName[typeName.index(after: pointIndex)..<typeName.endIndex])
+        } else {
+            return nil
+        }
+    }
     
     /// Convert errors from ServiceProviderError to ServiceLocatorError
     private func convertError(_ error: Error) -> Error {
@@ -295,6 +308,7 @@ open class ServiceLocator {
             switch error {
             case .wrongService: return ServiceLocatorError.serviceNotFound
             case .wrongParams: return ServiceLocatorError.wrongParams
+            case .notSupportObjC: return ServiceLocatorError.serviceNotFound
             }
         } else {
             return error
@@ -302,16 +316,14 @@ open class ServiceLocator {
     }
 }
 
-
-//MARK: Provider binding to ServiceLocator
-
+// MARK: Provider binding to ServiceLocator
 /// Base protocol for ServiceProvider<T>
 private protocol ServiceLocatorProviderBinding {
-    func tryServiceBinding<ServiceType>(params: Any) throws -> ServiceType
+    func tryServiceBinding<ServiceType>(_ type: ServiceType.Type, params: Any) throws -> ServiceType
 }
 
 extension ServiceProvider: ServiceLocatorProviderBinding {
-    fileprivate func tryServiceBinding<ServiceType>(params: Any) throws -> ServiceType {
+    fileprivate func tryServiceBinding<ServiceType>(_ type: ServiceType.Type, params: Any) throws -> ServiceType {
         if let service = try tryService() as? ServiceType {
             return service
         } else {
@@ -321,7 +333,7 @@ extension ServiceProvider: ServiceLocatorProviderBinding {
 }
 
 extension ServiceParamsProvider: ServiceLocatorProviderBinding {
-    fileprivate func tryServiceBinding<ServiceType>(params: Any) throws -> ServiceType {
+    fileprivate func tryServiceBinding<ServiceType>(_ type: ServiceType.Type, params: Any) throws -> ServiceType {
         guard let params = params as? ParamsType else {
             throw ServiceLocatorError.wrongParams
         }
