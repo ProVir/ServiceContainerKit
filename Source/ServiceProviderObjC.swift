@@ -14,7 +14,7 @@ public class ServiceProviderObjC: NSObject {
     private let swiftProvider: ServiceProviderBindingObjC
 
     /// Create ServiceProviderObjC with Swift ServiceProvider
-    public init<ServiceType: NSObject>(_ provider: ServiceProvider<ServiceType>) {
+    public init<ServiceType>(_ provider: ServiceProvider<ServiceType>) {
         self.swiftProvider = provider
         super.init()
     }
@@ -41,7 +41,7 @@ public class ServiceParamsProviderObjC: NSObject {
     private let swiftProvider: ServiceProviderBindingObjC
     
     /// Create ServiceParamsProviderObjC with Swift ServiceParamsProvider
-    public init<ServiceType: NSObject, ParamsType: NSObject>(_ provider: ServiceParamsProvider<ServiceType, ParamsType>) {
+    public init<ServiceType, ParamsType>(_ provider: ServiceParamsProvider<ServiceType, ParamsType>) {
         self.swiftProvider = provider
         super.init()
     }
