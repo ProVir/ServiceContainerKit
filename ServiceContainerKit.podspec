@@ -1,13 +1,13 @@
 Pod::Spec.new do |s|
   s.name         = "ServiceContainerKit"
-  s.version      = "1.0.2"
+  s.version      = "1.1.0"
   s.summary      = "Kit to create your own IoC Container or ServiceLocator. Use ServiceProvider as core, ServiceLocator as ready IoC Container"
   s.description  = <<-DESC
 			Written in Swift.
             Kit to create your own IoC Container or ServiceLocator for help implementation Dependency Injection (DI).
             ServiceProvider: wrapper for the service to hide the details of its creation.
             Allows you to create your custom IoC Container or ServiceLocator.
-            Also includes a ServiceLocator as an option. Require Swift 4 and above, support Objective-C in readOnly regime.
+            Also includes a dynamic ServiceLocator as an option. Require Swift 4 and above, support Objective-C in readOnly regime.
                    DESC
 
   s.homepage     = "https://github.com/ProVir/ServiceContainerKit"

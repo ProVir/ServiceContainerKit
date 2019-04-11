@@ -5,17 +5,18 @@
 [![Platform](https://cocoapod-badges.herokuapp.com/p/ServiceContainerKit/badge.png)](http://cocoapods.org/pods/ServiceContainerKit)
 [![License](https://cocoapod-badges.herokuapp.com/l/ServiceContainerKit/badge.png)](https://github.com/ProVir/ServiceContainerKit/blob/master/LICENSE)
 
-  Kit to create your own IoC Container or ServiceLocator. Also includes a ServiceLocator as an option. Require Swift 5 and above, support Objective-C in readOnly regime. 
+  Kit to create your own IoC Container or ServiceLocator. Also includes a ServiceLocator as an option. Require Swift 4 and above, support Objective-C in readOnly regime. 
+  Supports and recommends using Swift 5.0.
 
   *Dependency Inversion Principle (DIP from SOLI**D**)* allows you to create classes as independent as possible between each other. But writing the services using Dependency Injection, you are faced with the difficulty - how and where to set up services and communications, and how to provide these services to objects that are created during the application process, usually a presentation layer.
   One way to solve this problem is to use *Dependency Injection Container* frameworks that create services for the dependencies and settings that you specify, and also if necessary, injected them in the right parts of the application. The use of such side-by-side frameworks draws certain dependencies throughout the architecture of the application and provides its functionality with certain limitations, which are discussed by the nuances of the programming language, platforms, and as a payment for their universality.
-  You can create your own container for a specific project, taking into account its specific features and architecture. One simple way to create your own container is to use a structure with a set of pre-configured services or their factories. Better yet, use a wrapper over services (`ServiceProvider`), which hides the way to create a service - for earlier or as needed, as well as its dependencies and the settings used. Also, as a container, you can use `ServiceLocator`, which is usually a singletone itself.
+  You can create your own container for a specific project, taking into account its specific features and architecture. One simple way to create your own container is to use a structure with a set of pre-configured services or their factories. Better yet, use a wrapper over services (`ServiceProvider`), which hides the way to create a service - for earlier or as needed, as well as its dependencies and the settings used. Also, as a container, you can use `ServiceLocator`, being a dynamic container. It can also be used as a singleton.
 
 #
 
 *Dependency Inversion Principle (DIP из SOLI**D**)* позволяет создавать классы максимально независимыми между собой. Но писав сервисы используя DIP вы сталкиваетесь с трудностью - как и где настроить сервисы и связи, а также как предоставить эти сервисы объектам, которые создаются в процессе работы приложения, как правило это слой представления. 
   Один из способов решить эту проблему - это использование фреймворков *Dependency Injection Container*, которые создают сервисы по указываемым вами зависисмостям и настройкам, а также внедряют их по необходимости в нужные части приложения. Использование подобных стороних фреймворков тянет за собой наличие определенных зависимостей во всей архитекртуре приложения и предоставляют свой функционал с определенными ограничениями, которые обсуловлены нюансами языка программирования, платформы и как плата за их универсальность.  
-  Вы можете создать свой собственный контейнер для конкретного проекта с учетом его специфики и архитектуры. Один из простых способов создать свой контейнер - это использовать структуру с набором созданных и настроенных заранее сервисов либо их фабрик. А еще лучше - использовать обертку над сервисами (`ServiceProvider`), скрывающую способ создания сервиса - за ранее или по необходимости, а также его заисимости и используемые настройки. Также в качестве контейнера можно использовать `ServiceLocator`, как правило являющийся сам по себе синглетоном. 
+  Вы можете создать свой собственный контейнер для конкретного проекта с учетом его специфики и архитектуры. Один из простых способов создать свой контейнер - это использовать структуру с набором созданных и настроенных заранее сервисов либо их фабрик. А еще лучше - использовать обертку над сервисами (`ServiceProvider`), скрывающую способ создания сервиса - за ранее или по необходимости, а также его заисимости и используемые настройки. Также в качестве контейнера можно использовать `ServiceLocator`, являющийся динамическим контейнером. Его также можно использовать как синглетон. 
 
 #
 
@@ -39,7 +40,7 @@
 - [x] Support service factories with parameters for many instance services. 
 - [x] Support get service from provider in Objective-C code. 
 
-`ServiceLocator` (optional) - ready as container to use easy: 
+`ServiceLocator` (optional) - ready as dynamic container to use easy: 
 - [x] Add services as provider, service factories, existing instance or closure factory with support lazy create. 
 - [x] Support use as singleton - static variable `share` and static functions. 
 - [x] ReadOnly regime - after setted assert when edit list services in ServiceLocator. 
@@ -51,13 +52,13 @@
 ## Requirements
 
 - iOS 8.0+ / macOS 10.10+ / tvOS 9.0+ / watchOS 2.0+
-- Xcode 10.2 and above
-- Swift 5.0 and above
+- Xcode 9.0 and above
+- Swift 4.0 and above, recommends Swift 5.0
 
 
 ## Communication
 
-- If you **need help**, go to [provir.ru](http://provir.ru)
+- If you **need help**, go to [provir.ru](http://provir.ru) or my telegram [@ViR_RuS](https://t.me/ViR_RuS)
 - If you **found a bug**, open an issue.
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.
@@ -73,7 +74,7 @@
 $ gem install cocoapods
 ```
 
-> CocoaPods 1.6.0+ is required to build ServiceContainerKit 1.0.0+.
+> CocoaPods 1.6.0+ is required to build ServiceContainerKit 1.1.0+.
 
 To integrate ServiceContainerKit (without ServiceLocator) into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
@@ -82,13 +83,13 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 
 target '<Your Target Name>' do
-  pod 'ServiceContainerKit', '~> 1.0'
+  pod 'ServiceContainerKit', '~> 1.1'
 end
 ```
 If you also need to use ServiceLocator, then use:
 ```ruby
 target '<Your Target Name>' do
-  pod 'ServiceContainerKit/ServiceLocator', '~> 1.0'
+  pod 'ServiceContainerKit/ServiceLocator', '~> 1.1'
 end
 ```
 
@@ -112,20 +113,20 @@ $ brew install carthage
 To integrate ServiceContainerKit into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "ProVir/ServiceContainerKit" ~> 1.0
+github "ProVir/ServiceContainerKit" ~> 1.1
 ```
 
 Run `carthage update` to build the framework and drag the built `ServiceContainerKit.framework` into your Xcode project.
 
 ### Swift Package Manager
 
-The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler. It is in early development, but ServiceContainerKit does support its use on supported platforms. 
+The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler. 
 
 Once you have your Swift package set up, adding ServiceContainerKit as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
 
 ```swift
 dependencies: [
-  .Package(url: "https://github.com/ProVir/ServiceContainerKit.git", majorVersion: 1)
+  .package(url: "https://github.com/ProVir/ServiceContainerKit.git", from: "1.1.0")
 ]
 ```
 
@@ -216,9 +217,7 @@ struct SecondServiceFactory: ServiceParamsFactory {
     func createService(params: SecondServiceParams?) throws -> SecondService {
         let instance = SecondService(lazyService: try lazyServiceProvider.tryService(),
                                      firstService: try firstServiceProvider.tryService())
-
         instance.number = params?.number ?? -1
-
         return instance
     }
 }
@@ -273,14 +272,36 @@ extension ServiceContainer {
 }
 ```
 
+In order not to depend on the library in the whole project, you can make the providers private and provide a public interface for making the service.
+
+Для того чтобы не зависить от библиотеки во всем проекте, можно сделать провайдеры приватными и предоставить публичный интерфейс для получения самого сервиса.
+
+#### An example private ServiceProviders:
+```swift
+struct ServiceContainer {
+    private let firstServiceProvider: ServiceProvider<FirstService>
+    private let secondServiceProvider: ServiceParamsProvider<SecondService, SecondServiceParams?>
+
+    let userService: UserService
+
+    func makeFirstService() throws -> FirstService {
+        return try firstServiceProvider.tryService()
+    }
+
+    func makeSecondService(params: SecondServiceParams?) throws -> SecondService {
+        return try secondServiceProvider.tryService(params: params)
+    }
+}
+```
+
 ### Service[Params]Provider
 
 You can create `ServiceProvider` in several ways:
 - using a regular factory: by calling function `ServiceFactory().serviceProvider()` (recommended) or through constructors `ServiceProvider(factory:)` and `ServiceProvider(tryFactory:)`;
-- using factory with parameters: by calling function `ServiceFactory().serviceProvider(params:)` (recommended) or through constructor `ServiceProvider(factory:,params:)`;
+- using factory with parameters: by calling function `ServiceFactory().serviceProvider(params:)` (recommended) or through constructor `ServiceProvider(factory:params:)`;
 - using provider with parameters: `ServiceParamsProvider.convert(params:)`;
 - using an already created service, passing it to the constructor: `ServiceProvider()`, factory equivalent of `atOne` type;
-- using closures in lazy mode or generating a new instance each time: `ServiceProvider(lazy:{ })` и `ServiceProvider(factory:{ })`, factory equivalent of  `lazy` and `many` types.
+- using closures in lazy mode or generating a new instance each time: `ServiceProvider(lazy: { })` и `ServiceProvider(manyFactory: { })`, factory equivalent of  `lazy` and `many` types.
 
 You can create `ServiceParamsProvider` only by using a factory with parameters (`ServiceParamsFactory`): `ServiceParamsProvider(factory:)`.
 
@@ -295,7 +316,7 @@ To get the service it is enough to call the function `Service[Params]Provider.ge
 - используя фабрику с параметрами: через вызов `ServiceFactory().serviceProvider(params:)` (рекомендуется) или через конструктор `ServiceProvider(factory:,params:)`;
 - используя провайдер с параметрами: `ServiceParamsProvider.convert(params:)`;
 - используя уже созданный сервис, передав его в конструктор: `ServiceProvider()`, эквивалент фабрики типа `atOne`;
-- используя кложуры в lazy режиме или генерируя каждый раз новый экземпляр: `ServiceProvider(lazy:{ })` и `ServiceProvider(factory:{ })`, эквиваленты фабрик типов `lazy` и `many`.
+- используя кложуры в lazy режиме или генерируя каждый раз новый экземпляр: `ServiceProvider(lazy: { })` и `ServiceProvider(manyFactory: { })`, эквиваленты фабрик типов `lazy` и `many`.
 
 Создать `ServiceParamsProvider` можно только используя фабрику с параметрами (`ServiceParamsFactory`): `ServiceParamsProvider(factory:)`.
 
@@ -346,19 +367,15 @@ target '<Your Target Name>' do
 end
 ```
 
-ServiceLocator is IoC Container, but unlike its implementation above, the services in it are stored by the key, which is the name of the class or service protocol. We simply add services to ServiceLocator and get them on demand based on the return type using generics. Also ServiceLocator is often used as a singleton - that solves the problem of dependency injection, because we can get any service from anywhere in the code. It is well suited for quick solutions or in small projects, but it can create problems in large projects, over which several developers work.
+ServiceLocator is dynamic IoC Container, but unlike its implementation above, the services in it are stored by the key, which is the name of the class or service protocol. We simply add services to ServiceLocator and get them on demand based on the return type using generics. Also ServiceLocator is often used as a singleton - that solves the problem of dependency injection, because we can get any service from anywhere in the code. It is well suited for quick solutions or in small projects, but it can create problems in large projects, over which several developers work.
 
-From the minuses - in one ServiceLocator we can store only one instance of a service or factory, while in our custom IoC Container we are not limited to this. Also do not forget that ServiceLocator is an antipattern and it should be used very carefully and do not forget about compliance with *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceLocator, unlike its IoC Container, does not tell us directly which services it contains, but if you store services based on protocols, then there is generally no exact information on how to get the service - by protocol or a specific implementation.
-
-As a solution "somewhere in the middle" when choosing between its IoC Container and the proposed ServiceLocator in framework, write your ServiceLocator singleton, in which all services will be as separate ServiceProviders, as described in the IoC Container section.
+From the minuses - in one dynamic ServiceLocator we can store only one instance of a service or factory, while in our custom IoC Container we are not limited to this. Also do not forget that ServiceLocator is an antipattern and it should be used very carefully and do not forget about compliance with *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceLocator, like any dynamic container, unlike its static IoC Container, does not tell us directly which services it contains, but if you store services based on protocols, then there is generally no exact information on how to get the service - by protocol or a specific implementation.
 
 #
 
-  ServiceLocator - это IoC Container, но в отличие от своей реализации приведенной выше, сервисы в нем хранятся по ключу, в качестве которого выступает имя класса или протокола сервиса. Мы просто добавляем сервисы в ServiceLocator и получаем их по требованию на основе выводимого типа используя дженерики. Также ServiceLocator часто используется как синглетон - что решает проблему внедрения зависимостей, т.к. мы можем получить любой сервис из любого места в коде. Он хорошо подходит для быстрого решения или в небольших проектах, но может создать проблемы в больших проектах, над которыми работают несколько разработчиков. 
+  ServiceLocator - это динамический IoC Container, но в отличие от своей реализации приведенной выше, сервисы в нем хранятся динамически по ключу, в качестве которого выступает имя класса или протокола сервиса. Мы просто добавляем сервисы в ServiceLocator и получаем их по требованию на основе выводимого типа используя дженерики. Также ServiceLocator часто используется как синглетон - что решает проблему внедрения зависимостей, т.к. мы можем получить любой сервис из любого места в коде. Он хорошо подходит для быстрого решения или в небольших проектах, но может создать проблемы в больших проектах, над которыми работают несколько разработчиков. 
   
-  Из минусов - в одном ServiceLocator мы можем хранить только один экземпляр сервиса или фабрики, в то время как в своем IoC Container мы этим не ограничиваемся. Также не стоит забывать что ServiceLocator - это антипаттерн и его следует использовать очень осторожно и не забывать про соблюдение *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceLocator в отличие от своего IoC Container не сообщает нам напрямую какие именно сервисы он в себе содержит, а если хранить сервисы на основе протоколов, то вообще нет точной информации как получить сервис - по протоколу или конкретной реализации. 
-
-  В качестве решения "где-то по середине" при выборе между своим IoC Container и предлагаемой фреймворком ServiceLocator - написать свой синглетон ServiceLocator, в котором все сервисы будут в качестве отдельных ServiceProvider, как приведено в разделе о IoC Container. 
+  Из минусов - в одном динамическом ServiceLocator мы можем хранить только один экземпляр сервиса или фабрики, в то время как в своем IoC Container мы этим не ограничиваемся. Также не стоит забывать что ServiceLocator - это антипаттерн и его следует использовать очень осторожно и не забывать про соблюдение *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceLocator, как и любой динамический контейнер, в отличие от статичного IoC Container не сообщает нам напрямую какие именно сервисы он в себе содержит, а если хранить сервисы на основе протоколов, то вообще нет точной информации как получить сервис - по протоколу или конкретной реализации. 
 
 
 ### Add and remove Services
@@ -414,11 +431,11 @@ serviceLocator.setReadOnly()
 
 ### Share ServiceLocator
 
-ServiceLocator can be used as a singleton. Singleton is available using the static property `ServiceLocator.shared`. It can be set with a static function `ServiceLocator.setupShared(serviceLocator:ServiceLocator,readOnlySharedAfter:Bool=true)`. The parameter `readOnlySharedAfter` with the value `true` (default) forbids changing the singleton itself. To prevent a full change to the ServiceLocator, remember to call `setReadOnly()`.
+ServiceLocator can be used as a singleton. Singleton is available using the static property `ServiceLocator.shared` or by calling the `tryShared()` method, which can return an error if not configured as a singleton.. It can be set with a static function `ServiceLocator.setupShared(serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true)`. The parameter `readOnlySharedAfter` with the value `true` (default) forbids changing the singleton itself. To prevent a full change to the ServiceLocator, remember to call `setReadOnly()`.
 
 #
 
-  ServiceLocator можно использовать как синглетон. Синглетон доступен по статичному свойству `ServiceLocator.shared`. Его можно задать статитичной функцией `ServiceLocator.setupShared(serviceLocator:ServiceLocator,readOnlySharedAfter:Bool=true)`. Параметр `readOnlySharedAfter` со значением `true` (default) запрещает менять сам синглетон. Чтобы запретить полное изменение ServiceLocator следует не забыть вызвать `setReadOnly()`.  
+  ServiceLocator можно использовать как синглетон. Синглетон доступен по статичному свойству `ServiceLocator.shared` или по вызову метода `tryShared()`, который может вернуть ошибку если не настроено как синглетон. Его можно задать статитичной функцией `ServiceLocator.setupShared(serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true)`. Параметр `readOnlySharedAfter` со значением `true` (default) запрещает менять сам синглетон. Чтобы запретить полное изменение ServiceLocator следует не забыть вызвать `setReadOnly()`.  
 
 #### An example setup shared ServiceLocator:
 ```swift
@@ -428,24 +445,24 @@ ServiceLocator.setupShared(serviceLocator: serviceLocator, readOnlySharedAfter: 
 
 ### Get Services
 
-To get the service it is enough to call the function `ServiceLocator.getService()` which returns the service as an option, `nil` will be returned in case of a service error. The type of the service is displayed itself, but you can use `as` to specify the type yourself. You can also use `ServiceLocator.tryService()` - then the service is returned not as an option and can generate an error why the service was not received (unlike `getService()`, which simply returns `nil`).
+To get the service it is enough to call the function `ServiceLocator.getService()` which returns the service as an option, `nil` will be returned in case of a service error. The type of the service is displayed itself, but you can use parameter `serviceType:` to specify the type yourself. You can also use `ServiceLocator.tryService()` - then the service is returned not as an option and can generate an error why the service was not received (unlike `getService()`, which simply returns `nil`).
 To get a service from a singleton, you can use the static functions `ServiceLocator.getServiceFromShared()` and `ServiceLocator.tryServiceFromShared()`, or get the ServiceLocator itself via `ServiceLocator.shared`.
 To get ServiceProvider of a specific service - `ServiceLocator.getServiceProvider()`. 
 
 #
 
-  Для получения сервиса достаточно вызвать функцию `ServiceLocator.getService()` которая возвращает сервис как опционал, `nil` будет возвращен в случае ошибки получения сервиса. Тип сервиса выводится сам, но можно воспользоваться `as` для указания типа самостоятельно. Также можно использовать `ServiceLocator.tryService()` - тогда сервис возвращается не как опционал и может генерировать ошибку почему сервис не был получен (в отличие от `getService()`, который просто вернет `nil`). 
+  Для получения сервиса достаточно вызвать функцию `ServiceLocator.getService()` которая возвращает сервис как опционал, `nil` будет возвращен в случае ошибки получения сервиса. Тип сервиса выводится сам, но можно воспользоваться параметром `serviceType:` для указания типа самостоятельно. Также можно использовать `ServiceLocator.tryService()` - тогда сервис возвращается не как опционал и может генерировать ошибку почему сервис не был получен (в отличие от `getService()`, который просто вернет `nil`). 
   Для получени сервиса из синглетона можно воспользоваться статичными функциями `ServiceLocator.getServiceFromShared()` и `ServiceLocator.tryServiceFromShared()`, либо получить сам ServiceLocator через `ServiceLocator.shared`. 
   Для получения ServiceProvider конкретного сервиса - `ServiceLocator.getServiceProvider()`. 
   
 #### An example get services:
 ```swift
 let firstService: FirstService = serviceLocator.getService()!
-let secondService = (ServiceLocator.getServiceFromShared() as SecondService?)!
+let secondService = ServiceLocator.getServiceFromShared(serviceType: SecondService.self)!
 
 let thirdService: ThirdServicing
 do {
-    thirdService = ServiceLocator.tryServiceFromShared() as ThirdServicing
+    thirdService = ServiceLocator.tryServiceFromShared(serviceType: ThirdServicing.self)
 } catch {
     fatalError("Error get thirdService: \(error)")
 }
@@ -503,6 +520,7 @@ ParamsService* paramsService = [ServiceLocator getServiceWithClass:ParamsService
 ## Author
 
 [**ViR (Короткий Виталий)**](http://provir.ru)
+[Telegram: @ViR_RuS](https://t.me/ViR_RuS)
 
 
 ## License
