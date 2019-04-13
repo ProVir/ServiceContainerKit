@@ -228,6 +228,169 @@ class ServiceProviderTests: XCTestCase {
         XCTAssertEqual(service1.value, "Test2")
         XCTAssert(service1 === service2)
     }
+    
+    func testServiceLazyClosure() {
+        var callCount = 0
+        let provider = ServiceProvider(lazy: { () -> ServiceLazy in
+            callCount += 1
+            return ServiceLazy()
+        })
+        
+        XCTAssertEqual(callCount, 0, "Real create service when first needed")
+        
+        guard let service1 = provider.getService() else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssertEqual(callCount, 1, "Real create service when first needed")
+        service1.value = "Test1"
+        
+        guard let service2 = provider.getService() else {
+            XCTFail("Service not exist")
+            return
+        }
+        
+        XCTAssertEqual(callCount, 1)
+        XCTAssertEqual(service2.value, "Test1")
+        
+        service2.value = "Test2"
+        XCTAssertEqual(service1.value, "Test2")
+        XCTAssert(service1 === service2)
+    }
+    
+    func testServiceLazyClosureFailure() {
+        var callCount = 0
+        var errorClosure: Error? = ServiceCreateError.someError
+        let provider = ServiceProvider(lazy: { () throws -> ServiceLazy in
+            callCount += 1
+            if let error = errorClosure {
+                throw error
+            } else {
+                return ServiceLazy()
+            }
+        })
+        
+        XCTAssertEqual(callCount, 0, "Real create service when first needed")
+        
+        if provider.getService() != nil {
+            XCTFail("Service need failure create")
+        }
+        
+        XCTAssertEqual(callCount, 1, "Real create service when first needed")
+        
+        do {
+            _ = try provider.tryService()
+            XCTFail("Service need failure create")
+        } catch {
+            XCTAssert(error is ServiceCreateError)
+        }
+        
+        XCTAssertEqual(callCount, 2, "While the error repeats - try to re-create")
+        
+        //Next without error
+        errorClosure = nil
+        guard let service1 = provider.getService() else {
+            XCTFail("Service not exist")
+            return
+        }
+        
+        XCTAssertEqual(callCount, 3, "While the error repeats - try to re-create")
+        
+        service1.value = "Test1"
+        guard let service2 = provider.getService() else {
+            XCTFail("Service not exist")
+            return
+        }
+        
+        XCTAssertEqual(callCount, 3)
+        XCTAssertEqual(service2.value,"Test1")
+        
+        service2.value = "Test2"
+        XCTAssertEqual(service1.value, "Test2")
+        XCTAssert(service1 === service2)
+    }
+    
+    func testServiceManyProtocolClosure() {
+        var callCount = 0
+        let provider = ServiceProvider(manyFactory: { () -> ServiceValue in
+            callCount += 1
+            return ServiceMany()
+        })
+        
+        XCTAssertEqual(callCount, 0, "Create service when needed")
+        
+        guard let service1 = provider.getService() else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssertEqual(callCount, 1, "Create service new")
+        service1.value = "Test1"
+        
+        guard let service2 = provider.getService() else {
+            XCTFail("Service not exist")
+            return
+        }
+        
+        XCTAssertEqual(callCount, 2, "Create service new")
+        XCTAssertNotEqual(service2.value, "Test1")
+        
+        service2.value = "Test2"
+        XCTAssertNotEqual(service1.value, "Test2")
+        XCTAssert(service1 !== service2)
+    }
+    
+    func testServiceManyProtocolClosureFailure() {
+        var callCount = 0
+        var errorClosure: Error? = ServiceCreateError.someError
+        let provider = ServiceProvider(manyFactory: { () throws -> ServiceValue in
+            callCount += 1
+            if let error = errorClosure {
+                throw error
+            } else {
+                return ServiceMany()
+            }
+        })
+        
+        XCTAssertEqual(callCount, 0, "Real create service when needed")
+        
+        if provider.getService() != nil {
+            XCTFail("Service need failure create")
+        }
+        
+        XCTAssertEqual(callCount, 1, "Create service new with error")
+        
+        do {
+            _ = try provider.tryService()
+            XCTFail("Service need failure create")
+        } catch {
+            XCTAssert(error is ServiceCreateError)
+        }
+        
+        XCTAssertEqual(callCount, 2, "Create service new with error")
+        
+        //Next without error
+        errorClosure = nil
+        guard let service1 = provider.getService() else {
+            XCTFail("Service not exist")
+            return
+        }
+        
+        XCTAssertEqual(callCount, 3, "Create service new")
+        
+        service1.value = "Test1"
+        guard let service2 = provider.getService() else {
+            XCTFail("Service not exist")
+            return
+        }
+        
+        XCTAssertEqual(callCount, 4)
+        XCTAssertNotEqual(service2.value, "Test1")
+        
+        service2.value = "Test2"
+        XCTAssertNotEqual(service1.value, "Test2")
+        XCTAssert(service1 !== service2)
+    }
+    
 
     // MARK: - ServiceParamsProvider
     func testServiceParams() {
