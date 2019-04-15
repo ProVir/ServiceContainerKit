@@ -28,6 +28,22 @@ public protocol ServiceSupportFactoryParams {
     associatedtype ParamsType
 }
 
+public protocol ServiceLocatorKey {
+    associatedtype ServiceType
+    var storeKey: String { get }
+}
+
+public protocol ServiceLocatorParamsKey: ServiceLocatorKey {
+    associatedtype ParamsType
+}
+
+public struct ServiceLocatorEasyKey<ServiceType>: ServiceLocatorKey {
+    public init() { }
+    public var storeKey: String { return "\(ServiceType.self)" }
+}
+
+
+
 /// ServiceLocator as storage ServiceProviders.
 open class ServiceLocator {
     /// ServiceLocator as singleton
@@ -45,8 +61,7 @@ open class ServiceLocator {
     public let lock = NSRecursiveLock()
     
     /// Private list providers with services
-    private var providers = [String : ServiceLocatorProviderBinding]()
-    
+    private var providers = [String: ServiceLocatorProviderBinding]()
     
     // MARK: Setup
     /// Setup ServiceLocator as singleton. If `readOnlySharedAfter = true` (default) - don't change singleton instance after.
@@ -69,6 +84,11 @@ open class ServiceLocator {
     
     /// Add ServiceProvider with service for ServiceLocator
     open func addService<ServiceType>(provider: ServiceProvider<ServiceType>) {
+        addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: provider)
+    }
+    
+    /// Add ServiceProvider by key with service for ServiceLocator
+    open func addService<Key: ServiceLocatorKey>(key: Key, provider: ServiceProvider<Key.ServiceType>) {
         lock.lock()
         defer { lock.unlock() }
         
@@ -77,12 +97,16 @@ open class ServiceLocator {
             return
         }
         
-        let typeName = serviceTypeName(for: ServiceType.self)
-        providers[typeName] = provider
+        providers[key.storeKey] = provider
     }
     
     /// Add ServiceParamsProvider with service for ServiceLocator
     open func addService<ServiceType, ParamsType>(provider: ServiceParamsProvider<ServiceType, ParamsType>) {
+        addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: provider)
+    }
+    
+    /// Add ServiceParamsProvider by key with service for ServiceLocator
+    open func addService<Key: ServiceLocatorKey, ParamsType>(key: Key, provider: ServiceParamsProvider<Key.ServiceType, ParamsType>) {
         lock.lock()
         defer { lock.unlock() }
         
@@ -91,53 +115,68 @@ open class ServiceLocator {
             return
         }
         
-        let typeName = serviceTypeName(for: ServiceType.self)
-        providers[typeName] = provider
+        providers[key.storeKey] = provider
     }
     
     /// Add service at one instance.
-    @discardableResult
-    open func addService<ServiceType>(_ service: ServiceType) -> ServiceProvider<ServiceType> {
-        let provider = ServiceProvider<ServiceType>(service)
-        addService(provider: provider)
-        return provider
+    open func addService<ServiceType>(_ service: ServiceType) {
+        addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: ServiceProvider(service))
+    }
+    
+    /// Add service by key at one instance.
+    open func addService<Key: ServiceLocatorKey>(key: Key, _ service: Key.ServiceType) {
+        addService(key: key, provider: ServiceProvider(service))
     }
     
     /// Add factory service
-    @discardableResult
-    open func addService<ServiceType, FactoryType: ServiceFactory>(factory: FactoryType) -> ServiceProvider<ServiceType> where FactoryType.ServiceType == ServiceType {
-        let provider = ServiceProvider<ServiceType>(factory: factory)
-        addService(provider: provider)
-        return provider
+    open func addService<ServiceType, FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
+        addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: ServiceProvider(factory: factory))
     }
     
-    /// Add factory service with params when created instance
-    @discardableResult
-    open func addService<ServiceType, ParamsType, FactoryType: ServiceParamsFactory>(factory: FactoryType) -> ServiceParamsProvider<ServiceType, ParamsType> where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
-        let provider = ServiceParamsProvider<ServiceType, ParamsType>(factory: factory)
-        addService(provider: provider)
-        return provider
+    /// Add factory service by key
+    open func addService<Key: ServiceLocatorKey, FactoryType: ServiceFactory>(key: Key, factory: FactoryType) where FactoryType.ServiceType == Key.ServiceType {
+        addService(key: key, provider: ServiceProvider(factory: factory))
     }
     
-    /// Add service with lazy create service in closure.
-    @discardableResult
-    open func addLazyService<ServiceType>(_ lazy: @escaping () throws -> ServiceType) -> ServiceProvider<ServiceType> {
-        let provider = ServiceProvider<ServiceType>(lazy: lazy)
-        addService(provider: provider)
-        return provider
+    /// Add factory service with params
+    open func addService<ServiceType, ParamsType, FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
+        addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: ServiceParamsProvider(factory: factory))
     }
     
-    /// Add service with many instance service type, create service in closure.
-    @discardableResult
-    open func addService<ServiceType>(manyFactory closure: @escaping () throws -> ServiceType) -> ServiceProvider<ServiceType> {
-        let provider = ServiceProvider<ServiceType>(manyFactory: closure)
-        addService(provider: provider)
-        return provider
+    /// Add factory service with params by key
+    open func addService<Key: ServiceLocatorKey, ParamsType, FactoryType: ServiceParamsFactory>(key: Key, factory: FactoryType) where FactoryType.ServiceType == Key.ServiceType, FactoryType.ParamsType == ParamsType {
+        addService(key: key, provider: ServiceParamsProvider(factory: factory))
+    }
+    
+    /// Add service with lazy create service in closure
+    open func addLazyService<ServiceType>(_ lazy: @escaping () throws -> ServiceType) {
+        addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: ServiceProvider(lazy: lazy))
+    }
+    
+    /// Add service by key with lazy create service in closure
+    open func addLazyService<Key: ServiceLocatorKey>(key: Key, _ lazy: @escaping () throws -> Key.ServiceType) {
+        addService(key: key, provider: ServiceProvider(lazy: lazy))
+    }
+    
+    /// Add service with many instance service type, create service in closure
+    open func addService<ServiceType>(manyFactory closure: @escaping () throws -> ServiceType) {
+        addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: ServiceProvider(manyFactory: closure))
+    }
+    
+    /// Add service by key with many instance service type, create service in closure
+    open func addService<Key: ServiceLocatorKey>(key: Key, manyFactory closure: @escaping () throws -> Key.ServiceType) {
+        addService(key: key, provider: ServiceProvider(manyFactory: closure))
     }
     
     /// Remove service from ServiceLocator.
     @discardableResult
     open func removeService<ServiceType>(serviceType: ServiceType.Type) -> Bool {
+        return removeService(key: ServiceLocatorEasyKey<ServiceType>())
+    }
+    
+    /// Remove service by key from ServiceLocator.
+    @discardableResult
+    open func removeService<Key: ServiceLocatorKey>(key: Key) -> Bool {
         lock.lock()
         defer { lock.unlock() }
         
@@ -146,8 +185,7 @@ open class ServiceLocator {
             return false
         }
 
-        let typeName = serviceTypeName(for: ServiceType.self)
-        return providers.removeValue(forKey: typeName) != nil
+        return providers.removeValue(forKey: key.storeKey) != nil
     }
     
     /// Clone ServiceLocator with all providers, but with readOnly = false in new instance.
@@ -207,12 +245,16 @@ open class ServiceLocator {
     // MARK: Get
     /// Get Service with detail information throwed error.
     open func tryService<ServiceType>(_ type: ServiceType.Type = ServiceType.self) throws -> ServiceType {
+        return try tryService(key: ServiceLocatorEasyKey<ServiceType>())
+    }
+    
+    /// Get Service by key with detail information throwed error.
+    open func tryService<Key: ServiceLocatorKey>(key: Key) throws -> Key.ServiceType {
         lock.lock()
         defer { lock.unlock() }
         
-        let typeName = serviceTypeName(for: ServiceType.self)
-        if let provider = providers[typeName] {
-            do { return try provider.tryServiceBinding(ServiceType.self, params: Optional<Any>.none as Any) }
+        if let provider = providers[key.storeKey] {
+            do { return try provider.tryServiceBinding(Key.ServiceType.self, params: Optional<Any>.none as Any) }
             catch { throw convertError(error) }
         } else {
             throw ServiceLocatorError.serviceNotFound
@@ -220,14 +262,22 @@ open class ServiceLocator {
     }
     
     /// Get Service with params with detail information throwed error.
-    open func tryService<ServiceType: ServiceSupportFactoryParams>(_ type: ServiceType.Type = ServiceType.self,
-                                                                   params: ServiceType.ParamsType) throws -> ServiceType {
+    open func tryService<ServiceType: ServiceSupportFactoryParams>(_ type: ServiceType.Type = ServiceType.self, params: ServiceType.ParamsType) throws -> ServiceType {
+        return try tryService(key: ServiceLocatorEasyKey<ServiceType>(), params: params)
+    }
+    
+    /// Get Service with params with detail information throwed error.
+    open func tryService<ServiceType>(_ type: ServiceType.Type = ServiceType.self, params: Any) throws -> ServiceType {
+        return try tryService(key: ServiceLocatorEasyKey<ServiceType>(), params: params)
+    }
+    
+    /// Get Service by key with params with detail information throwed error.
+    open func tryService<Key: ServiceLocatorKey>(key: Key, params: Any) throws -> Key.ServiceType {
         lock.lock()
         defer { lock.unlock() }
         
-        let typeName = serviceTypeName(for: ServiceType.self)
-        if let provider = providers[typeName] {
-            do { return try provider.tryServiceBinding(ServiceType.self, params: params) }
+        if let provider = providers[key.storeKey] {
+            do { return try provider.tryServiceBinding(Key.ServiceType.self, params: params) }
             catch { throw convertError(error) }
         } else {
             throw ServiceLocatorError.serviceNotFound
@@ -236,31 +286,53 @@ open class ServiceLocator {
     
     /// Get Service if there are no errors.
     open func getService<ServiceType>(_ type: ServiceType.Type = ServiceType.self) -> ServiceType? {
-        return try? tryService(ServiceType.self)
+        return try? tryService(key: ServiceLocatorEasyKey<ServiceType>())
+    }
+    
+    /// Get Service by key if there are no errors.
+    open func getService<Key: ServiceLocatorKey>(key: Key) -> Key.ServiceType? {
+        return try? tryService(key: key)
     }
     
     /// Get Service with params if there are no errors
-    open func getService<ServiceType: ServiceSupportFactoryParams>(_ type: ServiceType.Type = ServiceType.self,
-                                                                   params: ServiceType.ParamsType) -> ServiceType? {
-        return try? tryService(ServiceType.self, params: params)
+    open func getService<ServiceType: ServiceSupportFactoryParams>(_ type: ServiceType.Type = ServiceType.self, params: ServiceType.ParamsType) -> ServiceType? {
+        return try? tryService(key: ServiceLocatorEasyKey<ServiceType>(), params: params)
+    }
+    
+    /// Get Service with params if there are no errors
+    open func getService<ServiceType>(_ type: ServiceType.Type = ServiceType.self, params: Any) -> ServiceType? {
+        return try? tryService(key: ServiceLocatorEasyKey<ServiceType>(), params: params)
+    }
+    
+    /// Get Service by key with params if there are no errors
+    open func getService<Key: ServiceLocatorKey>(key: Key, params: Any) -> Key.ServiceType? {
+        return try? tryService(key: key, params: params)
     }
     
     /// Get ServiceProvider with service
     open func getServiceProvider<ServiceType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceProvider<ServiceType>? {
+        return getServiceProvider(key: ServiceLocatorEasyKey<ServiceType>())
+    }
+    
+    /// Get ServiceProvider by key with service
+    open func getServiceProvider<Key: ServiceLocatorKey>(key: Key) -> ServiceProvider<Key.ServiceType>? {
         lock.lock()
         defer { lock.unlock() }
         
-        let typeName = serviceTypeName(for: ServiceType.self)
-        return providers[typeName] as? ServiceProvider<ServiceType>
+        return providers[key.storeKey] as? ServiceProvider<Key.ServiceType>
     }
     
     /// Get ServiceParamsProvider with service
     open func getServiceProvider<ServiceType, ParamsType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceParamsProvider<ServiceType, ParamsType>? {
+        return getServiceProvider(key: ServiceLocatorEasyKey<ServiceType>())
+    }
+    
+    /// Get ServiceParamsProvider with service
+    open func getServiceProvider<Key: ServiceLocatorKey, ParamsType>(key: Key) -> ServiceParamsProvider<Key.ServiceType, ParamsType>? {
         lock.lock()
         defer { lock.unlock() }
         
-        let typeName = serviceTypeName(for: ServiceType.self)
-        return providers[typeName] as? ServiceParamsProvider<ServiceType, ParamsType>
+        return providers[key.storeKey] as? ServiceParamsProvider<Key.ServiceType, ParamsType>
     }
     
     // MARK: - ServiceLocatorObjC support
@@ -343,5 +415,12 @@ extension ServiceParamsProvider: ServiceLocatorProviderBinding {
         } else {
             throw ServiceLocatorError.serviceNotFound
         }
+    }
+}
+
+extension ServiceLocator {
+    internal static func unitTestClearShared() {
+        ServiceLocator.shared = nil
+        ServiceLocator.readOnlyShared = false
     }
 }
