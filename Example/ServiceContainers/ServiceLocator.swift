@@ -13,7 +13,7 @@ import ServiceContainerKit
 extension FirstService: FirstServiceShared { }
 
 
-extension ServiceLocator {
+extension ServiceEasyLocator {
     static func setupSharedDefault() {
         //Create services providers
         let singletonServiceProvider = SingletonServiceFactory().serviceProvider()
@@ -27,7 +27,7 @@ extension ServiceLocator {
         let sharedFirstService: FirstService = firstServiceProvider.getService()!
         
         //Setup ServiceLocator
-        let serviceLocator = ServiceLocator()
+        let serviceLocator = ServiceEasyLocator()
         
         serviceLocator.addService(provider: singletonServiceProvider)
         serviceLocator.addService(provider: lazyServiceProvider)
@@ -39,6 +39,6 @@ extension ServiceLocator {
         
         
         serviceLocator.setReadOnly()
-        ServiceLocator.setupShared(serviceLocator: serviceLocator, readOnlySharedAfter: true)
+        ServiceEasyLocator.setupShared(serviceLocator, readOnlySharedAfter: true)
     }
 }

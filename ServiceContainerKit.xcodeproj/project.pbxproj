@@ -25,6 +25,7 @@
 		506F9F4320E3F88700E44CBD /* LazyServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4220E3F88700E44CBD /* LazyServiceFactory.swift */; };
 		506F9F4520E3F92900E44CBD /* FirstServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */; };
 		506F9F4720E3F9C900E44CBD /* SecondServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */; };
+		50A1C6A822667188003A8554 /* ServiceEasyLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A1C6A722667188003A8554 /* ServiceEasyLocator.swift */; };
 		50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75AC20C98643003ED4CC /* ObjCViewController.m */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CF20C44AF700B756B3 /* ViewController.swift */; };
@@ -82,6 +83,7 @@
 		506F9F4220E3F88700E44CBD /* LazyServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyServiceFactory.swift; sourceTree = "<group>"; };
 		506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstServiceFactory.swift; sourceTree = "<group>"; };
 		506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondServiceFactory.swift; sourceTree = "<group>"; };
+		50A1C6A722667188003A8554 /* ServiceEasyLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceEasyLocator.swift; sourceTree = "<group>"; };
 		50AA75A820C98169003ED4CC /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
 		50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		50AA75AB20C98643003ED4CC /* ObjCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCViewController.h; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 				50DA160820C4509E00B756B3 /* ServiceProvider.swift */,
 				50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */,
 				506F9F1720E3E44D00E44CBD /* ServiceLocator */,
+				50A1C6A622667137003A8554 /* ServiceEasyLocator */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -195,6 +198,14 @@
 				50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */,
 			);
 			name = "Support Files";
+			sourceTree = "<group>";
+		};
+		50A1C6A622667137003A8554 /* ServiceEasyLocator */ = {
+			isa = PBXGroup;
+			children = (
+				50A1C6A722667188003A8554 /* ServiceEasyLocator.swift */,
+			);
+			path = ServiceEasyLocator;
 			sourceTree = "<group>";
 		};
 		50DA15C120C44AF700B756B3 = {
@@ -397,6 +408,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50A1C6A822667188003A8554 /* ServiceEasyLocator.swift in Sources */,
 				506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */,
 				506F9F2F20E3EA0C00E44CBD /* ServiceProviderObjC.swift in Sources */,
 				506F9F3120E3EA1100E44CBD /* ServiceBaseTypes.swift in Sources */,

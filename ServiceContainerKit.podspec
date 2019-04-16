@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ServiceContainerKit"
-  s.version      = "1.1.0"
+  s.version      = "2.0.0"
   s.summary      = "Kit to create your own IoC Container or ServiceLocator. Use ServiceProvider as core, ServiceLocator as ready IoC Container"
   s.description  = <<-DESC
 			Written in Swift.
@@ -31,8 +31,12 @@ Pod::Spec.new do |s|
 
   s.subspec 'ServiceLocator' do |ss|
     ss.source_files = 'Source/ServiceLocator/*.swift'
-    
     ss.dependency 'ServiceContainerKit/Provider'
+  end
+  
+  s.subspec 'ServiceEasyLocator' do |ss|
+      ss.source_files = 'Source/ServiceEasyLocator/*.swift'
+      ss.dependency 'ServiceContainerKit/ServiceLocator'
   end
 
 end
