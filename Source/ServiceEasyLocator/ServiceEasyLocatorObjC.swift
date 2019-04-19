@@ -8,7 +8,7 @@
 
 import Foundation
 
-
+/*
 // MARK: Shared
 /// Support singleton ServiceLocator.
 extension ServiceLocatorObjC {
@@ -130,4 +130,4 @@ public class ServiceLocatorObjC: NSObject {
                                                   params: params)
     }
 }
-
+*/

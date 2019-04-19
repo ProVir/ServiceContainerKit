@@ -12,13 +12,11 @@ import Foundation
 public enum ServiceLocatorError: LocalizedError {
     case serviceNotFound
     case wrongParams
-    case sharedRequireSetup
 
     public var errorDescription: String? {
         switch self {
         case .serviceNotFound: return "Service not found in ServiceLocator"
         case .wrongParams: return "Params type invalid for ServiceParamsFactory"
-        case .sharedRequireSetup: return "ServiceLocator don't setuped for use as share (singleton)"
         }
     }
 }
@@ -42,19 +40,15 @@ public struct ServiceLocatorEasyKey<ServiceType>: ServiceLocatorKey {
     public var storeKey: String { return "\(ServiceType.self)" }
 }
 
+public struct ServiceLocatorParamsEasyKey<ServiceType, ParamsType>: ServiceLocatorParamsKey {
+    public init() { }
+    public var storeKey: String { return "\(ServiceType.self)" }
+}
 
 
 /// ServiceLocator as storage ServiceProviders.
 open class ServiceLocator {
-    /// ServiceLocator as singleton
-    public private(set) static var shared: ServiceLocator?
-    
-    /// ServiceLocator.shared don't can replace other instance. Also it can also be used to prohibit the use of a singleton
-    public private(set) static var readOnlyShared: Bool = false
-    
-    /// Services list support and factoryes don't can change if is `true`.
-    public private(set) var readOnly: Bool = false
-    
+
     public required init() { }
     
     /// Lock used for all public methods
@@ -63,32 +57,38 @@ open class ServiceLocator {
     /// Private list providers with services
     private var providers = [String: ServiceLocatorProviderBinding]()
     
-    // MARK: Setup
-    /// Setup ServiceLocator as singleton. If `readOnlySharedAfter = true` (default) - don't change singleton instance after.
-    public static func setupShared(serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true) {
-        if readOnlyShared {
-            assertionFailure("Don't support setupShared in readOnly regime")
-            return
-        }
-        
-        shared = serviceLocator
-        readOnlyShared = readOnlySharedAfter
-    }
+    // MARK: Setup locator
+    /// Services list support and factoryes don't can change if is `true`.
+    public private(set) var readOnly: Bool = false
+    private var readOnlyAssertionFailure: Bool = true
     
     /// In readOnly regime can't use addService and removeService.
-    open func setReadOnly() {
+    open func setReadOnly(assertionFailure: Bool = true) {
         lock.lock()
         readOnly = true
+        readOnlyAssertionFailure = assertionFailure
         lock.unlock()
     }
-    
+
+    /// Clone ServiceLocator with all providers, but with readOnly = false in new instance.
+    open func clone<T: ServiceLocator>(type: T.Type = T.self) -> T {
+        let locator = T.init()
+
+        lock.lock()
+        locator.providers = self.providers
+        lock.unlock()
+
+        return locator
+    }
+
+    // MARK: Setup services
     /// Add ServiceProvider by key with service for ServiceLocator
     open func addService<Key: ServiceLocatorKey>(key: Key, provider: ServiceProvider<Key.ServiceType>) {
         lock.lock()
         defer { lock.unlock() }
         
         if readOnly {
-            assertionFailure("Don't support addService in readOnly regime")
+            if readOnlyAssertionFailure { assertionFailure("Don't support addService in readOnly regime") }
             return
         }
         
@@ -101,7 +101,7 @@ open class ServiceLocator {
         defer { lock.unlock() }
         
         if readOnly {
-            assertionFailure("Don't support addService in readOnly regime")
+            if readOnlyAssertionFailure { assertionFailure("Don't support addService in readOnly regime") }
             return
         }
         
@@ -140,35 +140,12 @@ open class ServiceLocator {
         defer { lock.unlock() }
         
         if readOnly {
-            assertionFailure("Don't support removeService in readOnly regime")
+            if readOnlyAssertionFailure { assertionFailure("Don't support removeService in readOnly regime") }
             return false
         }
 
         return providers.removeValue(forKey: key.storeKey) != nil
     }
-    
-    /// Clone ServiceLocator with all providers, but with readOnly = false in new instance.
-    open func clone<T: ServiceLocator>(type: T.Type = T.self) -> T {
-        let locator = T.init()
-        
-        lock.lock()
-        locator.providers = self.providers
-        lock.unlock()
-        
-        return locator
-    }
-    
-    
-    // MARK: Get from shared
-    /// Get shared ServiceLocator or error
-    public static func tryShared() throws -> ServiceLocator {
-        if let shared = shared {
-            return shared
-        } else {
-            throw ServiceLocatorError.sharedRequireSetup
-        }
-    }
-
     
     // MARK: Get
     /// Get Service by key with detail information throwed error.
@@ -306,9 +283,3 @@ extension ServiceParamsProvider: ServiceLocatorProviderBinding {
     }
 }
 
-extension ServiceLocator {
-    internal static func unitTestClearShared() {
-        ServiceLocator.shared = nil
-        ServiceLocator.readOnlyShared = false
-    }
-}

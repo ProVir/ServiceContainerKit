@@ -70,15 +70,15 @@ class ViewController: UIViewController {
         }
         
         print("\nCreate and test FirstService")
-        let firstService: FirstService = ServiceEasyLocator.shared!.getService()!
+        let firstService: FirstService = ServiceLocator.shared!.getService()!
         firstService.test()
         
         print("\n\nTest shared FirstService (for get used protocol)")
-        let sharedService = ServiceEasyLocator.shared!.getService(FirstServiceShared.self) as! FirstService
+        let sharedService = ServiceLocator.shared!.getService(FirstServiceShared.self) as! FirstService
         sharedService.test()
         
         print("\n\nUpdate singleton value")
-        let singletonService: SingletonService = ServiceEasyLocator.shared!.getService()!
+        let singletonService: SingletonService = ServiceLocator.shared!.getService()!
         singletonService.value = "New Value from testLocator"
         
         firstService.test()
@@ -86,16 +86,16 @@ class ViewController: UIViewController {
         
         
         print("\n\nCreate and test SecondService with custom number (101)")
-        let secondService: SecondService = ServiceEasyLocator.shared!.getService(params: SecondServiceParams(number: 101))!
+        let secondService: SecondService = ServiceLocator.shared!.getService(params: SecondServiceParams(number: 101))!
         secondService.test()
         
         print("\n\nUpdate lazy value")
-        let lazyService: LazyService = ServiceEasyLocator.shared!.getService()!
+        let lazyService: LazyService = ServiceLocator.shared!.getService()!
         lazyService.value = "New Value in Lazy from testLocator"
         secondService.test()
         
         print("\n\nCreate and test SecondService with default number (without params)")
-        let secondNumDefService: SecondService = ServiceEasyLocator.shared!.getService()!
+        let secondNumDefService: SecondService = ServiceLocator.shared!.getService()!
         secondNumDefService.test()
         
         
