@@ -49,7 +49,7 @@ open class ServiceEasyLocator {
     
     /// Add ServiceParamsProvider with service for ServiceLocator
     open func addService<ServiceType, ParamsType>(provider: ServiceParamsProvider<ServiceType, ParamsType>) {
-        keyLocator.addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: provider)
+        keyLocator.addService(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), provider: provider)
     }
     
     /// Add service at one instance.
@@ -64,7 +64,7 @@ open class ServiceEasyLocator {
     
     /// Add factory service with params
     open func addService<ServiceType, ParamsType, FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
-        keyLocator.addService(key: ServiceLocatorEasyKey<ServiceType>(), factory: factory)
+        keyLocator.addService(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), factory: factory)
     }
     
     /// Add service with lazy create service in closure
@@ -90,8 +90,8 @@ open class ServiceEasyLocator {
     }
     
     /// Get Service with params with detail information throwed error.
-    open func tryService<ServiceType>(_ type: ServiceType.Type = ServiceType.self, params: Any) throws -> ServiceType {
-        return try keyLocator.tryService(key: ServiceLocatorEasyKey<ServiceType>(), params: params)
+    open func tryService<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) throws -> ServiceType {
+        return try keyLocator.tryService(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), params: params)
     }
     
     /// Get Service if there are no errors.
@@ -100,8 +100,8 @@ open class ServiceEasyLocator {
     }
     
     /// Get Service with params if there are no errors
-    open func getService<ServiceType>(_ type: ServiceType.Type = ServiceType.self, params: Any) -> ServiceType? {
-        return try? keyLocator.tryService(key: ServiceLocatorEasyKey<ServiceType>(), params: params)
+    open func getService<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) -> ServiceType? {
+        return try? keyLocator.tryService(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), params: params)
     }
     
     /// Get ServiceProvider with service
@@ -111,6 +111,6 @@ open class ServiceEasyLocator {
     
     /// Get ServiceParamsProvider with service
     open func getServiceProvider<ServiceType, ParamsType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceParamsProvider<ServiceType, ParamsType>? {
-        return keyLocator.getServiceProvider(key: ServiceLocatorEasyKey<ServiceType>())
+        return keyLocator.getServiceProvider(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>())
     }
 }

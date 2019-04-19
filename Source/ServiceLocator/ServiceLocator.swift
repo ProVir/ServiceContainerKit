@@ -96,7 +96,7 @@ open class ServiceLocator {
     }
     
     /// Add ServiceParamsProvider by key with service for ServiceLocator
-    open func addService<Key: ServiceLocatorKey, ParamsType>(key: Key, provider: ServiceParamsProvider<Key.ServiceType, ParamsType>) {
+    open func addService<Key: ServiceLocatorParamsKey>(key: Key, provider: ServiceParamsProvider<Key.ServiceType, Key.ParamsType>) {
         lock.lock()
         defer { lock.unlock() }
         
@@ -119,7 +119,7 @@ open class ServiceLocator {
     }
     
     /// Add factory service with params by key
-    open func addService<Key: ServiceLocatorKey, ParamsType, FactoryType: ServiceParamsFactory>(key: Key, factory: FactoryType) where FactoryType.ServiceType == Key.ServiceType, FactoryType.ParamsType == ParamsType {
+    open func addService<Key: ServiceLocatorParamsKey, FactoryType: ServiceParamsFactory>(key: Key, factory: FactoryType) where FactoryType.ServiceType == Key.ServiceType, FactoryType.ParamsType == Key.ParamsType {
         addService(key: key, provider: ServiceParamsProvider(factory: factory))
     }
     
@@ -162,7 +162,7 @@ open class ServiceLocator {
     }
     
     /// Get Service by key with params with detail information throwed error.
-    open func tryService<Key: ServiceLocatorKey>(key: Key, params: Any) throws -> Key.ServiceType {
+    open func tryService<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) throws -> Key.ServiceType {
         lock.lock()
         defer { lock.unlock() }
         
@@ -180,7 +180,7 @@ open class ServiceLocator {
     }
     
     /// Get Service by key with params if there are no errors
-    open func getService<Key: ServiceLocatorKey>(key: Key, params: Any) -> Key.ServiceType? {
+    open func getService<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) -> Key.ServiceType? {
         return try? tryService(key: key, params: params)
     }
     
@@ -193,11 +193,11 @@ open class ServiceLocator {
     }
     
     /// Get ServiceParamsProvider with service
-    open func getServiceProvider<Key: ServiceLocatorKey, ParamsType>(key: Key) -> ServiceParamsProvider<Key.ServiceType, ParamsType>? {
+    open func getServiceProvider<Key: ServiceLocatorParamsKey>(key: Key) -> ServiceParamsProvider<Key.ServiceType, Key.ParamsType>? {
         lock.lock()
         defer { lock.unlock() }
         
-        return providers[key.storeKey] as? ServiceParamsProvider<Key.ServiceType, ParamsType>
+        return providers[key.storeKey] as? ServiceParamsProvider<Key.ServiceType, Key.ParamsType>
     }
     
     // MARK: - ServiceLocatorObjC support
