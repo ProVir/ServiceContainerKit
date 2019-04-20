@@ -125,28 +125,12 @@ open class ServiceLocator {
     // MARK: Get
     /// Get Service by key with detail information throwed error.
     open func tryService<Key: ServiceLocatorKey>(key: Key) throws -> Key.ServiceType {
-        lock.lock()
-        defer { lock.unlock() }
-        
-        if let provider = providers[key.storeKey] {
-            do { return try provider.tryServiceBinding(Key.ServiceType.self, params: Optional<Any>.none as Any) }
-            catch { throw convertError(error) }
-        } else {
-            throw ServiceLocatorError.serviceNotFound
-        }
+        return try tryService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
     }
     
     /// Get Service by key with params with detail information throwed error.
     open func tryService<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) throws -> Key.ServiceType {
-        lock.lock()
-        defer { lock.unlock() }
-        
-        if let provider = providers[key.storeKey] {
-            do { return try provider.tryServiceBinding(Key.ServiceType.self, params: params) }
-            catch { throw convertError(error) }
-        } else {
-            throw ServiceLocatorError.serviceNotFound
-        }
+        return try tryService(storeKey: key.storeKey, params: params)
     }
     
     /// Get Service by key if there are no errors.
@@ -175,46 +159,28 @@ open class ServiceLocator {
         return providers[key.storeKey] as? ServiceParamsProvider<Key.ServiceType, Key.ParamsType>
     }
     
-    // MARK: - ServiceLocatorObjC support
-    func tryServiceObjC(typeName: String, params: Any) throws -> NSObject {
-        lock.lock()
-        defer { lock.unlock() }
-        
-        //Find for standart name
-        if let provider = providers[typeName] {
-            do { return try provider.tryServiceBinding(NSObject.self, params: params) }
-            catch { throw convertError(error) }
-        }
-
-        if let typeNameWithoutBundle = ServiceLocator.serviceTypeNameWithoutBundle(typeName: typeName),
-            let provider = providers[typeNameWithoutBundle] {
-            do { return try provider.tryServiceBinding(NSObject.self, params: params) }
-            catch { throw convertError(error) }
-        }
-
-        throw ServiceLocatorError.serviceNotFound
+    // MARK: ServiceLocatorObjC support
+    open func tryServiceObjC(key: ServiceLocatorObjCKey) throws -> NSObject {
+        return try tryService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
     }
-
-    // MARK: Service unique key
-    open func serviceTypeName(for type: Any.Type) -> String {
-        return "\(type)"
-    }
-
-    open func serviceTypeName(forObjCProtocol proto: Protocol) -> String {
-        return NSStringFromProtocol(proto)
+    
+    open func tryServiceObjC(key: ServiceLocatorObjCKey, params: Any) throws -> NSObject {
+        return try tryService(storeKey: key.storeKey, params: params)
     }
 
     // MARK: - Private
-    //Find without bundle name (Bundle.ServiceName - remove Bundle)
-    public static func serviceTypeNameWithoutBundle(typeName: String) -> String? {
-        if let pointIndex = typeName.firstIndex(of: ".") {
-            return String(typeName[typeName.index(after: pointIndex)..<typeName.endIndex])
+    private func tryService<ServiceType>(storeKey: String, params: Any) throws -> ServiceType {
+        lock.lock()
+        defer { lock.unlock() }
+        
+        if let provider = providers[storeKey] {
+            do { return try provider.tryServiceBinding(ServiceType.self, params: params) }
+            catch { throw convertError(error) }
         } else {
-            return nil
+            throw ServiceLocatorError.serviceNotFound
         }
     }
     
-    /// Convert errors from ServiceProviderError to ServiceLocatorError
     private func convertError(_ error: Error) -> Error {
         if let error = error as? ServiceProviderError {
             switch error {

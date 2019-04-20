@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		504C7A90226BB80000762BC7 /* ServiceEasyLocatorObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75A820C98169003ED4CC /* ServiceEasyLocatorObjC.swift */; };
+		504C7A93226BB87300762BC7 /* ServiceLocatorObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504C7A91226BB86100762BC7 /* ServiceLocatorObjC.swift */; };
 		506F9F2620E3E4B400E44CBD /* ServiceContainerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; };
 		506F9F2720E3E4B400E44CBD /* ServiceContainerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		506F9F2B20E3E69500E44CBD /* ServiceContainerKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -69,6 +71,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		504C7A91226BB86100762BC7 /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
 		506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceContainerKit.h; sourceTree = "<group>"; };
 		506F9EFA20E3E3F100E44CBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		506F9EFF20E3E3F100E44CBD /* ServiceContainerKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ServiceContainerKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,6 +167,7 @@
 			children = (
 				50A1C6A9226BAD01003A8554 /* ServiceLocatorKey.swift */,
 				50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */,
+				504C7A91226BB86100762BC7 /* ServiceLocatorObjC.swift */,
 			);
 			path = ServiceLocator;
 			sourceTree = "<group>";
@@ -419,6 +423,8 @@
 				506F9F2F20E3EA0C00E44CBD /* ServiceProviderObjC.swift in Sources */,
 				506F9F3120E3EA1100E44CBD /* ServiceBaseTypes.swift in Sources */,
 				506F9F2D20E3EA0600E44CBD /* ServiceLocator.swift in Sources */,
+				504C7A93226BB87300762BC7 /* ServiceLocatorObjC.swift in Sources */,
+				504C7A90226BB80000762BC7 /* ServiceEasyLocatorObjC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

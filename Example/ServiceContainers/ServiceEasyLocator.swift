@@ -9,6 +9,12 @@
 import Foundation
 import ServiceContainerKit
 
+extension ServiceEasyLocatorObjC {
+    @objc static var shared: ServiceEasyLocatorObjC? {
+        return ServiceEasyLocator.shared.map { .init($0) }
+    }
+}
+
 /// Recommendation use ServiceLocator
 final class ServiceEasyLocator: ServiceContainerKit.ServiceEasyLocator {
     enum Error: LocalizedError {
@@ -48,6 +54,4 @@ final class ServiceEasyLocator: ServiceContainerKit.ServiceEasyLocator {
         shared = serviceLocator
         readOnlyShared = readOnlySharedAfter
     }
-
-    
 }

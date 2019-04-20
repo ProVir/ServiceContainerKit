@@ -46,21 +46,43 @@
     printf("\n\nAll experiments completed, removed all services created in current selector.\n");
 }
 
+- (IBAction) testKeyLocator {
+    printf("\n\nSTART TEST SERVICE LOCATOR OBJC WITH KEYS\n");
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        printf("\nSTOP TEST SERVICE LOCATOR OBJC WITH KEYS\n");
+    });
+    
+    ServiceLocator *serviceLocator = [ServiceLocator createDefault];
+    printf("CREATED SERVICE LOCATOR WITH SERVICES\n");
+    
+    printf("\nCreate and test FirstService\n");
+    FirstService* firstService = [serviceLocator getServiceWithKey:ServiceLocatorKey.firstService];
+    [firstService test];
+
+    printf("\n\nTest shared FirstService\n");
+    FirstService* sharedService = [serviceLocator getServiceWithKey:ServiceLocatorKey.firstServiceShared];
+    [sharedService test];
+    
+    printf("\n\nAll experiments completed, removed all services created in current selector.\n");
+}
+
 - (IBAction) testLocator {
-//    printf("\n\nSTART TEST SERVICE LOCATOR OBJC\n");
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        printf("\nSTOP TEST SERVICE LOCATOR OBJC\n");
-//    });
-//
-//    printf("\nCreate and test FirstService\n");
-//    FirstService* firstService = [ServiceLocator getServiceWithClass:FirstService.class];
-//    [firstService test];
-//
-//    printf("\n\nTest shared FirstService\n");
-//    FirstService* sharedService = [ServiceLocator getServiceWithProtocol:@protocol(FirstServiceShared)];
-//    [sharedService test];
-//
-//    printf("\n\nAll experiments completed, removed all services created in current selector.\n");
+    printf("\n\nSTART TEST SERVICE EASY LOCATOR OBJC\n");
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        printf("\nSTOP TEST SERVICE EASY LOCATOR OBJC\n");
+    });
+    
+    ServiceEasyLocator *serviceLocator = ServiceEasyLocator.shared;
+
+    printf("\nCreate and test FirstService\n");
+    FirstService* firstService = [serviceLocator getServiceWithClass:FirstService.class];
+    [firstService test];
+
+    printf("\n\nTest shared FirstService\n");
+    FirstService* sharedService = [serviceLocator getServiceWithProtocol:@protocol(FirstServiceShared)];
+    [sharedService test];
+
+    printf("\n\nAll experiments completed, removed all services created in current selector.\n");
 }
 
 @end

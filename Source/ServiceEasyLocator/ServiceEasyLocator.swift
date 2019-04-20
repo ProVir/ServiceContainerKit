@@ -113,4 +113,32 @@ open class ServiceEasyLocator {
     open func getServiceProvider<ServiceType, ParamsType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceParamsProvider<ServiceType, ParamsType>? {
         return keyLocator.getServiceProvider(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>())
     }
+    
+    // MARK: ObjC
+    open func tryServiceObjC(typeName: String) throws -> NSObject {
+        return try tryServiceObjC(typeName: typeName, params: Optional<Any>.none as Any)
+    }
+    
+    open func tryServiceObjC(typeName: String, params: Any) throws -> NSObject {
+        do {
+            return try keyLocator.tryServiceObjC(key: ServiceLocatorObjCKey(storeKey: typeName), params: params)
+        } catch ServiceLocatorError.serviceNotFound {
+        } catch {
+            throw error
+        }
+        
+        guard let typeName = serviceTypeNameWithoutBundle(typeName: typeName) else {
+            throw ServiceLocatorError.serviceNotFound
+        }
+        
+        return try keyLocator.tryServiceObjC(key: ServiceLocatorObjCKey(storeKey: typeName), params: params)
+    }
+    
+    public func serviceTypeNameWithoutBundle(typeName: String) -> String? {
+        if let pointIndex = typeName.firstIndex(of: ".") {
+            return String(typeName[typeName.index(after: pointIndex)..<typeName.endIndex])
+        } else {
+            return nil
+        }
+    }
 }

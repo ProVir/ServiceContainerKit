@@ -23,6 +23,11 @@ struct ServiceLocatorKeys {
     static let secondService = SecondServiceFactory.defaultKey
 }
 
+extension ServiceLocatorObjCKey {
+    @objc static var firstService: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.firstService) }
+    @objc static var firstServiceShared: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.firstServiceShared) }
+}
+
 extension ServiceLocator {
     static func createDefault() -> ServiceLocator {
         //Create services providers
@@ -52,6 +57,12 @@ extension ServiceLocator {
         
         serviceLocator.setReadOnly()
         return serviceLocator
+    }
+}
+
+extension ServiceLocatorObjC {
+    @objc static func createDefault() -> ServiceLocatorObjC {
+        return .init(.createDefault())
     }
 }
 

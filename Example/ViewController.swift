@@ -70,7 +70,7 @@ class ViewController: UIViewController {
         }
         
         let serviceLocator = ServiceLocator.createDefault()
-        print("\nCREATED SERVICE LOCATOR WITH SERVICES")
+        print("CREATED SERVICE LOCATOR WITH SERVICES\n")
         
         print("\nCreate and test FirstService")
         let firstService = serviceLocator.getService(key: ServiceLocatorKeys.firstService)!
@@ -106,9 +106,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func testLocator() {
-        print("\n\nSTART TEST SERVICE LOCATOR")
+        print("\n\nSTART TEST SERVICE EASY LOCATOR")
         defer {
-            print("\nSTOP TEST SERVICE LOCATOR\n")
+            print("\nSTOP TEST SERVICE EASY LOCATOR\n")
         }
         
         guard let serviceLocator = ServiceEasyLocator.shared else { return }

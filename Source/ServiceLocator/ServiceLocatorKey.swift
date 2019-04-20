@@ -34,3 +34,20 @@ extension ServiceFactory {
 extension ServiceParamsFactory {
     public static var defaultKey: ServiceLocatorParamsEasyKey<ServiceType, ParamsType> { return .init() }
 }
+
+// MARK: ObjC
+@objc(ServiceLocatorKey)
+public class ServiceLocatorObjCKey: NSObject {
+    public let storeKey: String
+    
+    public init<Key: ServiceLocatorKey>(_ key: Key) {
+        self.storeKey = key.storeKey
+        super.init()
+    }
+    
+    public init(storeKey: String) {
+        self.storeKey = storeKey
+        super.init()
+    }
+}
+
