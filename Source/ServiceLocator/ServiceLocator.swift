@@ -1,6 +1,6 @@
 //
 //  ServiceLocator.swift
-//  ServiceLocatorSwift 1.1.0
+//  ServiceLocatorSwift 2.0.0
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -20,31 +20,6 @@ public enum ServiceLocatorError: LocalizedError {
         }
     }
 }
-
-/// Protocol for Service, use when used ServiceParamsFactory as factory for service. Added getService function for ServiceLocator with params.
-public protocol ServiceSupportFactoryParams {
-    associatedtype ParamsType
-}
-
-public protocol ServiceLocatorKey {
-    associatedtype ServiceType
-    var storeKey: String { get }
-}
-
-public protocol ServiceLocatorParamsKey: ServiceLocatorKey {
-    associatedtype ParamsType
-}
-
-public struct ServiceLocatorEasyKey<ServiceType>: ServiceLocatorKey {
-    public init() { }
-    public var storeKey: String { return "\(ServiceType.self)" }
-}
-
-public struct ServiceLocatorParamsEasyKey<ServiceType, ParamsType>: ServiceLocatorParamsKey {
-    public init() { }
-    public var storeKey: String { return "\(ServiceType.self)" }
-}
-
 
 /// ServiceLocator as storage ServiceProviders.
 open class ServiceLocator {

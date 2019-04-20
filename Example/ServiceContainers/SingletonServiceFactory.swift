@@ -9,6 +9,8 @@
 import Foundation
 import ServiceContainerKit
 
+/// Variant key 2 - used typealias
+typealias SingletonServiceLocatorKey = ServiceLocatorEasyKey<SingletonService>
 
 struct SingletonServiceFactory: ServiceFactory {
     let factoryType: ServiceFactoryType = .atOne

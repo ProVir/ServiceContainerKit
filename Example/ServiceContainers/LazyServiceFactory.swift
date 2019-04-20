@@ -9,6 +9,11 @@
 import Foundation
 import ServiceContainerKit
 
+/// Variant key 3 - used static variable in service
+extension LazyService {
+    static var locatorKey: ServiceLocatorEasyKey<LazyService> { return .init() }
+}
+
 struct LazyServiceFactory: ServiceFactory {
     let factoryType: ServiceFactoryType = .lazy
     

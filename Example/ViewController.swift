@@ -63,22 +63,25 @@ class ViewController: UIViewController {
         print("\n\nAll experiments completed, removed all services created in current function.")
     }
     
-    @IBAction func testLocator() {
-        print("\n\nSTART TEST SERVICE LOCATOR")
+    @IBAction func testKeyLocator() {
+        print("\n\nSTART TEST SERVICE LOCATOR WITH KEYS")
         defer {
-            print("\nSTOP TEST SERVICE LOCATOR\n")
+            print("\nSTOP TEST SERVICE LOCATOR WITH KEYS\n")
         }
         
+        let serviceLocator = ServiceLocator.createDefault()
+        print("\nCREATED SERVICE LOCATOR WITH SERVICES")
+        
         print("\nCreate and test FirstService")
-        let firstService: FirstService = ServiceLocator.shared!.getService()!
+        let firstService = serviceLocator.getService(key: ServiceLocatorKeys.firstService)!
         firstService.test()
         
-        print("\n\nTest shared FirstService (for get used protocol)")
-        let sharedService = ServiceLocator.shared!.getService(FirstServiceShared.self) as! FirstService
+        print("\n\nTest shared FirstService")
+        let sharedService = serviceLocator.getService(key: ServiceLocatorKeys.firstServiceShared)!
         sharedService.test()
         
-        print("\n\nUpdate singleton value")
-        let singletonService: SingletonService = ServiceLocator.shared!.getService()!
+        print("\n\nUpdate singleton value - use variant 2 for key")
+        let singletonService = serviceLocator.getService(key: SingletonServiceLocatorKey())!
         singletonService.value = "New Value from testLocator"
         
         firstService.test()
@@ -86,18 +89,58 @@ class ViewController: UIViewController {
         
         
         print("\n\nCreate and test SecondService with custom number (101)")
-        let secondService: SecondService = ServiceLocator.shared!.getService(params: SecondServiceParams(number: 101))!
+        let secondService = serviceLocator.getService(key: ServiceLocatorKeys.secondService,
+                                                      params: SecondServiceParams(number: 101))!
         secondService.test()
         
-        print("\n\nUpdate lazy value")
-        let lazyService: LazyService = ServiceLocator.shared!.getService()!
+        print("\n\nUpdate lazy value - use variant 3 for key")
+        let lazyService = serviceLocator.getService(key: LazyService.locatorKey)!
         lazyService.value = "New Value in Lazy from testLocator"
         secondService.test()
         
         print("\n\nCreate and test SecondService with default number (without params)")
-        let secondNumDefService: SecondService = ServiceLocator.shared!.getService()!
+        let secondNumDefService = serviceLocator.getService(key: ServiceLocatorKeys.secondService)!
         secondNumDefService.test()
         
+        print("\n\nAll experiments completed, removed all services created in current function.")
+    }
+    
+    @IBAction func testLocator() {
+        print("\n\nSTART TEST SERVICE LOCATOR")
+        defer {
+            print("\nSTOP TEST SERVICE LOCATOR\n")
+        }
+        
+        guard let serviceLocator = ServiceEasyLocator.shared else { return }
+        
+        print("\nCreate and test FirstService")
+        let firstService: FirstService = serviceLocator.getService()!
+        firstService.test()
+        
+        print("\n\nTest shared FirstService (for get used protocol)")
+        let sharedService = serviceLocator.getService(FirstServiceShared.self) as! FirstService
+        sharedService.test()
+        
+        print("\n\nUpdate singleton value")
+        let singletonService: SingletonService = serviceLocator.getService()!
+        singletonService.value = "New Value from testLocator"
+        
+        firstService.test()
+        sharedService.test()
+        
+        
+        print("\n\nCreate and test SecondService with custom number (101)")
+        let secondService: SecondService = serviceLocator.getService(params: SecondServiceParams(number: 101))!
+        secondService.test()
+        
+        print("\n\nUpdate lazy value")
+        let lazyService: LazyService = serviceLocator.getService()!
+        lazyService.value = "New Value in Lazy from testLocator"
+        secondService.test()
+        
+        print("\n\nCreate and test SecondService with default number (without params)")
+        let secondNumDefService: SecondService = serviceLocator.getService()!
+        secondNumDefService.test()
         
         print("\n\nAll experiments completed, removed all services created in current function.")
     }

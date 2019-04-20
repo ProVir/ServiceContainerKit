@@ -25,6 +25,7 @@
 		506F9F4520E3F92900E44CBD /* FirstServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */; };
 		506F9F4720E3F9C900E44CBD /* SecondServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */; };
 		50A1C6A822667188003A8554 /* ServiceEasyLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A1C6A722667188003A8554 /* ServiceEasyLocator.swift */; };
+		50A1C6AB226BAD07003A8554 /* ServiceLocatorKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A1C6A9226BAD01003A8554 /* ServiceLocatorKey.swift */; };
 		50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75AC20C98643003ED4CC /* ObjCViewController.m */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CF20C44AF700B756B3 /* ViewController.swift */; };
@@ -33,7 +34,7 @@
 		50DA15D820C44AF800B756B3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D620C44AF800B756B3 /* LaunchScreen.storyboard */; };
 		8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8888231322575AA800D0D132 /* ServiceProviderTests.swift */; };
 		888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888823202257AB4F00D0D132 /* ServiceStubs.swift */; };
-		889307DC226865B900CB4D3C /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889307DB226865B900CB4D3C /* ServiceLocator.swift */; };
+		889307DC226865B900CB4D3C /* ServiceEasyLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889307DB226865B900CB4D3C /* ServiceEasyLocator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,7 @@
 		506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstServiceFactory.swift; sourceTree = "<group>"; };
 		506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondServiceFactory.swift; sourceTree = "<group>"; };
 		50A1C6A722667188003A8554 /* ServiceEasyLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceEasyLocator.swift; sourceTree = "<group>"; };
+		50A1C6A9226BAD01003A8554 /* ServiceLocatorKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorKey.swift; sourceTree = "<group>"; };
 		50AA75A820C98169003ED4CC /* ServiceEasyLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceEasyLocatorObjC.swift; sourceTree = "<group>"; };
 		50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		50AA75AB20C98643003ED4CC /* ObjCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCViewController.h; sourceTree = "<group>"; };
@@ -104,7 +106,7 @@
 		50DA160F20C4DB6700B756B3 /* ServiceContainerKit.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = ServiceContainerKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		8888231322575AA800D0D132 /* ServiceProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderTests.swift; sourceTree = "<group>"; };
 		888823202257AB4F00D0D132 /* ServiceStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceStubs.swift; sourceTree = "<group>"; };
-		889307DB226865B900CB4D3C /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
+		889307DB226865B900CB4D3C /* ServiceEasyLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceEasyLocator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +162,7 @@
 		506F9F1720E3E44D00E44CBD /* ServiceLocator */ = {
 			isa = PBXGroup;
 			children = (
+				50A1C6A9226BAD01003A8554 /* ServiceLocatorKey.swift */,
 				50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */,
 			);
 			path = ServiceLocator;
@@ -179,7 +182,7 @@
 		506F9F3B20E3F6B400E44CBD /* ServiceContainers */ = {
 			isa = PBXGroup;
 			children = (
-				889307DB226865B900CB4D3C /* ServiceLocator.swift */,
+				889307DB226865B900CB4D3C /* ServiceEasyLocator.swift */,
 				506F9F3C20E3F6CF00E44CBD /* ServiceContainer.swift */,
 				506F9F3E20E3F78B00E44CBD /* ServiceLocatorSetup.swift */,
 				506F9F4020E3F81600E44CBD /* SingletonServiceFactory.swift */,
@@ -412,6 +415,7 @@
 			files = (
 				50A1C6A822667188003A8554 /* ServiceEasyLocator.swift in Sources */,
 				506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */,
+				50A1C6AB226BAD07003A8554 /* ServiceLocatorKey.swift in Sources */,
 				506F9F2F20E3EA0C00E44CBD /* ServiceProviderObjC.swift in Sources */,
 				506F9F3120E3EA1100E44CBD /* ServiceBaseTypes.swift in Sources */,
 				506F9F2D20E3EA0600E44CBD /* ServiceLocator.swift in Sources */,
@@ -428,7 +432,7 @@
 				506F9F4320E3F88700E44CBD /* LazyServiceFactory.swift in Sources */,
 				50DA15D020C44AF700B756B3 /* ViewController.swift in Sources */,
 				506F9F3420E3F48E00E44CBD /* SingletonService.swift in Sources */,
-				889307DC226865B900CB4D3C /* ServiceLocator.swift in Sources */,
+				889307DC226865B900CB4D3C /* ServiceEasyLocator.swift in Sources */,
 				506F9F3820E3F56500E44CBD /* FirstService.swift in Sources */,
 				506F9F3620E3F4F500E44CBD /* LazyService.swift in Sources */,
 				50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */,
@@ -490,7 +494,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -511,7 +515,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -538,7 +542,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -567,7 +571,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -697,6 +701,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
+				IBSC_WARNINGS = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -708,7 +713,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Example/Example-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -722,6 +727,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
+				IBSC_WARNINGS = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -731,7 +737,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Example/Example-Bridging-Header.h";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
