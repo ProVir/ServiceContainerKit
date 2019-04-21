@@ -8,6 +8,29 @@
 
 @testable import ServiceContainerKit
 
+struct ServiceLocatorKeys {
+    static let serviceSingleton = SpyServiceSingletonFactory.defaultKey
+    static let serviceLazy = SpyServiceLazyFactory.defaultKey
+    static let serviceMany = SpyServiceManyFactory.defaultKey
+    static let serviceSingletonValue = SpyServiceValueFactory<ServiceSingleton>.defaultKey
+    static let serviceManyValue = SpyServiceValueFactory<ServiceMany>.defaultKey
+    static let serviceParams = SpyServiceParamsFactory.defaultKey
+    static let serviceOptParams = SpyServiceOptParamsFactory.defaultKey
+    static let serviceParamsValue = SpyServiceParamsValueFactory.defaultKey
+    
+    static let serviceSingletonObjC = SpyServiceSingletonObjCFactory.defaultKey
+    static let serviceParamsObjC = SpyServiceParamsObjCFactory.defaultKey
+    static let serviceSingletonValueObjC = SpyServiceSingletonValueObjCFactory.defaultKey
+    static let serviceParamsValueObjC = SpyServiceParamsValueObjCFactory.defaultKey
+}
+
+extension ServiceLocatorObjCKey {
+    @objc static var serviceSingleton: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.serviceSingletonObjC) }
+    @objc static var serviceParams: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.serviceParamsObjC) }
+    @objc static var serviceSingletonValue: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.serviceSingletonValueObjC) }
+    @objc static var serviceParamsValue: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.serviceParamsValueObjC) }
+}
+
 // MARK: Services
 protocol ServiceValue: class {
     init()
@@ -140,7 +163,7 @@ class SpyServiceValueFactory<Service: ServiceValue>: ServiceContainerKit.Service
     }
 
     let factoryType: ServiceFactoryType
-    func createService() throws -> Service {
+    func createService() throws -> ServiceValue {
         callCount += 1
         if let error = error {
             throw error
@@ -159,6 +182,19 @@ class SpyServiceParamsFactory: ServiceContainerKit.ServiceParamsFactory {
             throw error
         } else {
             return ServiceParams(value: params.value)
+        }
+    }
+}
+
+class SpyServiceOptParamsFactory: ServiceContainerKit.ServiceParamsFactory {
+    var callCount: Int = 0
+    
+    func createService(params: ServiceParams.Params?) throws -> ServiceParams {
+        callCount += 1
+        if let error = params?.error {
+            throw error
+        } else {
+            return ServiceParams(value: params?.value ?? "Default")
         }
     }
 }
