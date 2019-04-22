@@ -44,7 +44,7 @@ class ServiceProviderTests: XCTestCase {
         let factory = SpyServiceSingletonFactory(error: ServiceCreateError.someError)
         let provider = factory.serviceProvider()
 
-        XCTAssert(factory.callCount == 1, "Real create service need when create provider")
+        XCTAssertEqual(factory.callCount, 1, "Real create service need when create provider")
 
         if provider.getService() != nil {
             XCTFail("Service need failure create")

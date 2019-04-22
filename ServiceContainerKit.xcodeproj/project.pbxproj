@@ -38,6 +38,7 @@
 		8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8888231322575AA800D0D132 /* ServiceProviderTests.swift */; };
 		888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888823202257AB4F00D0D132 /* ServiceStubs.swift */; };
 		889307DC226865B900CB4D3C /* ServiceEasyLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889307DB226865B900CB4D3C /* ServiceEasyLocator.swift */; };
+		88984317226E1329002F49B4 /* ServiceEasyLocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88984316226E1329002F49B4 /* ServiceEasyLocatorTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +113,7 @@
 		8888231322575AA800D0D132 /* ServiceProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderTests.swift; sourceTree = "<group>"; };
 		888823202257AB4F00D0D132 /* ServiceStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceStubs.swift; sourceTree = "<group>"; };
 		889307DB226865B900CB4D3C /* ServiceEasyLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceEasyLocator.swift; sourceTree = "<group>"; };
+		88984316226E1329002F49B4 /* ServiceEasyLocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceEasyLocatorTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 				888823202257AB4F00D0D132 /* ServiceStubs.swift */,
 				8888231322575AA800D0D132 /* ServiceProviderTests.swift */,
 				504C7A94226C6DBD00762BC7 /* ServiceLocatorTests.swift */,
+				88984316226E1329002F49B4 /* ServiceEasyLocatorTests.swift */,
 			);
 			path = ServiceContainerKitTests;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 			files = (
 				8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */,
 				888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */,
+				88984317226E1329002F49B4 /* ServiceEasyLocatorTests.swift in Sources */,
 				504C7A95226C6DBD00762BC7 /* ServiceLocatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

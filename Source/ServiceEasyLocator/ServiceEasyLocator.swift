@@ -79,7 +79,7 @@ open class ServiceEasyLocator {
     
     /// Remove service from ServiceLocator.
     @discardableResult
-    open func removeService<ServiceType>(serviceType: ServiceType.Type) -> Bool {
+    open func removeService<ServiceType>(_ serviceType: ServiceType.Type) -> Bool {
         return keyLocator.removeService(key: ServiceLocatorEasyKey<ServiceType>())
     }
     
