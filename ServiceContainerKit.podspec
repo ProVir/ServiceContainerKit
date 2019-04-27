@@ -29,14 +29,14 @@ Pod::Spec.new do |s|
     ss.public_header_files = 'Source/*.h'
   end
 
-  s.subspec 'ServiceKeyLocator' do |ss|
-    ss.source_files = 'Source/ServiceKeyLocator/*.swift'
+  s.subspec 'ServiceLocator' do |ss|
+    ss.source_files = 'Source/ServiceLocator/*.swift'
     ss.dependency 'ServiceContainerKit/Provider'
   end
   
   s.subspec 'ServiceEasyLocator' do |ss|
       ss.source_files = 'Source/ServiceEasyLocator/*.swift'
-      ss.dependency 'ServiceContainerKit/ServiceKeyLocator'
+      ss.dependency 'ServiceContainerKit/ServiceLocator'
   end
 
 end
