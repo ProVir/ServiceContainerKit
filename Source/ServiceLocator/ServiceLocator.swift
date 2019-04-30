@@ -1,6 +1,6 @@
 //
 //  ServiceLocator.swift
-//  ServiceLocatorSwift 2.0.0
+//  ServiceContainerKit/ServiceLocator 2.0.0
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -122,7 +122,7 @@ open class ServiceLocator {
         return providers.removeValue(forKey: key.storeKey) != nil
     }
     
-    // MARK: Get
+    // MARK: - Get
     /// Get Service by key with detail information throwed error.
     open func tryService<Key: ServiceLocatorKey>(key: Key) throws -> Key.ServiceType {
         return try tryService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
@@ -151,7 +151,7 @@ open class ServiceLocator {
         return providers[key.storeKey] as? ServiceProvider<Key.ServiceType>
     }
     
-    /// Get ServiceParamsProvider with service
+    /// Get ServiceParamsProvider with service by key
     open func getServiceProvider<Key: ServiceLocatorParamsKey>(key: Key) -> ServiceParamsProvider<Key.ServiceType, Key.ParamsType>? {
         lock.lock()
         defer { lock.unlock() }
@@ -159,11 +159,13 @@ open class ServiceLocator {
         return providers[key.storeKey] as? ServiceParamsProvider<Key.ServiceType, Key.ParamsType>
     }
     
-    // MARK: ServiceLocatorObjC support
+    // MARK: ObjC
+    /// Get Service by ObjC Key
     open func tryServiceObjC(key: ServiceLocatorObjCKey) throws -> NSObject {
         return try tryService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
     }
-    
+
+    /// Get Service by ObjC Key with params
     open func tryServiceObjC(key: ServiceLocatorObjCKey, params: Any) throws -> NSObject {
         return try tryService(storeKey: key.storeKey, params: params)
     }

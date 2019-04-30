@@ -1,6 +1,6 @@
 //
 //  ServiceProviderObjC.swift
-//  ServiceProvider 1.1.0
+//  ServiceContainerKit/ServiceProvider 2.0.0
 //
 //  Created by Короткий Виталий (ViR) on 07.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.

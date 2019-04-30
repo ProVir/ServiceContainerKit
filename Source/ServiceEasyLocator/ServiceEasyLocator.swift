@@ -1,6 +1,6 @@
 //
 //  ServiceEasyLocator.swift
-//  ServiceContainerKit 2.0.0
+//  ServiceContainerKit/ServiceEasyLocator 2.0.0
 //
 //  Created by Короткий Виталий on 16/04/2019.
 //  Copyright © 2019 ProVir. All rights reserved.
@@ -15,7 +15,8 @@ open class ServiceEasyLocator {
     public init() {
         keyLocator = ServiceLocator()
     }
-    
+
+    /// Constructor used for clone locator
     public required init(other: ServiceEasyLocator) {
         self.keyLocator = other.keyLocator.clone()
     }
@@ -35,13 +36,12 @@ open class ServiceEasyLocator {
         keyLocator.setReadOnly(assertionFailure: assertionFailure)
     }
     
-    /// Clone ServiceLocator with all providers, but with readOnly = false in new instance.
+    /// Clone ServiceEasyLocator with all providers, but with readOnly = false in new instance.
     open func clone<T: ServiceEasyLocator>(type: T.Type = T.self) -> T {
         return T.init(other: self)
     }
     
     // MARK: - Setup services
-    
     /// Add ServiceProvider with service for ServiceLocator
     open func addService<ServiceType>(provider: ServiceProvider<ServiceType>) {
         keyLocator.addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: provider)
@@ -77,19 +77,19 @@ open class ServiceEasyLocator {
         keyLocator.addService(key: ServiceLocatorEasyKey<ServiceType>(), manyFactory: closure)
     }
     
-    /// Remove service from ServiceLocator.
+    /// Remove service from ServiceEasyLocator.
     @discardableResult
     open func removeService<ServiceType>(_ serviceType: ServiceType.Type) -> Bool {
         return keyLocator.removeService(key: ServiceLocatorEasyKey<ServiceType>())
     }
     
     // MARK: - Get
-    /// Get Service with detail information throwed error.
+    /// Get Service with detailed information throwed error.
     open func tryService<ServiceType>(_ type: ServiceType.Type = ServiceType.self) throws -> ServiceType {
         return try keyLocator.tryService(key: ServiceLocatorEasyKey<ServiceType>())
     }
     
-    /// Get Service with params with detail information throwed error.
+    /// Get Service with params and detailed information throwed error.
     open func tryService<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) throws -> ServiceType {
         return try keyLocator.tryService(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), params: params)
     }
@@ -115,10 +115,12 @@ open class ServiceEasyLocator {
     }
     
     // MARK: ObjC
+    /// Get Service use typeName as ServiceLocatorKey.storeKey
     open func tryServiceObjC(typeName: String) throws -> NSObject {
         return try tryServiceObjC(typeName: typeName, params: Optional<Any>.none as Any)
     }
-    
+
+    /// Get Service with params use typeName as ServiceLocatorKey.storeKey
     open func tryServiceObjC(typeName: String, params: Any) throws -> NSObject {
         do {
             return try keyLocator.tryServiceObjC(key: ServiceLocatorObjCKey(storeKey: typeName), params: params)
@@ -133,7 +135,8 @@ open class ServiceEasyLocator {
         
         return try keyLocator.tryServiceObjC(key: ServiceLocatorObjCKey(storeKey: typeName), params: params)
     }
-    
+
+    /// TypeName without bundle prefix
     public func serviceTypeNameWithoutBundle(typeName: String) -> String? {
         if let pointIndex = typeName.firstIndex(of: ".") {
             return String(typeName[typeName.index(after: pointIndex)..<typeName.endIndex])
