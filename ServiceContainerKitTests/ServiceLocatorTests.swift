@@ -30,22 +30,22 @@ class ServiceLocatorTests: XCTestCase {
 
     func testClone() {
         serviceLocator.addService(key: ServiceLocatorKeys.serviceSingleton, service: ServiceSingleton())
-        serviceLocator.setReadOnly()
+        serviceLocator.setReadOnly(denyClone: false, assertionFailure: false)
         
         let serviceLocator2 = serviceLocator.clone()
         serviceLocator2.addService(key: ServiceLocatorKeys.serviceLazy, factory: SpyServiceLazyFactory())
         
-        guard let servcie1 = serviceLocator.getService(key: ServiceLocatorKeys.serviceSingleton) else {
+        guard let service1 = serviceLocator.getService(key: ServiceLocatorKeys.serviceSingleton) else {
             XCTFail("Service not found")
             return
         }
         
-        guard let servcie2 = serviceLocator2.getService(key: ServiceLocatorKeys.serviceSingleton) else {
+        guard let service2 = serviceLocator2.getService(key: ServiceLocatorKeys.serviceSingleton) else {
             XCTFail("Service not found")
             return
         }
         
-        XCTAssert(servcie1 === servcie2, "Service singleton after clone also remains singleton")
+        XCTAssert(service1 === service2, "Service singleton after clone also remains singleton")
         
         if serviceLocator.getService(key: ServiceLocatorKeys.serviceLazy) != nil {
             XCTFail("Service not be found")
@@ -54,6 +54,13 @@ class ServiceLocatorTests: XCTestCase {
         if serviceLocator2.getService(key: ServiceLocatorKeys.serviceLazy) == nil {
             XCTFail("Service not found")
         }
+        
+        serviceLocator.setReadOnly(denyClone: true, assertionFailure: false)
+        let serviceLocator3 = serviceLocator.clone()
+        
+        serviceLocator3.addService(key: ServiceLocatorKeys.serviceLazy, factory: SpyServiceLazyFactory())
+        doTestGetSuccessService(serviceLocator3, key: ServiceLocatorKeys.serviceLazy)
+        doTestGetNotFoundService(serviceLocator3, key: ServiceLocatorKeys.serviceSingleton)
     }
     
     func testAddServiceProvider() {

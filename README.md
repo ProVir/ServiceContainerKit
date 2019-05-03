@@ -407,7 +407,7 @@ ServiceEasyLocator for storing services always uses ServiceProvider. You can alw
 To remove a service, use `ServiceEasyLocator.removeService(serviceType:)`.
 
 To protect ServiceEasyLocator from changes after configuration, call `ServiceEasyLocator.setReadOnly()`. In the ReadOnly mode, any change will generate assert.
-Any ServiceEasyLocator can be cloned with its services with the possibility of further modification - `ServiceEasyLocator.clone()`. 
+Any ServiceEasyLocator if `ServiceEasyLocator.denyClone=false` can be cloned with its services with the possibility of further modification - `ServiceEasyLocator.clone()`.  By default, it is forbidden to clone locators in readOnly mode, but this can be set in `ServiceEasyLocator.setReadOnly(denyClone: false)`.
 
 #
 
@@ -420,7 +420,7 @@ Any ServiceEasyLocator can be cloned with its services with the possibility of f
   Для удаления сервиса используйте `ServiceEasyLocator.removeService(serviceType:)`.
 
   Чтобы защитить ServiceEasyLocator от изменений после настройки, следует вызвать `ServiceEasyLocator.setReadOnly()`. В ReadOnly режиме любое изменение будет генерировать assert. 
-  Любой ServiceEasyLocator можно клонировать с его сервисами с возможностью дальнейшего изменения - `ServiceEasyLocator.clone()`. 
+  Любой ServiceEasyLocator если `ServiceEasyLocator.denyClone=false` можно клонировать с его сервисами с возможностью дальнейшего изменения - `ServiceEasyLocator.clone()`.  По умолчанию зfпрещено клонировать локаторы в readOnly режиме, но это можно задать в `ServiceEasyLocator.setReadOnly(denyClone: false)`.
 
 
 #### An example add services to ServiceEasyLocator:

@@ -35,12 +35,14 @@ open class ServiceLocator {
     // MARK: Setup locator
     /// Services list support and factoryes don't can change if is `true`.
     public private(set) var readOnly: Bool = false
+    public private(set) var denyClone: Bool = false
     private var readOnlyAssertionFailure: Bool = true
     
-    /// In readOnly regime can't use addService and removeService.
-    open func setReadOnly(assertionFailure: Bool = true) {
+    /// In readOnly regime can't use addService and removeService. Also when denyClone = true (default), can't use clone()
+    open func setReadOnly(denyClone setDenyClone: Bool = true, assertionFailure: Bool = true) {
         lock.lock()
         readOnly = true
+        denyClone = denyClone || setDenyClone
         readOnlyAssertionFailure = assertionFailure
         lock.unlock()
     }
@@ -48,11 +50,16 @@ open class ServiceLocator {
     /// Clone ServiceLocator with all providers, but with readOnly = false in new instance.
     open func clone<T: ServiceLocator>(type: T.Type = T.self) -> T {
         let locator = T.init()
-
+        
         lock.lock()
+        defer { lock.unlock() }
+        
+        guard denyClone == false else {
+            if readOnlyAssertionFailure { assertionFailure("Don't support clone when denyClone = true") }
+            return locator
+        }
+        
         locator.providers = self.providers
-        lock.unlock()
-
         return locator
     }
 

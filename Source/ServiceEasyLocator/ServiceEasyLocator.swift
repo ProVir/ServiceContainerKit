@@ -16,7 +16,7 @@ open class ServiceEasyLocator {
         keyLocator = ServiceLocator()
     }
 
-    /// Constructor used for clone locator
+    /// Constructor used for clone locator. ServiceEasyLocator need by allowClone = true
     public required init(other: ServiceEasyLocator) {
         self.keyLocator = other.keyLocator.clone()
     }
@@ -31,9 +31,14 @@ open class ServiceEasyLocator {
         return keyLocator.readOnly
     }
     
-    /// In readOnly regime can't use addService and removeService.
-    open func setReadOnly(assertionFailure: Bool = true) {
-        keyLocator.setReadOnly(assertionFailure: assertionFailure)
+    /// Deny clone locator
+    public var denyClone: Bool {
+        return keyLocator.denyClone
+    }
+    
+    /// In readOnly regime can't use addService and removeService. Also when denyClone = true (default), can't use clone()
+    open func setReadOnly(denyClone: Bool = true, assertionFailure: Bool = true) {
+        keyLocator.setReadOnly(denyClone: denyClone, assertionFailure: assertionFailure)
     }
     
     /// Clone ServiceEasyLocator with all providers, but with readOnly = false in new instance.

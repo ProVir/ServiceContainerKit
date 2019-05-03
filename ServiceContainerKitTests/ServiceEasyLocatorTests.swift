@@ -30,22 +30,22 @@ class ServiceEasyLocatorTests: XCTestCase {
 
     func testClone() {
         serviceLocator.addService(ServiceSingleton())
-        serviceLocator.setReadOnly()
+        serviceLocator.setReadOnly(denyClone: false, assertionFailure: false)
 
         let serviceLocator2 = serviceLocator.clone()
         serviceLocator2.addService(factory: SpyServiceLazyFactory())
 
-        guard let servcie1 = serviceLocator.getService(ServiceSingleton.self) else {
+        guard let service1 = serviceLocator.getService(ServiceSingleton.self) else {
             XCTFail("Service not found")
             return
         }
 
-        guard let servcie2 = serviceLocator2.getService(ServiceSingleton.self) else {
+        guard let service2 = serviceLocator2.getService(ServiceSingleton.self) else {
             XCTFail("Service not found")
             return
         }
 
-        XCTAssert(servcie1 === servcie2, "Service singleton after clone also remains singleton")
+        XCTAssert(service1 === service2, "Service singleton after clone also remains singleton")
 
         if serviceLocator.getService(ServiceLazy.self) != nil {
             XCTFail("Service not be found")
@@ -54,6 +54,13 @@ class ServiceEasyLocatorTests: XCTestCase {
         if serviceLocator2.getService(ServiceLazy.self) == nil {
             XCTFail("Service not found")
         }
+        
+        serviceLocator.setReadOnly(denyClone: true, assertionFailure: false)
+        let serviceLocator3 = serviceLocator.clone()
+        
+        serviceLocator3.addService(factory: SpyServiceLazyFactory())
+        doTestGetSuccessService(serviceLocator3, ServiceLazy.self)
+        doTestGetNotFoundService(serviceLocator3, ServiceSingleton.self)
     }
 
     func testAddServiceProvider() {
