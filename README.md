@@ -10,23 +10,24 @@
 
   *Dependency Inversion Principle (DIP from SOLI**D**)* allows you to create classes as independent as possible between each other. But writing the services using Dependency Injection, you are faced with the difficulty - how and where to set up services and communications, and how to provide these services to objects that are created during the application process, usually a presentation layer.
   One way to solve this problem is to use *Dependency Injection Container* frameworks that create services for the dependencies and settings that you specify, and also if necessary, injected them in the right parts of the application. The use of such side-by-side frameworks draws certain dependencies throughout the architecture of the application and provides its functionality with certain limitations, which are discussed by the nuances of the programming language, platforms, and as a payment for their universality.
-  You can create your own container for a specific project, taking into account its specific features and architecture. One simple way to create your own container is to use a structure with a set of pre-configured services or their factories. Better yet, use a wrapper over services (`ServiceProvider`), which hides the way to create a service - for earlier or as needed, as well as its dependencies and the settings used. Also, as a container, you can use `ServiceLocator`, being a dynamic container. It can also be used as a singleton.
+  You can create your own container for a specific project, taking into account its specific features and architecture. One simple way to create your own container is to use a structure with a set of pre-configured services or their factories. Better yet, use a wrapper over services (`ServiceProvider`), which hides the way to create a service - for earlier or as needed, as well as its dependencies and the settings used. Also, as a container, you can use `ServiceLocator` or `ServiceEasyLocator`, being a dynamic container.
 
 #
 
 *Dependency Inversion Principle (DIP из SOLI**D**)* позволяет создавать классы максимально независимыми между собой. Но писав сервисы используя DIP вы сталкиваетесь с трудностью - как и где настроить сервисы и связи, а также как предоставить эти сервисы объектам, которые создаются в процессе работы приложения, как правило это слой представления. 
   Один из способов решить эту проблему - это использование фреймворков *Dependency Injection Container*, которые создают сервисы по указываемым вами зависисмостям и настройкам, а также внедряют их по необходимости в нужные части приложения. Использование подобных стороних фреймворков тянет за собой наличие определенных зависимостей во всей архитекртуре приложения и предоставляют свой функционал с определенными ограничениями, которые обсуловлены нюансами языка программирования, платформы и как плата за их универсальность.  
-  Вы можете создать свой собственный контейнер для конкретного проекта с учетом его специфики и архитектуры. Один из простых способов создать свой контейнер - это использовать структуру с набором созданных и настроенных заранее сервисов либо их фабрик. А еще лучше - использовать обертку над сервисами (`ServiceProvider`), скрывающую способ создания сервиса - за ранее или по необходимости, а также его заисимости и используемые настройки. Также в качестве контейнера можно использовать `ServiceLocator`, являющийся динамическим контейнером. Его также можно использовать как синглетон. 
+  Вы можете создать свой собственный контейнер для конкретного проекта с учетом его специфики и архитектуры. Один из простых способов создать свой контейнер - это использовать структуру с набором созданных и настроенных заранее сервисов либо их фабрик. А еще лучше - использовать обертку над сервисами (`ServiceProvider`), скрывающую способ создания сервиса - за ранее или по необходимости, а также его заисимости и используемые настройки. Также в качестве контейнера можно использовать `ServiceLocator` или `ServiceEasyLocator`, являющийся динамическим контейнером. 
 
 #
 
 - [Features](#features)
 - [Requirements](#requirements)
 - [Communication](#communication)
+- [Migration from 1.0 to 2.0](#migration-from-1.0-to-2.0)
 - [Installation](#installation)
 - [Usage ServiceFactory (English / Русский)](#usage-servicefactory)
 - [Usage IoC Container and ServiceProvider (English / Русский)](#usage-ioc-container-and-serviceprovider)
-- [Usage ServiceLocator (English / Русский)](#usage-servicelocator)
+- [Usage ServiceEasyLocator (English / Русский)](#usage-serviceeasylocator)
 - [Author](#author)
 - [License](#license)
 
@@ -40,10 +41,9 @@
 - [x] Support service factories with parameters for many instance services. 
 - [x] Support get service from provider in Objective-C code. 
 
-`ServiceLocator` (optional) - ready as dynamic container to use easy: 
+`ServiceLocator` and `ServiceEasyLocator` (optional) - ready as dynamic container to use easy: 
 - [x] Add services as provider, service factories, existing instance or closure factory with support lazy create. 
-- [x] Support use as singleton - static variable `share` and static functions. 
-- [x] ReadOnly regime - after setted assert when edit list services in ServiceLocator. 
+- [x] ReadOnly regime - after setted assert when edit list services in ServiceEasyLocator. 
 - [x] Support throws errors when create service, result get service as optional or with detail error. 
 - [x] Support services with parameters for create instance.
 - [x] Support get services in Objective-C code. 
@@ -64,6 +64,18 @@
 - If you **want to contribute**, submit a pull request.
 
 
+## Migration from 1.0 to 2.0
+
+In version 2.0, the ServiceLocator was redesigned again - now there are two types. If you didn’t use it, there’s nothing to worry about, there have been minor changes in the ServiceProvider.
+**Changes in ServiceProvider**:
+- constructor `ServiceProvider(factory: { })` was renamed to `ServiceProvider(manyFactory: { })`.
+
+**Changes in ServiceLocator**:
+- `ServiceLocator` with its logic has been renamed to `ServiceEasyLocator`;
+- singleton logic removed - now there are no methods to work with `ServiceLocator.shared`;
+- function `addService(factory: { })` was renamed to `addService(manyFactory: { })`.
+
+
 ## Installation
 
 ### CocoaPods
@@ -74,7 +86,7 @@
 $ gem install cocoapods
 ```
 
-> CocoaPods 1.6.0+ is required to build ServiceContainerKit 1.1.0+.
+> CocoaPods 1.1.0+ is required to build ServiceContainerKit 2.0.0+.
 
 To integrate ServiceContainerKit (without ServiceLocator) into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
@@ -83,13 +95,19 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 
 target '<Your Target Name>' do
-  pod 'ServiceContainerKit', '~> 1.1'
+  pod 'ServiceContainerKit', '~> 2.0'
 end
 ```
-If you also need to use ServiceLocator, then use:
+If you also need to use ServiceLocator or ServiceEasyLocator, then use:
 ```ruby
 target '<Your Target Name>' do
-  pod 'ServiceContainerKit/ServiceLocator', '~> 1.1'
+  pod 'ServiceContainerKit/ServiceLocator', '~> 2.0'
+end
+```
+
+```ruby
+target '<Your Target Name>' do
+pod 'ServiceContainerKit/ServiceEasyLocator', '~> 2.0'
 end
 ```
 
@@ -113,7 +131,7 @@ $ brew install carthage
 To integrate ServiceContainerKit into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "ProVir/ServiceContainerKit" ~> 1.1
+github "ProVir/ServiceContainerKit" ~> 2.0
 ```
 
 Run `carthage update` to build the framework and drag the built `ServiceContainerKit.framework` into your Xcode project.
@@ -126,7 +144,7 @@ Once you have your Swift package set up, adding ServiceContainerKit as a depende
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/ProVir/ServiceContainerKit.git", from: "1.1.0")
+  .package(url: "https://github.com/ProVir/ServiceContainerKit.git", from: "2.0.0")
 ]
 ```
 
@@ -358,59 +376,59 @@ ThirdService* thirdService = [self.serviceContainer.thirdServiceProvider getServ
 ```
 
 
-## Usage ServiceLocator
+## Usage ServiceEasyLocator
 
-If you use CocoaPods, then to use ServiceLocator it should be enabled explicitly:
+If you use CocoaPods, then to use ServiceEasyLocator it should be enabled explicitly:
 ```ruby
 target '<Your Target Name>' do
-  pod 'ServiceContainerKit/ServiceLocator'
+  pod 'ServiceContainerKit/ServiceEasyLocator'
 end
 ```
 
-ServiceLocator is dynamic IoC Container, but unlike its implementation above, the services in it are stored by the key, which is the name of the class or service protocol. We simply add services to ServiceLocator and get them on demand based on the return type using generics. Also ServiceLocator is often used as a singleton - that solves the problem of dependency injection, because we can get any service from anywhere in the code. It is well suited for quick solutions or in small projects, but it can create problems in large projects, over which several developers work.
+ServiceEasyLocator is dynamic IoC Container, but unlike its implementation above, the services in it are stored by the key, which is the name of the class or service protocol. We simply add services to ServiceEasyLocator and get them on demand based on the return type using generics. Also ServiceEasyLocator is often used as a singleton - that solves the problem of dependency injection, because we can get any service from anywhere in the code. It is well suited for quick solutions or in small projects, but it can create problems in large projects.
 
-From the minuses - in one dynamic ServiceLocator we can store only one instance of a service or factory, while in our custom IoC Container we are not limited to this. Also do not forget that ServiceLocator is an antipattern and it should be used very carefully and do not forget about compliance with *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceLocator, like any dynamic container, unlike its static IoC Container, does not tell us directly which services it contains, but if you store services based on protocols, then there is generally no exact information on how to get the service - by protocol or a specific implementation.
+From the minuses - in one dynamic ServiceLocator we can store only one instance of a service or factory, while in our custom IoC Container or in ServiceLocator with key access we are not limited to this. Also do not forget that ServiceLocator is an antipattern and it should be used very carefully and do not forget about compliance with *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceEasyLocator, like any dynamic container, unlike its static IoC Container, does not tell us directly which services it contains, but if you store services based on protocols, then there is generally no exact information on how to get the service - by protocol or a specific implementation.
 
 #
 
-  ServiceLocator - это динамический IoC Container, но в отличие от своей реализации приведенной выше, сервисы в нем хранятся динамически по ключу, в качестве которого выступает имя класса или протокола сервиса. Мы просто добавляем сервисы в ServiceLocator и получаем их по требованию на основе выводимого типа используя дженерики. Также ServiceLocator часто используется как синглетон - что решает проблему внедрения зависимостей, т.к. мы можем получить любой сервис из любого места в коде. Он хорошо подходит для быстрого решения или в небольших проектах, но может создать проблемы в больших проектах, над которыми работают несколько разработчиков. 
+  ServiceEasyLocator - это динамический IoC Container, но в отличие от своей реализации приведенной выше, сервисы в нем хранятся динамически по ключу, в качестве которого выступает имя класса или протокола сервиса. Мы просто добавляем сервисы в ServiceEasyLocator и получаем их по требованию на основе выводимого типа используя дженерики. Также ServiceEasyLocator часто используется как синглетон - что решает проблему внедрения зависимостей, т.к. мы можем получить любой сервис из любого места в коде. Он хорошо подходит для быстрого решения или в небольших проектах, но может создать проблемы в больших проектах.
   
-  Из минусов - в одном динамическом ServiceLocator мы можем хранить только один экземпляр сервиса или фабрики, в то время как в своем IoC Container мы этим не ограничиваемся. Также не стоит забывать что ServiceLocator - это антипаттерн и его следует использовать очень осторожно и не забывать про соблюдение *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceLocator, как и любой динамический контейнер, в отличие от статичного IoC Container не сообщает нам напрямую какие именно сервисы он в себе содержит, а если хранить сервисы на основе протоколов, то вообще нет точной информации как получить сервис - по протоколу или конкретной реализации. 
+  Из минусов - в одном динамическом ServiceEasyLocator мы можем хранить только один экземпляр сервиса или фабрики, в то время как в своем IoC Container или в ServiceLocator с доступом по ключу мы этим не ограничиваемся. Также не стоит забывать что ServiceLocator - это антипаттерн и его следует использовать очень осторожно и не забывать про соблюдение *Dependency Inversion Principle (DIP from SOLI**D**)*. ServiceEasyLocator, как и любой динамический контейнер, в отличие от статичного IoC Container не сообщает нам напрямую какие именно сервисы он в себе содержит, а если хранить сервисы на основе протоколов, то вообще нет точной информации как получить сервис - по протоколу или конкретной реализации. 
 
 
 ### Add and remove Services
 
-ServiceLocator for storing services always uses ServiceProvider. You can always get not only the service itself, but also its ServiceProvider. To add services, you can use:
-- using the already created `ServiceProvider` or` ServiceParamsProvider` (recommended): `ServiceLocator.addService(provider:)`;
-- using a factory:  `ServiceLocator.addService(factory:)`;
-- using an already created service: `ServiceLocator.addService()`, factory equivalent of `atOne` type;
-- using closures in lazy mode or generating a new instance each time:  `ServiceLocator.addLazyService { }` and  `ServiceLocator.addService { }`, factory equivalent of `lazy` and `many` types.
+ServiceEasyLocator for storing services always uses ServiceProvider. You can always get not only the service itself, but also its ServiceProvider. To add services, you can use:
+- using the already created `ServiceProvider` or` ServiceParamsProvider` (recommended): `ServiceEasyLocator.addService(provider:)`;
+- using a factory:  `ServiceEasyLocator.addService(factory:)`;
+- using an already created service: `ServiceEasyLocator.addService()`, factory equivalent of `atOne` type;
+- using closures in lazy mode or generating a new instance each time:  `ServiceEasyLocator.addLazyService { }` and  `ServiceEasyLocator.addService { }`, factory equivalent of `lazy` and `many` types.
 
-To remove a service, use `ServiceLocator.removeService(serviceType:)`.
+To remove a service, use `ServiceEasyLocator.removeService(serviceType:)`.
 
-To protect ServiceLocator from changes after configuration, call `ServiceLocator.setReadOnly()`. In the ReadOnly mode, any change will generate assert.
-Any ServiceLocator can be cloned with its services with the possibility of further modification - `ServiceLocator.clone()`. 
+To protect ServiceEasyLocator from changes after configuration, call `ServiceEasyLocator.setReadOnly()`. In the ReadOnly mode, any change will generate assert.
+Any ServiceEasyLocator can be cloned with its services with the possibility of further modification - `ServiceEasyLocator.clone()`. 
 
 #
 
-  ServiceLocator для хранения сервисов всегда использует ServiceProvider. Всегда можно получить не только сам сервис, но и его ServiceProvider. Для добавления сервисов вы можете использовать:
-- используя уже созданный `ServiceProvider` или  `ServiceParamsProvider` (рекомендуется): `ServiceLocator.addService(provider:)`;
-- используя фабрику:  `ServiceLocator.addService(factory:)`;
-- используя уже созданный сервис: `ServiceLocator.addService()`, эквивалент фабрики типа `atOne`;
-- используя кложуры в lazy режиме или генерируя каждый раз новый экземпляр:  `ServiceLocator.addLazyService { }` и  `ServiceLocator.addService { }`, эквиваленты фабрик типов `lazy` и `many`.
+  ServiceEasyLocator для хранения сервисов всегда использует ServiceProvider. Всегда можно получить не только сам сервис, но и его ServiceProvider. Для добавления сервисов вы можете использовать:
+- используя уже созданный `ServiceProvider` или  `ServiceParamsProvider` (рекомендуется): `ServiceEasyLocator.addService(provider:)`;
+- используя фабрику:  `ServiceEasyLocator.addService(factory:)`;
+- используя уже созданный сервис: `ServiceEasyLocator.addService()`, эквивалент фабрики типа `atOne`;
+- используя кложуры в lazy режиме или генерируя каждый раз новый экземпляр:  `ServiceEasyLocator.addLazyService { }` и  `ServiceEasyLocator.addService { }`, эквиваленты фабрик типов `lazy` и `many`.
 
-  Для удаления сервиса используйте `ServiceLocator.removeService(serviceType:)`.
+  Для удаления сервиса используйте `ServiceEasyLocator.removeService(serviceType:)`.
 
-  Чтобы защитить ServiceLocator от изменений после настройки, следует вызвать `ServiceLocator.setReadOnly()`. В ReadOnly режиме любое изменение будет генерировать assert. 
-  Любой ServiceLocator можно клонировать с его сервисами с возможностью дальнейшего изменения - `ServiceLocator.clone()`. 
+  Чтобы защитить ServiceEasyLocator от изменений после настройки, следует вызвать `ServiceEasyLocator.setReadOnly()`. В ReadOnly режиме любое изменение будет генерировать assert. 
+  Любой ServiceEasyLocator можно клонировать с его сервисами с возможностью дальнейшего изменения - `ServiceEasyLocator.clone()`. 
 
 
-#### An example add services to ServiceLocator:
+#### An example add services to ServiceEasyLocator:
 ```swift
 let singletonServiceProvider = SingletonServiceFactory().serviceProvider()
 let lazyServiceProvider = LazyServiceFactory().serviceProvider()
 
-let serviceLocator = ServiceLocator()
+let serviceLocator = ServiceEasyLocator()
 
 serviceLocator.addService(provider: singletonServiceProvider)
 serviceLocator.addService(provider: lazyServiceProvider)
@@ -429,40 +447,63 @@ serviceLocator.addService {
 serviceLocator.setReadOnly()
 ```
 
-### Share ServiceLocator
+### Share ServiceEasyLocator
 
-ServiceLocator can be used as a singleton. Singleton is available using the static property `ServiceLocator.shared` or by calling the `tryShared()` method, which can return an error if not configured as a singleton.. It can be set with a static function `ServiceLocator.setupShared(serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true)`. The parameter `readOnlySharedAfter` with the value `true` (default) forbids changing the singleton itself. To prevent a full change to the ServiceLocator, remember to call `setReadOnly()`.
-
-#
-
-  ServiceLocator можно использовать как синглетон. Синглетон доступен по статичному свойству `ServiceLocator.shared` или по вызову метода `tryShared()`, который может вернуть ошибку если не настроено как синглетон. Его можно задать статитичной функцией `ServiceLocator.setupShared(serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true)`. Параметр `readOnlySharedAfter` со значением `true` (default) запрещает менять сам синглетон. Чтобы запретить полное изменение ServiceLocator следует не забыть вызвать `setReadOnly()`.  
-
-#### An example setup shared ServiceLocator:
+#### ServiceEasyLocator can be made singleton, see the full example in the project::
 ```swift
-serviceLocator.setReadOnly()
-ServiceLocator.setupShared(serviceLocator: serviceLocator, readOnlySharedAfter: true)
+final class ServiceLocator: ServiceContainerKit.ServiceEasyLocator {
+    enum Error: LocalizedError {
+        case sharedRequireSetup
+
+        public var errorDescription: String? {
+            switch self {
+            case .sharedRequireSetup: return "ServiceLocator don't setuped for use as share (singleton)"
+            }
+        }
+    }    
+
+    public private(set) static var shared: ServiceEasyLocator?
+
+    public static func tryShared() throws -> ServiceEasyLocator {
+        if let shared = shared {
+            return shared
+        } else {
+            throw Error.sharedRequireSetup
+        }
+    }
+
+    public private(set) static var readOnlyShared: Bool = false
+
+    public static func setupShared(_ serviceLocator: ServiceLocator, readOnlySharedAfter: Bool = true) {
+        if readOnlyShared {
+            assertionFailure("Don't support setupShared in readOnly regime")
+            return
+        }
+
+        shared = serviceLocator
+        readOnlyShared = readOnlySharedAfter
+    }
+}
 ```
 
 ### Get Services
 
-To get the service it is enough to call the function `ServiceLocator.getService()` which returns the service as an option, `nil` will be returned in case of a service error. The type of the service is displayed itself, but you can use parameter `serviceType:` to specify the type yourself. You can also use `ServiceLocator.tryService()` - then the service is returned not as an option and can generate an error why the service was not received (unlike `getService()`, which simply returns `nil`).
-To get a service from a singleton, you can use the static functions `ServiceLocator.getServiceFromShared()` and `ServiceLocator.tryServiceFromShared()`, or get the ServiceLocator itself via `ServiceLocator.shared`.
-To get ServiceProvider of a specific service - `ServiceLocator.getServiceProvider()`. 
+To get the service it is enough to call the function `ServiceEasyLocator.getService()` which returns the service as an option, `nil` will be returned in case of a service error. The type of the service is displayed itself, but you can use parameter `serviceType:` to specify the type yourself. You can also use `ServiceEasyLocator.tryService()` - then the service is returned not as an option and can generate an error why the service was not received (unlike `getService()`, which simply returns `nil`).
+To get ServiceProvider of a specific service - `ServiceEasyLocator.getServiceProvider()`. 
 
 #
 
-  Для получения сервиса достаточно вызвать функцию `ServiceLocator.getService()` которая возвращает сервис как опционал, `nil` будет возвращен в случае ошибки получения сервиса. Тип сервиса выводится сам, но можно воспользоваться параметром `serviceType:` для указания типа самостоятельно. Также можно использовать `ServiceLocator.tryService()` - тогда сервис возвращается не как опционал и может генерировать ошибку почему сервис не был получен (в отличие от `getService()`, который просто вернет `nil`). 
-  Для получени сервиса из синглетона можно воспользоваться статичными функциями `ServiceLocator.getServiceFromShared()` и `ServiceLocator.tryServiceFromShared()`, либо получить сам ServiceLocator через `ServiceLocator.shared`. 
-  Для получения ServiceProvider конкретного сервиса - `ServiceLocator.getServiceProvider()`. 
+  Для получения сервиса достаточно вызвать функцию `ServiceEasyLocator.getService()` которая возвращает сервис как опционал, `nil` будет возвращен в случае ошибки получения сервиса. Тип сервиса выводится сам, но можно воспользоваться параметром `serviceType:` для указания типа самостоятельно. Также можно использовать `ServiceEasyLocator.tryService()` - тогда сервис возвращается не как опционал и может генерировать ошибку почему сервис не был получен (в отличие от `getService()`, который просто вернет `nil`). 
+  Для получения ServiceProvider конкретного сервиса - `ServiceEasyLocator.getServiceProvider()`. 
   
 #### An example get services:
 ```swift
 let firstService: FirstService = serviceLocator.getService()!
-let secondService = ServiceLocator.getServiceFromShared(serviceType: SecondService.self)!
+let secondService = serviceLocator.getService(serviceType: SecondService.self)!
 
 let thirdService: ThirdServicing
 do {
-    thirdService = ServiceLocator.tryServiceFromShared(serviceType: ThirdServicing.self)
+    thirdService = serviceLocator.tryService(serviceType: ThirdServicing.self)
 } catch {
     fatalError("Error get thirdService: \(error)")
 }
@@ -470,50 +511,48 @@ do {
 let paramsService: ParamsService = serviceLocator.getService(params: "test")!
 ```
 
-If a factory with parameters is used for the service, then to support its parameters in the ServiceLocator, it should be indicated through the protocol that the service itself can be getted with certain parameters. In order for ServiceLocator to getting the service without passing parameters, the parameter type in the factory must be optional.
+If a factory with parameters is used for the service, then they can be passed without type checking, if the type is not appropriate - the error `ServiceLocatorError.wrongParams` will be returned. In order for ServiceEasyLocator to getting the service without passing parameters, the parameter type in the factory must be optional.
 
-Если для сервиса используется фабрика с параметрами, то для поддержки ее параметров в ServiceLocator следует через протокол указать что сам сервис может быть получен с определнными параметрами. Для того чтобы ServiceLocator мог получить сервис без передачи параметров, тип параметра в фабрике должен быть опциональным. 
+Если для сервиса используется фабрика с параметрами, то их можно передавать без проверки типа, если тип окажется не подходящим - будет возвращена ошибка `ServiceLocatorError.wrongParams`. Для того чтобы ServiceEasyLocator мог получить сервис без передачи параметров, тип параметра в фабрике должен быть опциональным. 
 
 #### An example params factory:
 ```swift
-//Support params for ServiceLocator (not optional).
-extension ParamsService: ServiceSupportFactoryParams {
-    typealias ParamsType = String
-}
-
 struct ParamsServiceFactory: ServiceParamsFactory {
-    /// Optional params for support get service without params in ServiceLocator. 
+    /// Optional params for support get service without params in ServiceEasyLocator. 
     func createService(params: String?) throws -> ParamsService {
         return ParamsService(text: params ?? "")
     }
 }
+
+let serviceDefault: ParamsService = try serviceLocator.tryService()
+let serviceManual: ParamsService = try serviceLocator.tryService(params: "Manual value")
 ```
 
-### Support Objective-C
+### Support ServiceEasyLocator in Objective-C
 
-Creating and configuring the ServiceLocator is only available for swift code, but for objective-c, you can only get the services.
+Creating and configuring the ServiceEasyLocator is only available for swift code, but for objective-c, you can only get the services.
 
-`ServiceLocatorObjC` (in Objective-C is visible as `ServiceLocator`) can be created from any `ServiceLocator`, passing it (swift option) to the constructor in the swift code. Also use empty contructor (available in objective-c code) for use ServiceLocator.shared. Avaialble static selectors used equalent `ServiceLocator.getServiceFromShared()` and `ServiceLocator.tryServiceFromShared()`.
+`ServiceEasyLocatorObjC` (in Objective-C is visible as `ServiceEasyLocator`) can be created from any `ServiceEasyLocator`, passing it (swift option) to the constructor in the swift code. 
 
 
 You can get the service through selectors (from instance or class):
-- Get service as class: `[ServiceLocator getServiceWithClass:]` and `[ServiceLocator getServiceWithClass:error:]`; 
-- Get service as protocol: `[ServiceLocator getServiceWithProtocol:@protocol()]` and `[ServiceLocator getServiceWithProtocol:@protocol() error:]`; 
-- Get service as class with parameters: `[ServiceLocator getServiceWithClass:params:]` and `[ServiceLocator getServiceWithClass:params:error:]`; 
-- Get service as protocol with parameters: `[ServiceLocator getServiceWithProtocol:@protocol() params:]` and `[ServiceLocator getServiceWithProtocol:@protocol() params: error:]`; 
+- Get service as class: `[ServiceEasyLocator getServiceWithClass:]` and `[ServiceEasyLocator getServiceWithClass:error:]`; 
+- Get service as protocol: `[ServiceEasyLocator getServiceWithProtocol:@protocol()]` and `[ServiceEasyLocator getServiceWithProtocol:@protocol() error:]`; 
+- Get service as class with parameters: `[ServiceEasyLocator getServiceWithClass:params:]` and `[ServiceLocator getServiceWithClass:params:error:]`; 
+- Get service as protocol with parameters: `[ServiceEasyLocator getServiceWithProtocol:@protocol() params:]` and `[ServiceEasyLocator getServiceWithProtocol:@protocol() params: error:]`; 
 
 
-#### An example use ServiceLocator:
+#### An example use ServiceEasyLocator:
 ```objc
-ServiceLocator* locator = [ServiceLocator new]; //Used ServiceLocator.shared
+ServiceEasyLocator* locator = ... //Get from swift code
 FirstService* firstService = [locator getServiceWithClass:FirstService.class];
 
 NSError* error = nil;
-SecondService* secondService = [ServiceLocator getServiceWithClass:SecondService.class error:&error];
+SecondService* secondService = [locator getServiceWithClass:SecondService.class error:&error];
 
-id<ThirdServicing> thirdService = [ServiceLocator getServiceWithProtocol:@protocol(ThirdServicing)];
+id<ThirdServicing> thirdService = [locator getServiceWithProtocol:@protocol(ThirdServicing)];
 
-ParamsService* paramsService = [ServiceLocator getServiceWithClass:ParamsService.class params:@"test"];
+ParamsService* paramsService = [locator getServiceWithClass:ParamsService.class params:@"test"];
 ```
 
 

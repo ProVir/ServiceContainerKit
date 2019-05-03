@@ -35,8 +35,8 @@ Pod::Spec.new do |s|
   end
   
   s.subspec 'ServiceEasyLocator' do |ss|
-      ss.source_files = 'Source/ServiceEasyLocator/*.swift'
-      ss.dependency 'ServiceContainerKit/ServiceLocator'
+    ss.source_files = 'Source/ServiceEasyLocator/*.swift'
+    ss.dependency 'ServiceContainerKit/ServiceLocator'
   end
 
 end
