@@ -156,7 +156,7 @@
 			path = Source;
 			sourceTree = "<group>";
 		};
-		506F9F0520E3E3F100E44CBD /* ServiceContainerKitTests */ = {
+		506F9F0520E3E3F100E44CBD /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				506F9F0820E3E3F100E44CBD /* Info.plist */,
@@ -165,7 +165,7 @@
 				504C7A94226C6DBD00762BC7 /* ServiceLocatorTests.swift */,
 				88984316226E1329002F49B4 /* ServiceEasyLocatorTests.swift */,
 			);
-			path = ServiceContainerKitTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		506F9F1720E3E44D00E44CBD /* ServiceLocator */ = {
@@ -230,7 +230,7 @@
 				50DA160F20C4DB6700B756B3 /* ServiceContainerKit.podspec */,
 				50DA15CC20C44AF700B756B3 /* Example */,
 				506F9EF820E3E3F100E44CBD /* Source */,
-				506F9F0520E3E3F100E44CBD /* ServiceContainerKitTests */,
+				506F9F0520E3E3F100E44CBD /* Tests */,
 				50DA15CB20C44AF700B756B3 /* Products */,
 				50DA160220C4500100B756B3 /* Frameworks */,
 			);
@@ -498,7 +498,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = ServiceContainerKitTests/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -519,7 +519,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = ServiceContainerKitTests/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
