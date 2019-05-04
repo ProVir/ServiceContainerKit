@@ -6,7 +6,9 @@
 [![License](https://cocoapod-badges.herokuapp.com/l/ServiceContainerKit/badge.png)](https://github.com/ProVir/ServiceContainerKit/blob/master/LICENSE)
 
   Kit to create your own IoC Container or ServiceLocator. Also includes a ServiceLocator as an option. Require Swift 4 and above, support Objective-C in readOnly regime. 
-  Supports and recommends using Swift 5.0. High percentage of unit test coverage.
+  High percentage of unit test coverage.
+  
+  Supports and recommends using Swift 5.0.
 
   *Dependency Inversion Principle (DIP from SOLI**D**)* allows you to create classes as independent as possible between each other. But writing the services using Dependency Injection, you are faced with the difficulty - how and where to set up services and communications, and how to provide these services to objects that are created during the application process, usually a presentation layer.
   One way to solve this problem is to use *Dependency Injection Container* frameworks that create services for the dependencies and settings that you specify, and also if necessary, injected them in the right parts of the application. The use of such side-by-side frameworks draws certain dependencies throughout the architecture of the application and provides its functionality with certain limitations, which are discussed by the nuances of the programming language, platforms, and as a payment for their universality.
@@ -23,7 +25,7 @@
 - [Features](#features)
 - [Requirements](#requirements)
 - [Communication](#communication)
-- [Migration from 1.0 to 2.0](#migration-from-1.0-to-2.0)
+- [Migration from 1.0 to 2.0](#migration-from-10-to-20)
 - [Installation](#installation)
 - [Usage ServiceFactory (English / Русский)](#usage-servicefactory)
 - [Usage IoC Container and ServiceProvider (English / Русский)](#usage-ioc-container-and-serviceprovider)
@@ -68,6 +70,7 @@
 ## Migration from 1.0 to 2.0
 
 In version 2.0, the ServiceLocator was redesigned again - now there are two types. If you didn’t use it, there’s nothing to worry about, there have been minor changes in the ServiceProvider.
+
 **Changes in ServiceProvider**:
 - constructor `ServiceProvider(factory: { })` was renamed to `ServiceProvider(manyFactory: { })`.
 
@@ -785,7 +788,7 @@ let firstService = serviceLocator.getService(key: ServiceLocatorKeys.firstServic
 
 let secondService: SecondServicing
 do {
-secondService = try serviceLocator.tryService(key: ServiceLocatorKeys.secondService)
+    secondService = try serviceLocator.tryService(key: ServiceLocatorKeys.secondService)
 } catch {
     fatalError("Error get secondService: \(error)")
 }
