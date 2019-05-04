@@ -1,0 +1,14 @@
+# https://github.com/realm/SwiftLint
+
+included:
+  - Source
+
+disabled_rules:
+  - line_length
+  - trailing_whitespace
+  - empty_enum_arguments
+  - function_parameter_count
+  - vertical_whitespace
+  - operator_whitespace
+  - identifier_name
+ 

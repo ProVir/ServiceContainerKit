@@ -132,6 +132,7 @@ open class ServiceLocator {
     // MARK: - Get
     /// Get Service by key with detail information throwed error.
     open func tryService<Key: ServiceLocatorKey>(key: Key) throws -> Key.ServiceType {
+        //swiftlint:disable:next syntactic_sugar
         return try tryService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
     }
     
@@ -169,6 +170,7 @@ open class ServiceLocator {
     // MARK: ObjC
     /// Get Service by ObjC Key
     open func tryServiceObjC(key: ServiceLocatorObjCKey) throws -> NSObject {
+        //swiftlint:disable:next syntactic_sugar
         return try tryService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
     }
 
@@ -183,8 +185,11 @@ open class ServiceLocator {
         defer { lock.unlock() }
         
         if let provider = providers[storeKey] {
-            do { return try provider.tryServiceBinding(ServiceType.self, params: params) }
-            catch { throw convertError(error) }
+            do {
+                return try provider.tryServiceBinding(ServiceType.self, params: params)
+            } catch {
+                throw convertError(error)
+            }
         } else {
             throw ServiceLocatorError.serviceNotFound
         }
@@ -232,4 +237,3 @@ extension ServiceParamsProvider: ServiceLocatorProviderBinding {
         }
     }
 }
-

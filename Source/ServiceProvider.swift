@@ -124,7 +124,7 @@ private protocol ServiceProviderPrivate {
 
 /// Private constructors for ServiceProvider
 extension ServiceProvider: ServiceProviderPrivate {
-    fileprivate init(coreFactory: ServiceCoreFactory, params: Any)  {
+    fileprivate init(coreFactory: ServiceCoreFactory, params: Any) {
         self.storage = .factoryParams(coreFactory, params)
     }
     
@@ -203,4 +203,3 @@ extension ServiceProviderPrivate {
         }
     }
 }
-

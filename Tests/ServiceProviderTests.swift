@@ -126,7 +126,7 @@ class ServiceProviderTests: XCTestCase {
         }
 
         XCTAssertEqual(factory.callCount, 3)
-        XCTAssertEqual(service2.value,"Test1")
+        XCTAssertEqual(service2.value, "Test1")
 
         service2.value = "Test2"
         XCTAssertEqual(service1.value, "Test2")
@@ -303,7 +303,7 @@ class ServiceProviderTests: XCTestCase {
         }
         
         XCTAssertEqual(callCount, 3)
-        XCTAssertEqual(service2.value,"Test1")
+        XCTAssertEqual(service2.value, "Test1")
         
         service2.value = "Test2"
         XCTAssertEqual(service1.value, "Test2")
@@ -763,4 +763,3 @@ class ServiceProviderTests: XCTestCase {
         XCTAssert(service1 !== service2)
     }
 }
-

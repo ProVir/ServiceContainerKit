@@ -65,4 +65,3 @@ public class ServiceEasyLocatorObjC: NSObject {
         return try? serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
     }
 }
-

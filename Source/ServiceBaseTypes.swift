@@ -55,7 +55,8 @@ public protocol ServiceParamsFactory: ServiceCoreFactory {
     func createService(params: ParamsType) throws -> ServiceType
 }
 
-///Factory for ServiceProvider or ServiceLocator with generate service in closure. Also can used for lazy create singleton instance services.
+///Factory for ServiceProvider or ServiceLocator with generate service in closure.
+///Also can used for lazy create singleton instance services.
 public class ServiceClosureFactory<T>: ServiceFactory {
     public let closure: () throws -> T
     public let factoryType: ServiceFactoryType
@@ -71,7 +72,7 @@ public class ServiceClosureFactory<T>: ServiceFactory {
         self.closure = closure
         self.factoryType = lazyRegime ? .lazy : .many
     }
-    
+
     public func createService() throws -> T {
         return try closure()
     }
@@ -83,13 +84,13 @@ public protocol ServiceCoreFactory {
     func coreCreateService(params: Any) throws -> Any
 }
 
-public extension ServiceFactory  {
+public extension ServiceFactory {
     func coreCreateService(params: Any) throws -> Any {
         return try createService()
     }
 }
 
-public extension ServiceParamsFactory  {
+public extension ServiceParamsFactory {
     func coreCreateService(params: Any) throws -> Any {
         if let params = params as? ParamsType {
             return try createService(params: params)

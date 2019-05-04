@@ -86,7 +86,7 @@ class ServiceEasyLocatorTests: XCTestCase {
         doTestGetFailureService(serviceLocator, ServiceLazy.self)
 
         XCTAssertEqual(factorySingleton.callCount, 1)
-        XCTAssertEqual(factoryLazyError.callCount, 2,  "While the error repeats - try to re-create")
+        XCTAssertEqual(factoryLazyError.callCount, 2, "While the error repeats - try to re-create")
     }
 
     func testAddServiceParamsProvider() {
@@ -130,7 +130,7 @@ class ServiceEasyLocatorTests: XCTestCase {
         doTestGetFailureService(serviceLocator, ServiceLazy.self)
 
         XCTAssertEqual(factorySingleton.callCount, 1)
-        XCTAssertEqual(factoryLazyError.callCount, 2,  "While the error repeats - try to re-create")
+        XCTAssertEqual(factoryLazyError.callCount, 2, "While the error repeats - try to re-create")
     }
 
     func testAddServiceParamsFactory() {
@@ -275,7 +275,7 @@ class ServiceEasyLocatorTests: XCTestCase {
         }
 
         XCTAssertEqual(callCount, 3)
-        XCTAssertEqual(service2.value,"Test1")
+        XCTAssertEqual(service2.value, "Test1")
 
         service2.value = "Test2"
         XCTAssertEqual(service1.value, "Test2")

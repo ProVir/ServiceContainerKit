@@ -122,6 +122,7 @@ open class ServiceEasyLocator {
     // MARK: ObjC
     /// Get Service use typeName as ServiceLocatorKey.storeKey
     open func tryServiceObjC(typeName: String) throws -> NSObject {
+        //swiftlint:disable:next syntactic_sugar
         return try tryServiceObjC(typeName: typeName, params: Optional<Any>.none as Any)
     }
 
