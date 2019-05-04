@@ -12,12 +12,10 @@ import ServiceContainerKit
 @objc protocol FirstServiceShared: NSObjectProtocol { }
 extension FirstService: FirstServiceShared { }
 
-/// Variant key 1 - Static store keys in struct
-struct ServiceLocatorKeys {
-    private init() { }
-    
+/// Variant key 1 - Static store keys in empty enum
+enum ServiceLocatorKeys {
     static let singletonService = SingletonServiceFactory.defaultKey
-    static let lazyService =  LazyServiceFactory.defaultKey
+    static let lazyService = LazyServiceFactory.defaultKey
     static let firstService = FirstServiceFactory.defaultKey
     static let firstServiceShared = FirstServiceFactory.sharedKey
     static let secondService = SecondServiceFactory.defaultKey
