@@ -10,7 +10,7 @@ import Foundation
 
 /// Wrapper ServiceEasyLocator for ObjC
 @objc(ServiceEasyLocator)
-public class ServiceEasyLocatorObjC: NSObject {
+open class ServiceEasyLocatorObjC: NSObject {
     /// Original Swift ServiceLocator
     public let serviceLocator: ServiceEasyLocator
     

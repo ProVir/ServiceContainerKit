@@ -10,7 +10,7 @@ import Foundation
 
 /// Wrapper ServiceLocator for ObjC
 @objc(ServiceLocator)
-public class ServiceLocatorObjC: NSObject {
+open class ServiceLocatorObjC: NSObject {
     /// Original Swift ServiceLocator
     public let serviceLocator: ServiceLocator
     
