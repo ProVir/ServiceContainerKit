@@ -17,7 +17,7 @@ extension LazyService {
 struct LazyServiceFactory: ServiceFactory {
     let factoryType: ServiceFactoryType = .lazy
     
-    func createService() throws -> LazyService {
+    func makeService() throws -> LazyService {
         let instance = LazyService()
         
         instance.value = "Created: \(Date())"

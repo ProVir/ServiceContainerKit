@@ -18,7 +18,7 @@ struct FirstServiceFactory: ServiceFactory {
     let singletonServiceProvider: ServiceProvider<SingletonService>
     
     let factoryType: ServiceFactoryType = .many
-    func createService() throws -> FirstService {
+    func makeService() throws -> FirstService {
         return FirstService(singletonService: try singletonServiceProvider.tryService())
     }
 }

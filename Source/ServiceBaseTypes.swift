@@ -13,6 +13,7 @@ public enum ServiceProviderError: LocalizedError {
     case wrongParams
     case wrongService
     case notSupportObjC
+//    case common(serviceType: Any.Type, Error)
 
     public var errorDescription: String? {
         switch self {
@@ -42,8 +43,8 @@ public protocol ServiceFactory: ServiceCoreFactory {
     /// Factory type. Used only when added to provider. Recommendation use as constant (let).
     var factoryType: ServiceFactoryType { get }
     
-    /// Create new instance service. Parameter settings use only for multiple factory. 
-    func createService() throws -> ServiceType
+    /// Make new instance service. Parameter settings use only for multiple factory.
+    func makeService() throws -> ServiceType
 }
 
 ///Factory services with params for ServiceProvider or ServiceLocator. Always factoryType = .many
@@ -51,8 +52,8 @@ public protocol ServiceParamsFactory: ServiceCoreFactory {
     associatedtype ServiceType
     associatedtype ParamsType
     
-    /// Create new instance service.
-    func createService(params: ParamsType) throws -> ServiceType
+    /// Make new instance service.
+    func makeService(params: ParamsType) throws -> ServiceType
 }
 
 ///Factory for ServiceProvider or ServiceLocator with generate service in closure.
@@ -62,7 +63,7 @@ public class ServiceClosureFactory<T>: ServiceFactory {
     public let factoryType: ServiceFactoryType
     
     /**
-     Constructor for ServiceFactory used closure for create service
+     Constructor for ServiceFactory used closure for make service
      
      - Parameters:
         - closureFactory: Closure with logic create service.
@@ -73,7 +74,7 @@ public class ServiceClosureFactory<T>: ServiceFactory {
         self.factoryType = lazyRegime ? .lazy : .many
     }
 
-    public func createService() throws -> T {
+    public func makeService() throws -> T {
         return try closure()
     }
 }
@@ -81,19 +82,19 @@ public class ServiceClosureFactory<T>: ServiceFactory {
 // MARK: - Core protocols
 public protocol ServiceCoreFactory {
     /// Can not implementation! Used only with framework implementation. 
-    func coreCreateService(params: Any) throws -> Any
+    func coreMakeService(params: Any) throws -> Any
 }
 
 public extension ServiceFactory {
-    func coreCreateService(params: Any) throws -> Any {
-        return try createService()
+    func coreMakeService(params: Any) throws -> Any {
+        return try makeService()
     }
 }
 
 public extension ServiceParamsFactory {
-    func coreCreateService(params: Any) throws -> Any {
+    func coreMakeService(params: Any) throws -> Any {
         if let params = params as? ParamsType {
-            return try createService(params: params)
+            return try makeService(params: params)
         } else {
             throw ServiceProviderError.wrongParams
         }

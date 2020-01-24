@@ -109,7 +109,7 @@ class SpyServiceSingletonFactory: ServiceContainerKit.ServiceFactory {
     }
 
     let factoryType: ServiceFactoryType = .atOne
-    func createService() throws -> ServiceSingleton {
+    func makeService() throws -> ServiceSingleton {
         callCount += 1
         if let error = error {
             throw error
@@ -128,7 +128,7 @@ class SpyServiceLazyFactory: ServiceContainerKit.ServiceFactory {
     }
 
     let factoryType: ServiceFactoryType = .lazy
-    func createService() throws -> ServiceLazy {
+    func makeService() throws -> ServiceLazy {
         callCount += 1
         if let error = error {
             throw error
@@ -147,7 +147,7 @@ class SpyServiceManyFactory: ServiceContainerKit.ServiceFactory {
     }
 
     let factoryType: ServiceFactoryType = .many
-    func createService() throws -> ServiceMany {
+    func makeService() throws -> ServiceMany {
         callCount += 1
         if let error = error {
             throw error
@@ -167,7 +167,7 @@ class SpyServiceValueFactory<Service: ServiceValue>: ServiceContainerKit.Service
     }
 
     let factoryType: ServiceFactoryType
-    func createService() throws -> ServiceValue {
+    func makeService() throws -> ServiceValue {
         callCount += 1
         if let error = error {
             throw error
@@ -180,7 +180,7 @@ class SpyServiceValueFactory<Service: ServiceValue>: ServiceContainerKit.Service
 class SpyServiceParamsFactory: ServiceContainerKit.ServiceParamsFactory {
     var callCount: Int = 0
 
-    func createService(params: ServiceParams.Params) throws -> ServiceParams {
+    func makeService(params: ServiceParams.Params) throws -> ServiceParams {
         callCount += 1
         if let error = params.error {
             throw error
@@ -193,7 +193,7 @@ class SpyServiceParamsFactory: ServiceContainerKit.ServiceParamsFactory {
 class SpyServiceOptParamsFactory: ServiceContainerKit.ServiceParamsFactory {
     var callCount: Int = 0
     
-    func createService(params: ServiceParams.Params?) throws -> ServiceParams {
+    func makeService(params: ServiceParams.Params?) throws -> ServiceParams {
         callCount += 1
         if let error = params?.error {
             throw error
@@ -206,7 +206,7 @@ class SpyServiceOptParamsFactory: ServiceContainerKit.ServiceParamsFactory {
 class SpyServiceParamsValueFactory: ServiceContainerKit.ServiceParamsFactory {
     var callCount: Int = 0
 
-    func createService(params: ServiceParams.Params) throws -> ServiceParamsValue {
+    func makeService(params: ServiceParams.Params) throws -> ServiceParamsValue {
         callCount += 1
         if let error = params.error {
             throw error
@@ -225,7 +225,7 @@ class SpyServiceSingletonObjCFactory: ServiceContainerKit.ServiceFactory {
     }
 
     let factoryType: ServiceFactoryType = .atOne
-    func createService() throws -> ServiceObjC {
+    func makeService() throws -> ServiceObjC {
         callCount += 1
         if let error = error {
             throw error
@@ -238,7 +238,7 @@ class SpyServiceSingletonObjCFactory: ServiceContainerKit.ServiceFactory {
 class SpyServiceParamsObjCFactory: ServiceContainerKit.ServiceParamsFactory {
     var callCount: Int = 0
 
-    func createService(params: ServiceObjCParams) throws -> ServiceObjC {
+    func makeService(params: ServiceObjCParams) throws -> ServiceObjC {
         callCount += 1
         if let error = params.error {
             throw error
@@ -257,7 +257,7 @@ class SpyServiceSingletonValueObjCFactory: ServiceContainerKit.ServiceFactory {
     }
 
     let factoryType: ServiceFactoryType = .atOne
-    func createService() throws -> ServiceValueObjC {
+    func makeService() throws -> ServiceValueObjC {
         callCount += 1
         if let error = error {
             throw error
@@ -270,7 +270,7 @@ class SpyServiceSingletonValueObjCFactory: ServiceContainerKit.ServiceFactory {
 class SpyServiceParamsValueObjCFactory: ServiceContainerKit.ServiceParamsFactory {
     var callCount: Int = 0
 
-    func createService(params: ServiceObjCParams) throws -> ServiceValueObjC {
+    func makeService(params: ServiceObjCParams) throws -> ServiceValueObjC {
         callCount += 1
         if let error = params.error {
             throw error

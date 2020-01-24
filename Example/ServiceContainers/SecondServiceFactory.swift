@@ -18,7 +18,7 @@ struct SecondServiceFactory: ServiceParamsFactory {
     let firstServiceProvider: ServiceProvider<FirstService>
     
     /// Optional params for support get service without params in ServiceLocator. 
-    func createService(params: SecondServiceParams?) throws -> SecondService {
+    func makeService(params: SecondServiceParams?) throws -> SecondService {
         let instance = SecondService(lazyService: try lazyServiceProvider.tryService(),
                                      firstService: try firstServiceProvider.tryService())
         

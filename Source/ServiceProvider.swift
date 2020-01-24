@@ -27,7 +27,7 @@ public extension ServiceParamsFactory {
     }
 }
 
-/// ServiceProvider with information for create service (singleton or many instances)
+/// ServiceProvider with information for make service (singleton or many instances)
 public struct ServiceProvider<ServiceType> {
     fileprivate let storage: ServiceProviderStorage<ServiceType>
     
@@ -36,14 +36,14 @@ public struct ServiceProvider<ServiceType> {
         self.storage = .atOne(service)
     }
     
-    /// ServiceProvider with factory. If service factoryType == .atOne and throw error when create - throw this error from constructor.
+    /// ServiceProvider with factory. If service factoryType == .atOne and throw error when make - throw this error from constructor.
     public init<FactoryType: ServiceFactory>(tryFactory factory: FactoryType) throws where FactoryType.ServiceType == ServiceType {
-        self.storage = try ServiceProvider.tryCreateStorage(factory: factory)
+        self.storage = try ServiceProvider.tryMakeStorage(factory: factory)
     }
     
     /// ServiceProvider with factory.
     public init<FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
-        self.storage = ServiceProvider.createStorage(factory: factory)
+        self.storage = ServiceProvider.makeStorage(factory: factory)
     }
     
     /// ServiceProvider with factory, use specific params.
@@ -53,12 +53,12 @@ public struct ServiceProvider<ServiceType> {
     
     /// ServiceProvider with lazy create service in closure.
     public init(lazy: @escaping () throws -> ServiceType) {
-        self.storage = ServiceProvider.createStorage(factory: ServiceClosureFactory(closureFactory: lazy, lazyRegime: true))
+        self.storage = ServiceProvider.makeStorage(factory: ServiceClosureFactory(closureFactory: lazy, lazyRegime: true))
     }
     
     /// ServiceProvider with many instance service type, create service in closure.
     public init(manyFactory: @escaping () throws -> ServiceType) {
-        self.storage = ServiceProvider.createStorage(factory: ServiceClosureFactory(closureFactory: manyFactory, lazyRegime: false))
+        self.storage = ServiceProvider.makeStorage(factory: ServiceClosureFactory(closureFactory: manyFactory, lazyRegime: false))
     }
     
     /// Get Service with detail information throwed error.
@@ -128,18 +128,18 @@ extension ServiceProvider: ServiceProviderPrivate {
         self.storage = .factoryParams(coreFactory, params)
     }
     
-    private static func createStorage<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
+    private static func makeStorage<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
         do {
-            return try tryCreateStorage(factory: factory, params: params)
+            return try tryMakeStorage(factory: factory, params: params)
         } catch {
             return .atOneError(error)
         }
     }
     
-    private static func tryCreateStorage<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) throws -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
+    private static func tryMakeStorage<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) throws -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
         switch factory.factoryType {
         case .atOne:
-            if let service = try factory.coreCreateService(params: params) as? ServiceType {
+            if let service = try factory.coreMakeService(params: params) as? ServiceType {
                 return .atOne(service)
             } else {
                 throw ServiceProviderError.wrongService
@@ -174,7 +174,7 @@ extension ServiceProviderPrivate {
             if let service = lazy.instance {
                 return service
             } else if let factory = lazy.factory {
-                if let service = try factory.coreCreateService(params: params) as? ServiceType {
+                if let service = try factory.coreMakeService(params: params) as? ServiceType {
                     lazy.instance = service
                     lazy.factory = nil
                     
@@ -188,14 +188,14 @@ extension ServiceProviderPrivate {
             
         //Multiple service
         case .factory(let factory):
-            if let service = try factory.coreCreateService(params: params) as? ServiceType {
+            if let service = try factory.coreMakeService(params: params) as? ServiceType {
                 return service
             } else {
                 throw ServiceProviderError.wrongService
             }
         
         case .factoryParams(let factory, let params):
-            if let service = try factory.coreCreateService(params: params) as? ServiceType {
+            if let service = try factory.coreMakeService(params: params) as? ServiceType {
                 return service
             } else {
                 throw ServiceProviderError.wrongService

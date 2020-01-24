@@ -15,7 +15,7 @@ typealias SingletonServiceLocatorKey = ServiceLocatorEasyKey<SingletonService>
 struct SingletonServiceFactory: ServiceFactory {
     let factoryType: ServiceFactoryType = .atOne
     
-    func createService() throws -> SingletonService {
+    func makeService() throws -> SingletonService {
         let instance = SingletonService()
         
         instance.value = "created in factory as singleton"
