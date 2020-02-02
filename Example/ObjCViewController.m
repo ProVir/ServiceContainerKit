@@ -70,7 +70,7 @@
         printf("\nSTOP TEST SERVICE EASY LOCATOR OBJC\n");
     });
     
-    ServiceEasyLocator *serviceLocator = ServiceEasyLocator.shared;
+    ServiceSimpleLocator *serviceLocator = ServiceSimpleLocator.shared;
 
     printf("\nCreate and test FirstService\n");
     FirstService* firstService = [serviceLocator getServiceWithClass:FirstService.class];

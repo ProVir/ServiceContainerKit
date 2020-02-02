@@ -11,7 +11,7 @@ import ServiceContainerKit
 
 /// Variant key 3 - used static variable in service
 extension LazyService {
-    static var locatorKey: ServiceLocatorEasyKey<LazyService> { return .init() }
+    static var locatorKey: ServiceLocatorSimpleKey<LazyService> { return .init() }
 }
 
 struct LazyServiceFactory: ServiceFactory {

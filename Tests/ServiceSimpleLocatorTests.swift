@@ -1,5 +1,5 @@
 //
-//  ServiceEasyLocatorTests.swift
+//  ServiceSimpleLocatorTests.swift
 //  ServiceContainerKitTests
 //
 //  Created by Vitalii Korotkii on 22/04/2019.
@@ -9,11 +9,11 @@
 import XCTest
 @testable import ServiceContainerKit
 
-class ServiceEasyLocatorTests: XCTestCase {
-    var serviceLocator = ServiceEasyLocator()
+class ServiceSimpleLocatorTests: XCTestCase {
+    var serviceLocator = ServiceSimpleLocator()
 
     override func tearDown() {
-        serviceLocator = ServiceEasyLocator()
+        serviceLocator = ServiceSimpleLocator()
     }
 
     func testReadOnly() {
@@ -380,7 +380,7 @@ class ServiceEasyLocatorTests: XCTestCase {
     }
 
     func testServiceLocatorObjC() {
-        let serviceLocatorObjC = ServiceEasyLocatorObjC(serviceLocator)
+        let serviceLocatorObjC = ServiceSimpleLocatorObjC(serviceLocator)
 
         serviceLocator.addService(factory: SpyServiceSingletonObjCFactory())
         serviceLocator.addService(factory: SpyServiceSingletonValueObjCFactory())
@@ -412,22 +412,22 @@ class ServiceEasyLocatorTests: XCTestCase {
     }
 }
 
-extension ServiceEasyLocatorTests {
-    private func doTestGetSuccessService<ServiceType>(_ serviceLocator: ServiceEasyLocator, _ serviceType: ServiceType.Type, file: StaticString = #file, line: UInt = #line) {
+extension ServiceSimpleLocatorTests {
+    private func doTestGetSuccessService<ServiceType>(_ serviceLocator: ServiceSimpleLocator, _ serviceType: ServiceType.Type, file: StaticString = #file, line: UInt = #line) {
         if serviceLocator.getServiceAsOptional(ServiceType.self) == nil {
             XCTFail("Service not found", file: file, line: line)
         }
     }
 
-    private func doTestGetFailureService<ServiceType>(_ serviceLocator: ServiceEasyLocator, _ serviceType: ServiceType.Type, file: StaticString = #file, line: UInt = #line) {
+    private func doTestGetFailureService<ServiceType>(_ serviceLocator: ServiceSimpleLocator, _ serviceType: ServiceType.Type, file: StaticString = #file, line: UInt = #line) {
         doTestGetErrorService(serviceLocator, serviceType, error: ServiceCreateError.someError, file: file, line: line)
     }
 
-    private func doTestGetNotFoundService<ServiceType>(_ serviceLocator: ServiceEasyLocator, _ serviceType: ServiceType.Type, file: StaticString = #file, line: UInt = #line) {
+    private func doTestGetNotFoundService<ServiceType>(_ serviceLocator: ServiceSimpleLocator, _ serviceType: ServiceType.Type, file: StaticString = #file, line: UInt = #line) {
         doTestGetErrorService(serviceLocator, serviceType, error: ServiceLocatorError.serviceNotFound, file: file, line: line)
     }
 
-    private func doTestGetErrorService<ServiceType, E: Error & Equatable>(_ serviceLocator: ServiceEasyLocator,  _ serviceType: ServiceType.Type, error errorService: E, file: StaticString = #file, line: UInt = #line) {
+    private func doTestGetErrorService<ServiceType, E: Error & Equatable>(_ serviceLocator: ServiceSimpleLocator,  _ serviceType: ServiceType.Type, error errorService: E, file: StaticString = #file, line: UInt = #line) {
         let result = serviceLocator.getServiceAsResult(ServiceType.self)
         switch result {
         case .success:

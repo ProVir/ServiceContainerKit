@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //Variant 1: ServiceLocator setup as singleton
         print("Begin setup ServiceLocator")
-        ServiceEasyLocator.setupSharedDefault()
+        ServiceSimpleLocator.setupSharedDefault()
         print("End setup ServiceLocator")
         
         //Variant 2: DI Container with inject in root ViewController

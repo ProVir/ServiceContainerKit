@@ -22,25 +22,25 @@ public protocol ServiceLocatorParamsKey: ServiceLocatorKey {
 }
 
 /// Default implementation ServiceLocator key
-public struct ServiceLocatorEasyKey<ServiceType>: ServiceLocatorKey {
+public struct ServiceLocatorSimpleKey<ServiceType>: ServiceLocatorKey {
     public init() { }
     public var storeKey: String { return "\(ServiceType.self)" }
 }
 
 /// Default implementation ServiceLocator key for services with params
-public struct ServiceLocatorParamsEasyKey<ServiceType, ParamsType>: ServiceLocatorParamsKey {
+public struct ServiceLocatorParamsSimpleKey<ServiceType, ParamsType>: ServiceLocatorParamsKey {
     public init() { }
     public var storeKey: String { return "\(ServiceType.self)" }
 }
 
 extension ServiceFactory {
     /// Default key for service from factory
-    public static var defaultKey: ServiceLocatorEasyKey<ServiceType> { return .init() }
+    public static var defaultKey: ServiceLocatorSimpleKey<ServiceType> { return .init() }
 }
 
 extension ServiceParamsFactory {
     /// Default key for service with params from factory
-    public static var defaultKey: ServiceLocatorParamsEasyKey<ServiceType, ParamsType> { return .init() }
+    public static var defaultKey: ServiceLocatorParamsSimpleKey<ServiceType, ParamsType> { return .init() }
 }
 
 // MARK: ObjC
@@ -54,7 +54,7 @@ public class ServiceLocatorObjCKey: NSObject {
         super.init()
     }
 
-    /// Not recomendation constructor - used for ServiceEasyLocator as internal logic
+    /// Not recomendation constructor - used for ServiceSimpleLocator as internal logic
     public init(storeKey: String) {
         self.storeKey = storeKey
         super.init()

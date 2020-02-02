@@ -64,7 +64,7 @@ extension ServiceLocatorObjC {
     }
 }
 
-extension ServiceEasyLocator {
+extension ServiceSimpleLocator {
     static func setupSharedDefault() {
         //Create services providers
         let singletonServiceProvider = SingletonServiceFactory().serviceProvider()
@@ -78,7 +78,7 @@ extension ServiceEasyLocator {
         let sharedFirstService: FirstService = firstServiceProvider.getServiceOrFatal()
         
         //Setup ServiceLocator
-        let serviceLocator = ServiceEasyLocator()
+        let serviceLocator = ServiceSimpleLocator()
         
         serviceLocator.addService(provider: singletonServiceProvider)
         serviceLocator.addService(provider: lazyServiceProvider)
@@ -89,7 +89,7 @@ extension ServiceEasyLocator {
         serviceLocator.addService(sharedFirstService as FirstServiceShared)
         
         serviceLocator.setReadOnly()
-        ServiceEasyLocator.setupShared(serviceLocator, readOnlySharedAfter: true)
+        ServiceSimpleLocator.setupShared(serviceLocator, readOnlySharedAfter: true)
     }
 }
 

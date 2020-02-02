@@ -1,5 +1,5 @@
 //
-//  ServiceEasyLocator.swift
+//  ServiceSimpleLocator.swift
 //  Example
 //
 //  Created by Vitalii Korotkii on 18/04/2019.
@@ -9,14 +9,14 @@
 import Foundation
 import ServiceContainerKit
 
-extension ServiceEasyLocatorObjC {
-    @objc static var shared: ServiceEasyLocatorObjC? {
-        return ServiceEasyLocator.shared.map { .init($0) }
+extension ServiceSimpleLocatorObjC {
+    @objc static var shared: ServiceSimpleLocatorObjC? {
+        return ServiceSimpleLocator.shared.map { .init($0) }
     }
 }
 
 /// Recommendation use ServiceLocator
-final class ServiceEasyLocator: ServiceContainerKit.ServiceEasyLocator {
+final class ServiceSimpleLocator: ServiceContainerKit.ServiceSimpleLocator {
     enum Error: LocalizedError {
         case sharedRequireSetup
 
@@ -29,10 +29,10 @@ final class ServiceEasyLocator: ServiceContainerKit.ServiceEasyLocator {
 
     // MARK: Shared
     /// ServiceLocator as singleton
-    public private(set) static var shared: ServiceEasyLocator?
+    public private(set) static var shared: ServiceSimpleLocator?
 
     /// Get shared ServiceLocator or error
-    public static func tryShared() throws -> ServiceEasyLocator {
+    public static func tryShared() throws -> ServiceSimpleLocator {
         if let shared = shared {
             return shared
         } else {
@@ -45,7 +45,7 @@ final class ServiceEasyLocator: ServiceContainerKit.ServiceEasyLocator {
 
     // MARK: Setup locator
     /// Setup ServiceLocator as singleton. If `readOnlySharedAfter = true` (default) - don't change singleton instance after.
-    public static func setupShared(_ serviceLocator: ServiceEasyLocator, readOnlySharedAfter: Bool = true) {
+    public static func setupShared(_ serviceLocator: ServiceSimpleLocator, readOnlySharedAfter: Bool = true) {
         if readOnlyShared {
             assertionFailure("Don't support setupShared in readOnly regime")
             return

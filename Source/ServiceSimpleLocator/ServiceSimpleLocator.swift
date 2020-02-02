@@ -1,6 +1,6 @@
 //
-//  ServiceEasyLocator.swift
-//  ServiceContainerKit/ServiceEasyLocator 2.0.0
+//  ServiceSimpleLocator.swift
+//  ServiceContainerKit/ServiceSimpleLocator 2.0.0
 //
 //  Created by Короткий Виталий on 16/04/2019.
 //  Copyright © 2019 ProVir. All rights reserved.
@@ -9,15 +9,15 @@
 import Foundation
 
 /// ServiceLocator as easy storage ServiceProviders
-open class ServiceEasyLocator {
+open class ServiceSimpleLocator {
     private let keyLocator: ServiceLocator
     
     public init() {
         keyLocator = ServiceLocator()
     }
 
-    /// Constructor used for clone locator. ServiceEasyLocator need by allowClone = true
-    public required init(other: ServiceEasyLocator) {
+    /// Constructor used for clone locator. ServiceSimpleLocator need by allowClone = true
+    public required init(other: ServiceSimpleLocator) {
         self.keyLocator = other.keyLocator.clone()
     }
     
@@ -41,62 +41,62 @@ open class ServiceEasyLocator {
         keyLocator.setReadOnly(denyClone: denyClone, assertionFailure: assertionFailure)
     }
     
-    /// Clone ServiceEasyLocator with all providers, but with readOnly = false in new instance.
-    open func clone<T: ServiceEasyLocator>(type: T.Type = T.self) -> T {
+    /// Clone ServiceSimpleLocator with all providers, but with readOnly = false in new instance.
+    open func clone<T: ServiceSimpleLocator>(type: T.Type = T.self) -> T {
         return T.init(other: self)
     }
     
     // MARK: - Setup services
     /// Add ServiceProvider with service for ServiceLocator
     open func addService<ServiceType>(provider: ServiceProvider<ServiceType>) {
-        keyLocator.addService(key: ServiceLocatorEasyKey<ServiceType>(), provider: provider)
+        keyLocator.addService(key: ServiceLocatorSimpleKey<ServiceType>(), provider: provider)
     }
     
     /// Add ServiceParamsProvider with service for ServiceLocator
     open func addService<ServiceType, ParamsType>(provider: ServiceParamsProvider<ServiceType, ParamsType>) {
-        keyLocator.addService(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), provider: provider)
+        keyLocator.addService(key: ServiceLocatorParamsSimpleKey<ServiceType, ParamsType>(), provider: provider)
     }
     
     /// Add service at one instance.
     open func addService<ServiceType>(_ service: ServiceType) {
-        keyLocator.addService(key: ServiceLocatorEasyKey<ServiceType>(), service: service)
+        keyLocator.addService(key: ServiceLocatorSimpleKey<ServiceType>(), service: service)
     }
     
     /// Add factory service
     open func addService<ServiceType, FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
-        keyLocator.addService(key: ServiceLocatorEasyKey<ServiceType>(), factory: factory)
+        keyLocator.addService(key: ServiceLocatorSimpleKey<ServiceType>(), factory: factory)
     }
     
     /// Add factory service with params
     open func addService<ServiceType, ParamsType, FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
-        keyLocator.addService(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), factory: factory)
+        keyLocator.addService(key: ServiceLocatorParamsSimpleKey<ServiceType, ParamsType>(), factory: factory)
     }
     
     /// Add service with lazy create service in closure
     open func addLazyService<ServiceType>(_ lazy: @escaping () throws -> ServiceType) {
-        keyLocator.addLazyService(key: ServiceLocatorEasyKey<ServiceType>(), lazy)
+        keyLocator.addLazyService(key: ServiceLocatorSimpleKey<ServiceType>(), lazy)
     }
     
     /// Add service with many instance service type, create service in closure
     open func addService<ServiceType>(manyFactory closure: @escaping () throws -> ServiceType) {
-        keyLocator.addService(key: ServiceLocatorEasyKey<ServiceType>(), manyFactory: closure)
+        keyLocator.addService(key: ServiceLocatorSimpleKey<ServiceType>(), manyFactory: closure)
     }
     
-    /// Remove service from ServiceEasyLocator.
+    /// Remove service from ServiceSimpleLocator.
     @discardableResult
     open func removeService<ServiceType>(_ serviceType: ServiceType.Type) -> Bool {
-        return keyLocator.removeService(key: ServiceLocatorEasyKey<ServiceType>())
+        return keyLocator.removeService(key: ServiceLocatorSimpleKey<ServiceType>())
     }
     
     // MARK: - Get service
     /// Get Service with detailed information throwed error.
     open func getServiceAsResult<ServiceType>(_ type: ServiceType.Type = ServiceType.self) -> Result<ServiceType, ServiceObtainError> {
-        return keyLocator.getServiceAsResult(key: ServiceLocatorEasyKey<ServiceType>())
+        return keyLocator.getServiceAsResult(key: ServiceLocatorSimpleKey<ServiceType>())
     }
 
     /// Get Service with params and detailed information throwed error.
     open func getServiceAsResult<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
-        return keyLocator.getServiceAsResult(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), params: params)
+        return keyLocator.getServiceAsResult(key: ServiceLocatorParamsSimpleKey<ServiceType, ParamsType>(), params: params)
     }
 
     /// Get Service with detailed information throwed error.
@@ -139,12 +139,12 @@ open class ServiceEasyLocator {
     
     /// Get ServiceProvider with service
     open func getServiceProvider<ServiceType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceProvider<ServiceType>? {
-        return keyLocator.getServiceProvider(key: ServiceLocatorEasyKey<ServiceType>())
+        return keyLocator.getServiceProvider(key: ServiceLocatorSimpleKey<ServiceType>())
     }
     
     /// Get ServiceParamsProvider with service
     open func getServiceProvider<ServiceType, ParamsType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceParamsProvider<ServiceType, ParamsType>? {
-        return keyLocator.getServiceProvider(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>())
+        return keyLocator.getServiceProvider(key: ServiceLocatorParamsSimpleKey<ServiceType, ParamsType>())
     }
     
     // MARK: ObjC

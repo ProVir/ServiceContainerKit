@@ -111,7 +111,7 @@ class ViewController: UIViewController {
             print("\nSTOP TEST SERVICE EASY LOCATOR\n")
         }
         
-        guard let serviceLocator = ServiceEasyLocator.shared else { return }
+        guard let serviceLocator = ServiceSimpleLocator.shared else { return }
         
         print("\nCreate and test FirstService")
         let firstService: FirstService = serviceLocator.getServiceOrFatal()
