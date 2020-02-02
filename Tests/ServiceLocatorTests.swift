@@ -35,23 +35,23 @@ class ServiceLocatorTests: XCTestCase {
         let serviceLocator2 = serviceLocator.clone()
         serviceLocator2.addService(key: ServiceLocatorKeys.serviceLazy, factory: SpyServiceLazyFactory())
         
-        guard let service1 = serviceLocator.getService(key: ServiceLocatorKeys.serviceSingleton) else {
+        guard let service1 = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceSingleton) else {
             XCTFail("Service not found")
             return
         }
         
-        guard let service2 = serviceLocator2.getService(key: ServiceLocatorKeys.serviceSingleton) else {
+        guard let service2 = serviceLocator2.getServiceAsOptional(key: ServiceLocatorKeys.serviceSingleton) else {
             XCTFail("Service not found")
             return
         }
         
         XCTAssert(service1 === service2, "Service singleton after clone also remains singleton")
         
-        if serviceLocator.getService(key: ServiceLocatorKeys.serviceLazy) != nil {
+        if serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceLazy) != nil {
             XCTFail("Service not be found")
         }
         
-        if serviceLocator2.getService(key: ServiceLocatorKeys.serviceLazy) == nil {
+        if serviceLocator2.getServiceAsOptional(key: ServiceLocatorKeys.serviceLazy) == nil {
             XCTFail("Service not found")
         }
         
@@ -96,8 +96,8 @@ class ServiceLocatorTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
         
-        guard let service = serviceLocator.getService(key: ServiceLocatorKeys.serviceParams,
-                                                      params: .init(value: "Test1", error: nil)) else {
+        guard let service = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceParams,
+                                                                params: .init(value: "Test1", error: nil)) else {
             XCTFail("Service not found")
             return
         }
@@ -105,7 +105,7 @@ class ServiceLocatorTests: XCTestCase {
         XCTAssertEqual(factory.callCount, 1)
         XCTAssertEqual(service.value, "Test1")
         
-        doTestGetErrorService(serviceLocator, key: ServiceLocatorKeys.serviceParams, error: ServiceLocatorError.wrongParams)
+        doTestGetErrorService(serviceLocator, key: ServiceLocatorKeys.serviceParams, error: ServiceFactoryError.wrongParams)
         doTestGetNotFoundService(serviceLocator, key: ServiceLocatorKeys.serviceSingleton)
     }
     
@@ -139,21 +139,23 @@ class ServiceLocatorTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
         
-        guard let service = serviceLocator.getService(key: ServiceLocatorKeys.serviceParams,
-                                                      params: .init(value: "Test1", error: nil)) else {
-                                                        XCTFail("Service not found")
-                                                        return
+        guard let service = serviceLocator.getServiceAsOptional(
+            key: ServiceLocatorKeys.serviceParams,
+            params: .init(value: "Test1", error: nil)
+            ) else {
+            XCTFail("Service not found")
+            return
         }
 
         XCTAssertEqual(factory.callCount, 1)
         XCTAssertEqual(service.value, "Test1")
         
-        doTestGetErrorService(serviceLocator, key: ServiceLocatorKeys.serviceParams, error: ServiceLocatorError.wrongParams)
+        doTestGetErrorService(serviceLocator, key: ServiceLocatorKeys.serviceParams, error: ServiceFactoryError.wrongParams)
         doTestGetNotFoundService(serviceLocator, key: ServiceLocatorKeys.serviceSingleton)
     }
     
     func testAddServiceAsProtocol() {
-        let factory = SpyServiceValueFactory<ServiceSingleton>.init(factoryType: .atOne)
+        let factory = SpyServiceValueFactory<ServiceSingleton>.init(mode: .atOne)
         let provider = factory.serviceProvider()
         serviceLocator.addService(key: ServiceLocatorKeys.serviceSingletonValue, provider: provider)
 
@@ -172,16 +174,18 @@ class ServiceLocatorTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
         
-        guard let service = serviceLocator.getService(key: ServiceLocatorKeys.serviceParamsValue,
-                                                      params: .init(value: "Test1", error: nil)) else {
-                                                        XCTFail("Service not found")
-                                                        return
+        guard let service = serviceLocator.getServiceAsOptional(
+            key: ServiceLocatorKeys.serviceParamsValue,
+            params: .init(value: "Test1", error: nil)
+            ) else {
+            XCTFail("Service not found")
+            return
         }
 
         XCTAssertEqual(factory.callCount, 1)
         XCTAssertEqual(service.value, "Test1")
         
-        doTestGetErrorService(serviceLocator, key: ServiceLocatorKeys.serviceParamsValue, error: ServiceLocatorError.wrongParams)
+        doTestGetErrorService(serviceLocator, key: ServiceLocatorKeys.serviceParamsValue, error: ServiceFactoryError.wrongParams)
         doTestGetNotFoundService(serviceLocator, key: ServiceLocatorKeys.serviceParams)
     }
     
@@ -192,15 +196,17 @@ class ServiceLocatorTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
         
-        guard let service1 = serviceLocator.getService(key: ServiceLocatorKeys.serviceOptParams,
-                                                      params: .init(value: "Test1", error: nil)) else {
-                                                        XCTFail("Service not found")
-                                                        return
+        guard let service1 = serviceLocator.getServiceAsOptional(
+            key: ServiceLocatorKeys.serviceOptParams,
+            params: .init(value: "Test1", error: nil)
+            ) else {
+            XCTFail("Service not found")
+            return
         }
         
-        guard let service2 = serviceLocator.getService(key: ServiceLocatorKeys.serviceOptParams) else {
-                                                        XCTFail("Service not found")
-                                                        return
+        guard let service2 = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceOptParams) else {
+            XCTFail("Service not found")
+            return
         }
 
         XCTAssertEqual(factory.callCount, 2)
@@ -217,7 +223,7 @@ class ServiceLocatorTests: XCTestCase {
         let service = ServiceSingleton()
         serviceLocator.addService(key: ServiceLocatorKeys.serviceSingleton, service: service)
         
-        guard let serviceGet = serviceLocator.getService(key: ServiceLocatorKeys.serviceSingleton) else {
+        guard let serviceGet = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceSingleton) else {
             XCTFail("Service not found")
             return
         }
@@ -244,24 +250,22 @@ class ServiceLocatorTests: XCTestCase {
         
         XCTAssertEqual(callCount, 0, "Real create service when first needed")
         
-        if serviceLocator.getService(key: ServiceLocatorKeys.serviceLazy) != nil {
+        if serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceLazy) != nil {
             XCTFail("Service need failure create")
         }
         
         XCTAssertEqual(callCount, 1, "Real create service when first needed")
-        
-        do {
-            _ = try serviceLocator.tryService(key: ServiceLocatorKeys.serviceLazy)
-            XCTFail("Service need failure create")
-        } catch {
-            XCTAssert(error is ServiceCreateError)
+
+        switch serviceLocator.getServiceAsResult(key: ServiceLocatorKeys.serviceLazy) {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
         }
         
         XCTAssertEqual(callCount, 2, "While the error repeats - try to re-create")
         
         //Next without error
         errorClosure = nil
-        guard let service1 = serviceLocator.getService(key: ServiceLocatorKeys.serviceLazy) else {
+        guard let service1 = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceLazy) else {
             XCTFail("Service not exist")
             return
         }
@@ -269,7 +273,7 @@ class ServiceLocatorTests: XCTestCase {
         XCTAssertEqual(callCount, 3, "While the error repeats - try to re-create")
         
         service1.value = "Test1"
-        guard let service2 = serviceLocator.getService(key: ServiceLocatorKeys.serviceLazy) else {
+        guard let service2 = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceLazy) else {
             XCTFail("Service not exist")
             return
         }
@@ -299,24 +303,22 @@ class ServiceLocatorTests: XCTestCase {
         
         XCTAssertEqual(callCount, 0, "Real create service when needed")
         
-        if serviceLocator.getService(key: ServiceLocatorKeys.serviceManyValue) != nil {
+        if serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceManyValue) != nil {
             XCTFail("Service need failure create")
         }
         
         XCTAssertEqual(callCount, 1, "Create service new with error")
-        
-        do {
-            _ = try serviceLocator.tryService(key: ServiceLocatorKeys.serviceManyValue)
-            XCTFail("Service need failure create")
-        } catch {
-            XCTAssert(error is ServiceCreateError)
+
+        switch serviceLocator.getServiceAsResult(key: ServiceLocatorKeys.serviceManyValue) {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
         }
         
         XCTAssertEqual(callCount, 2, "Create service new with error")
         
         //Next without error
         errorClosure = nil
-        guard let service1 = serviceLocator.getService(key: ServiceLocatorKeys.serviceManyValue) else {
+        guard let service1 = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceManyValue) else {
             XCTFail("Service not exist")
             return
         }
@@ -324,7 +326,7 @@ class ServiceLocatorTests: XCTestCase {
         XCTAssertEqual(callCount, 3, "Create service new")
         
         service1.value = "Test1"
-        guard let service2 = serviceLocator.getService(key: ServiceLocatorKeys.serviceManyValue) else {
+        guard let service2 = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceManyValue) else {
             XCTFail("Service not exist")
             return
         }
@@ -371,26 +373,26 @@ class ServiceLocatorTests: XCTestCase {
 
         serviceLocator.addService(key: ServiceLocatorCustomKey(storeKey: "key1"), factory: SpyServiceLazyFactory())
         doTestGetSuccessService(serviceLocator, key: ServiceLocatorCustomKey<ServiceLazy>(storeKey: "key1"))
-        doTestGetNotFoundService(serviceLocator, key: ServiceLocatorCustomKey<ServiceSingleton>(storeKey: "key1"))
+        doTestGetInvalidProvider(serviceLocator, key: ServiceLocatorCustomKey<ServiceSingleton>(storeKey: "key1"))
 
         serviceLocator.addService(key: ServiceLocatorCustomKey(storeKey: "key1"), factory: SpyServiceManyFactory())
         doTestGetSuccessService(serviceLocator, key: ServiceLocatorCustomKey<ServiceMany>(storeKey: "key1"))
-        doTestGetNotFoundService(serviceLocator, key: ServiceLocatorCustomKey<ServiceSingleton>(storeKey: "key1"))
-        doTestGetNotFoundService(serviceLocator, key: ServiceLocatorCustomKey<ServiceLazy>(storeKey: "key1"))
+        doTestGetInvalidProvider(serviceLocator, key: ServiceLocatorCustomKey<ServiceSingleton>(storeKey: "key1"))
+        doTestGetInvalidProvider(serviceLocator, key: ServiceLocatorCustomKey<ServiceLazy>(storeKey: "key1"))
 
         serviceLocator.addService(key: ServiceLocatorCustomKey(storeKey: "key2"), factory: SpyServiceSingletonFactory())
-        doTestGetNotFoundService(serviceLocator, key: ServiceLocatorCustomKey<ServiceSingleton>(storeKey: "key1"))
+        doTestGetInvalidProvider(serviceLocator, key: ServiceLocatorCustomKey<ServiceSingleton>(storeKey: "key1"))
         doTestGetSuccessService(serviceLocator, key: ServiceLocatorCustomKey<ServiceSingleton>(storeKey: "key2"))
         doTestGetSuccessService(serviceLocator, key: ServiceLocatorCustomKey<ServiceMany>(storeKey: "key1"))
-        doTestGetNotFoundService(serviceLocator, key: ServiceLocatorCustomKey<ServiceMany>(storeKey: "key2"))
-        doTestGetNotFoundService(serviceLocator, key: ServiceLocatorCustomKey<ServiceLazy>(storeKey: "key1"))
-        doTestGetNotFoundService(serviceLocator, key: ServiceLocatorCustomKey<ServiceLazy>(storeKey: "key2"))
+        doTestGetInvalidProvider(serviceLocator, key: ServiceLocatorCustomKey<ServiceMany>(storeKey: "key2"))
+        doTestGetInvalidProvider(serviceLocator, key: ServiceLocatorCustomKey<ServiceLazy>(storeKey: "key1"))
+        doTestGetInvalidProvider(serviceLocator, key: ServiceLocatorCustomKey<ServiceLazy>(storeKey: "key2"))
 
 
         let service1 = ServiceSingleton()
         service1.value = "Test1"
         serviceLocator.addService(key: ServiceLocatorKeys.serviceSingleton, service: service1)
-        if let service = serviceLocator.getService(key: ServiceLocatorKeys.serviceSingleton) {
+        if let service = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceSingleton) {
             XCTAssertEqual(service.value, "Test1")
             XCTAssert(service1 === service)
         } else {
@@ -400,7 +402,7 @@ class ServiceLocatorTests: XCTestCase {
         let service2 = ServiceSingleton()
         service2.value = "Test2"
         serviceLocator.addService(key: ServiceLocatorKeys.serviceSingleton, service: service2)
-        if let service = serviceLocator.getService(key: ServiceLocatorKeys.serviceSingleton) {
+        if let service = serviceLocator.getServiceAsOptional(key: ServiceLocatorKeys.serviceSingleton) {
             XCTAssertEqual(service.value, "Test2")
             XCTAssert(service2 === service)
         } else {
@@ -442,7 +444,7 @@ class ServiceLocatorTests: XCTestCase {
 
 extension ServiceLocatorTests {
     private func doTestGetSuccessService<Key: ServiceLocatorKey>(_ serviceLocator: ServiceLocator, key: Key, file: StaticString = #file, line: UInt = #line) {
-        if serviceLocator.getService(key: key) == nil {
+        if serviceLocator.getServiceAsOptional(key: key) == nil {
             XCTFail("Service not found", file: file, line: line)
         }
     }
@@ -454,16 +456,21 @@ extension ServiceLocatorTests {
     private func doTestGetNotFoundService<Key: ServiceLocatorKey>(_ serviceLocator: ServiceLocator, key: Key, file: StaticString = #file, line: UInt = #line) {
         doTestGetErrorService(serviceLocator, key: key, error: ServiceLocatorError.serviceNotFound, file: file, line: line)
     }
+
+    private func doTestGetInvalidProvider<Key: ServiceLocatorKey>(_ serviceLocator: ServiceLocator, key: Key, file: StaticString = #file, line: UInt = #line) {
+        doTestGetErrorService(serviceLocator, key: key, error: ServiceLocatorError.invalidProvider, file: file, line: line)
+    }
     
     private func doTestGetErrorService<Key: ServiceLocatorKey, E: Error & Equatable>(_ serviceLocator: ServiceLocator, key: Key, error errorService: E, file: StaticString = #file, line: UInt = #line) {
-        do {
-            _ = try serviceLocator.tryService(key: key)
+        let result = serviceLocator.getServiceAsResult(key: key)
+        switch result {
+        case .success:
             XCTFail("Service not be found", file: file, line: line)
-        } catch {
-            if let error = error as? E {
+        case .failure(let obtainError):
+            if let error = obtainError.error as? E {
                 XCTAssertEqual(error, errorService, file: file, line: line)
             } else {
-                XCTFail("Unknown error \(error)", file: file, line: line)
+                XCTFail("Unknown error \(obtainError.error)", file: file, line: line)
             }
         }
     }

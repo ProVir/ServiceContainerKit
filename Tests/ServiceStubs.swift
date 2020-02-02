@@ -108,7 +108,7 @@ class SpyServiceSingletonFactory: ServiceContainerKit.ServiceFactory {
         self.error = error
     }
 
-    let factoryType: ServiceFactoryType = .atOne
+    let mode: ServiceFactoryMode = .atOne
     func makeService() throws -> ServiceSingleton {
         callCount += 1
         if let error = error {
@@ -127,7 +127,7 @@ class SpyServiceLazyFactory: ServiceContainerKit.ServiceFactory {
         self.error = error
     }
 
-    let factoryType: ServiceFactoryType = .lazy
+    let mode: ServiceFactoryMode = .lazy
     func makeService() throws -> ServiceLazy {
         callCount += 1
         if let error = error {
@@ -146,7 +146,7 @@ class SpyServiceManyFactory: ServiceContainerKit.ServiceFactory {
         self.error = error
     }
 
-    let factoryType: ServiceFactoryType = .many
+    let mode: ServiceFactoryMode = .many
     func makeService() throws -> ServiceMany {
         callCount += 1
         if let error = error {
@@ -161,12 +161,12 @@ class SpyServiceValueFactory<Service: ServiceValue>: ServiceContainerKit.Service
     var error: Error?
     var callCount: Int = 0
 
-    init(factoryType: ServiceFactoryType, error: Error? = nil) {
-        self.factoryType = factoryType
+    init(mode: ServiceFactoryMode, error: Error? = nil) {
+        self.mode = mode
         self.error = error
     }
 
-    let factoryType: ServiceFactoryType
+    let mode: ServiceFactoryMode
     func makeService() throws -> ServiceValue {
         callCount += 1
         if let error = error {
@@ -224,7 +224,7 @@ class SpyServiceSingletonObjCFactory: ServiceContainerKit.ServiceFactory {
         self.error = error
     }
 
-    let factoryType: ServiceFactoryType = .atOne
+    let mode: ServiceFactoryMode = .atOne
     func makeService() throws -> ServiceObjC {
         callCount += 1
         if let error = error {
@@ -256,7 +256,7 @@ class SpyServiceSingletonValueObjCFactory: ServiceContainerKit.ServiceFactory {
         self.error = error
     }
 
-    let factoryType: ServiceFactoryType = .atOne
+    let mode: ServiceFactoryMode = .atOne
     func makeService() throws -> ServiceValueObjC {
         callCount += 1
         if let error = error {

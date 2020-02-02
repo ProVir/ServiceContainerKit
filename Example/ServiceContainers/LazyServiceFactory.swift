@@ -15,7 +15,7 @@ extension LazyService {
 }
 
 struct LazyServiceFactory: ServiceFactory {
-    let factoryType: ServiceFactoryType = .lazy
+    let mode: ServiceFactoryMode = .lazy
     
     func makeService() throws -> LazyService {
         let instance = LazyService()

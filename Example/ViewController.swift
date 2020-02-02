@@ -31,7 +31,7 @@ class ViewController: UIViewController {
         }
         
         print("\nCreate and test FirstService")
-        let firstService = serviceContainer.firstServiceProvider.getService()!
+        let firstService = serviceContainer.firstServiceProvider.getServiceOrFatal()
         firstService.test()
         
         print("\n\nTest shared FirstService")
@@ -39,7 +39,7 @@ class ViewController: UIViewController {
         sharedService.test()
         
         print("\n\nUpdate singleton value")
-        let singletonService = serviceContainer.singletonServiceProvider.getService()!
+        let singletonService = serviceContainer.singletonServiceProvider.getServiceOrFatal()
         singletonService.value = "New Value from testContainer"
         
         firstService.test()
@@ -47,16 +47,16 @@ class ViewController: UIViewController {
         
         
         print("\n\nCreate and test SecondService with custom number (13)")
-        let secondService = serviceContainer.secondServiceProvider.getService(params: .init(number: 13))!
+        let secondService = serviceContainer.secondServiceProvider.getServiceOrFatal(params: .init(number: 13))
         secondService.test()
         
         print("\n\nUpdate lazy value")
-        let lazyService = serviceContainer.lazyServiceProvider.getService()!
+        let lazyService = serviceContainer.lazyServiceProvider.getServiceOrFatal()
         lazyService.value = "New Value in Lazy from testContainer"
         secondService.test()
         
         print("\n\nCreate and test SecondService with number = 0")
-        let secondNum0Service = serviceContainer.secondServiceNumber0Provider.getService()!
+        let secondNum0Service = serviceContainer.secondServiceNumber0Provider.getServiceOrFatal()
         secondNum0Service.test()
         
         
@@ -73,15 +73,15 @@ class ViewController: UIViewController {
         print("CREATED SERVICE LOCATOR WITH SERVICES\n")
         
         print("\nCreate and test FirstService")
-        let firstService = serviceLocator.getService(key: ServiceLocatorKeys.firstService)!
+        let firstService = serviceLocator.getServiceOrFatal(key: ServiceLocatorKeys.firstService)
         firstService.test()
         
         print("\n\nTest shared FirstService")
-        let sharedService = serviceLocator.getService(key: ServiceLocatorKeys.firstServiceShared)!
+        let sharedService = serviceLocator.getServiceOrFatal(key: ServiceLocatorKeys.firstServiceShared)
         sharedService.test()
         
         print("\n\nUpdate singleton value - use variant 2 for key")
-        let singletonService = serviceLocator.getService(key: SingletonServiceLocatorKey())!
+        let singletonService = serviceLocator.getServiceOrFatal(key: SingletonServiceLocatorKey())
         singletonService.value = "New Value from testLocator"
         
         firstService.test()
@@ -89,17 +89,17 @@ class ViewController: UIViewController {
         
         
         print("\n\nCreate and test SecondService with custom number (101)")
-        let secondService = serviceLocator.getService(key: ServiceLocatorKeys.secondService,
-                                                      params: SecondServiceParams(number: 101))!
+        let secondService = serviceLocator.getServiceOrFatal(key: ServiceLocatorKeys.secondService,
+                                                             params: SecondServiceParams(number: 101))
         secondService.test()
         
         print("\n\nUpdate lazy value - use variant 3 for key")
-        let lazyService = serviceLocator.getService(key: LazyService.locatorKey)!
+        let lazyService = serviceLocator.getServiceOrFatal(key: LazyService.locatorKey)
         lazyService.value = "New Value in Lazy from testLocator"
         secondService.test()
         
         print("\n\nCreate and test SecondService with default number (without params)")
-        let secondNumDefService = serviceLocator.getService(key: ServiceLocatorKeys.secondService)!
+        let secondNumDefService = serviceLocator.getServiceOrFatal(key: ServiceLocatorKeys.secondService)
         secondNumDefService.test()
         
         print("\n\nAll experiments completed, removed all services created in current function.")
@@ -114,15 +114,15 @@ class ViewController: UIViewController {
         guard let serviceLocator = ServiceEasyLocator.shared else { return }
         
         print("\nCreate and test FirstService")
-        let firstService: FirstService = serviceLocator.getService()!
+        let firstService: FirstService = serviceLocator.getServiceOrFatal()
         firstService.test()
         
         print("\n\nTest shared FirstService (for get used protocol)")
-        let sharedService = serviceLocator.getService(FirstServiceShared.self) as! FirstService
+        let sharedService = serviceLocator.getServiceOrFatal(FirstServiceShared.self) as! FirstService
         sharedService.test()
         
         print("\n\nUpdate singleton value")
-        let singletonService: SingletonService = serviceLocator.getService()!
+        let singletonService: SingletonService = serviceLocator.getServiceOrFatal()
         singletonService.value = "New Value from testLocator"
         
         firstService.test()
@@ -130,16 +130,16 @@ class ViewController: UIViewController {
         
         
         print("\n\nCreate and test SecondService with custom number (101)")
-        let secondService: SecondService = serviceLocator.getService(params: SecondServiceParams(number: 101))!
+        let secondService: SecondService = serviceLocator.getServiceOrFatal(params: SecondServiceParams(number: 101))
         secondService.test()
         
         print("\n\nUpdate lazy value")
-        let lazyService: LazyService = serviceLocator.getService()!
+        let lazyService: LazyService = serviceLocator.getServiceOrFatal()
         lazyService.value = "New Value in Lazy from testLocator"
         secondService.test()
         
         print("\n\nCreate and test SecondService with default number (without params)")
-        let secondNumDefService: SecondService = serviceLocator.getService()!
+        let secondNumDefService: SecondService = serviceLocator.getServiceOrFatal()
         secondNumDefService.test()
         
         print("\n\nAll experiments completed, removed all services created in current function.")

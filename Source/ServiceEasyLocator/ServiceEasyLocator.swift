@@ -88,26 +88,54 @@ open class ServiceEasyLocator {
         return keyLocator.removeService(key: ServiceLocatorEasyKey<ServiceType>())
     }
     
-    // MARK: - Get
+    // MARK: - Get service
     /// Get Service with detailed information throwed error.
-    open func tryService<ServiceType>(_ type: ServiceType.Type = ServiceType.self) throws -> ServiceType {
-        return try keyLocator.tryService(key: ServiceLocatorEasyKey<ServiceType>())
+    open func getServiceAsResult<ServiceType>(_ type: ServiceType.Type = ServiceType.self) -> Result<ServiceType, ServiceObtainError> {
+        return keyLocator.getServiceAsResult(key: ServiceLocatorEasyKey<ServiceType>())
+    }
+
+    /// Get Service with params and detailed information throwed error.
+    open func getServiceAsResult<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
+        return keyLocator.getServiceAsResult(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), params: params)
+    }
+
+    /// Get Service with detailed information throwed error.
+    public func getService<ServiceType>(_ type: ServiceType.Type = ServiceType.self) throws -> ServiceType {
+        return try getServiceAsResult(type).get()
     }
     
     /// Get Service with params and detailed information throwed error.
-    open func tryService<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) throws -> ServiceType {
-        return try keyLocator.tryService(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), params: params)
+    public func getService<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) throws -> ServiceType {
+        return try getServiceAsResult(type, params: params).get()
     }
     
     /// Get Service if there are no errors.
-    open func getService<ServiceType>(_ type: ServiceType.Type = ServiceType.self) -> ServiceType? {
-        return try? keyLocator.tryService(key: ServiceLocatorEasyKey<ServiceType>())
+    public func getServiceAsOptional<ServiceType>(_ type: ServiceType.Type = ServiceType.self) -> ServiceType? {
+        return try? getServiceAsResult(type).get()
     }
     
     /// Get Service with params if there are no errors
-    open func getService<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) -> ServiceType? {
-        return try? keyLocator.tryService(key: ServiceLocatorParamsEasyKey<ServiceType, ParamsType>(), params: params)
+    public func getServiceAsOptional<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) -> ServiceType? {
+        return try? getServiceAsResult(type, params: params).get()
     }
+
+    public func getServiceOrFatal<ServiceType>(_ type: ServiceType.Type = ServiceType.self) -> ServiceType {
+        let result = getServiceAsResult(type)
+        switch result {
+        case .success(let service): return service
+        case .failure(let error): fatalError(error.fatalMessage)
+        }
+    }
+
+    public func getServiceOrFatal<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) -> ServiceType {
+        let result = getServiceAsResult(type, params: params)
+        switch result {
+        case .success(let service): return service
+        case .failure(let error): fatalError(error.fatalMessage)
+        }
+    }
+
+    // MARK: Get provider
     
     /// Get ServiceProvider with service
     open func getServiceProvider<ServiceType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceProvider<ServiceType>? {
@@ -121,25 +149,30 @@ open class ServiceEasyLocator {
     
     // MARK: ObjC
     /// Get Service use typeName as ServiceLocatorKey.storeKey
-    open func tryServiceObjC(typeName: String) throws -> NSObject {
+    open func getServiceObjC(typeName: String) -> Result<NSObject, ServiceObtainError> {
         //swiftlint:disable:next syntactic_sugar
-        return try tryServiceObjC(typeName: typeName, params: Optional<Any>.none as Any)
+        return getServiceObjC(typeName: typeName, params: Optional<Any>.none as Any)
     }
 
     /// Get Service with params use typeName as ServiceLocatorKey.storeKey
-    open func tryServiceObjC(typeName: String, params: Any) throws -> NSObject {
-        do {
-            return try keyLocator.tryServiceObjC(key: ServiceLocatorObjCKey(storeKey: typeName), params: params)
-        } catch ServiceLocatorError.serviceNotFound {
-        } catch {
-            throw error
+    open func getServiceObjC(typeName: String, params: Any) -> Result<NSObject, ServiceObtainError> {
+        let result = keyLocator.getServiceObjC(key: ServiceLocatorObjCKey(storeKey: typeName), params: params)
+        let firstError: ServiceObtainError
+        switch result {
+        case .success(let service):
+            return .success(service)
+        case .failure(let error):
+            guard error.isServiceNotFound else {
+                return .failure(error)
+            }
+            firstError = error
         }
-        
+
         guard let typeName = serviceTypeNameWithoutBundle(typeName: typeName) else {
-            throw ServiceLocatorError.serviceNotFound
+            return .failure(firstError)
         }
-        
-        return try keyLocator.tryServiceObjC(key: ServiceLocatorObjCKey(storeKey: typeName), params: params)
+
+        return keyLocator.getServiceObjC(key: ServiceLocatorObjCKey(storeKey: typeName), params: params)
     }
 
     /// TypeName without bundle prefix

@@ -17,9 +17,9 @@ extension FirstServiceFactory {
 struct FirstServiceFactory: ServiceFactory {
     let singletonServiceProvider: ServiceProvider<SingletonService>
     
-    let factoryType: ServiceFactoryType = .many
+    let mode: ServiceFactoryMode = .many
     func makeService() throws -> FirstService {
-        return FirstService(singletonService: try singletonServiceProvider.tryService())
+        return FirstService(singletonService: try singletonServiceProvider.getService())
     }
 }
 

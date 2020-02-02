@@ -27,41 +27,41 @@ open class ServiceEasyLocatorObjC: NSObject {
 
     /// Get Service with detailed information throwed error.
     @objc public func getService(class type: AnyClass) throws -> Any {
-        return try serviceLocator.tryServiceObjC(typeName: "\(type)")
+        return try serviceLocator.getServiceObjC(typeName: "\(type)").get()
     }
 
     /// Get Service as protocol with detailed information throwed error.
     @objc public func getService(protocol proto: Protocol) throws -> Any {
-        return try serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto))
+        return try serviceLocator.getServiceObjC(typeName: NSStringFromProtocol(proto)).get()
     }
 
     /// Get Service with params and detailed information throwed error.
     @objc public func getService(class type: AnyClass, params: Any) throws -> Any {
-        return try serviceLocator.tryServiceObjC(typeName: "\(type)", params: params)
+        return try serviceLocator.getServiceObjC(typeName: "\(type)", params: params).get()
     }
 
     /// Get Service as protocol with params and detailed information throwed error.
     @objc public func getService(protocol proto: Protocol, params: Any) throws -> Any {
-        return try serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
+        return try serviceLocator.getServiceObjC(typeName: NSStringFromProtocol(proto), params: params).get()
     }
 
     /// Get Service if there are no errors.
     @objc public func getService(class type: AnyClass) -> Any? {
-        return try? serviceLocator.tryServiceObjC(typeName: "\(type)")
+        return try? serviceLocator.getServiceObjC(typeName: "\(type)").get()
     }
 
     /// Get Service as protocol if there are no errors.
     @objc public func getService(protocol proto: Protocol) -> Any? {
-        return try? serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto))
+        return try? serviceLocator.getServiceObjC(typeName: NSStringFromProtocol(proto)).get()
     }
 
     /// Get Service with params if there are no errors
     @objc public func getService(class type: AnyClass, params: Any) -> Any? {
-        return try? serviceLocator.tryServiceObjC(typeName: "\(type)", params: params)
+        return try? serviceLocator.getServiceObjC(typeName: "\(type)", params: params).get()
     }
 
     /// Get Service as protocol with params if there are no errors
     @objc public func getService(protocol proto: Protocol, params: Any) -> Any? {
-        return try? serviceLocator.tryServiceObjC(typeName: NSStringFromProtocol(proto), params: params)
+        return try? serviceLocator.getServiceObjC(typeName: NSStringFromProtocol(proto), params: params).get()
     }
 }

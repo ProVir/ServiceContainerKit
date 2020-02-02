@@ -11,6 +11,11 @@ import Foundation
 /// Wrapper ServiceProvider for use in ObjC code.
 @objc(ServiceProvider)
 public class ServiceProviderObjC: NSObject {
+    @objc public static let errorNotSupportObjCError = NSError(
+        domain: "ru.provir.ServiceContainerKit.notSupportObjC", code: 0,
+        userInfo: [NSLocalizedDescriptionKey: "Service require support Objective-C"]
+    )
+
     private let swiftProvider: ServiceProviderBindingObjC
 
     /// Create ServiceProviderObjC with Swift ServiceProvider
@@ -26,12 +31,12 @@ public class ServiceProviderObjC: NSObject {
 
     /// Get Service with detail information throwed error.
     @objc public func getService() throws -> Any {
-        return try swiftProvider.tryServiceBindingObjC(params: Void())
+        return try swiftProvider.getServiceBindingObjC(params: Void())
     }
 
     /// Get Service if there are no errors.
     @objc public func getService() -> Any? {
-        return try? swiftProvider.tryServiceBindingObjC(params: Void())
+        return try? swiftProvider.getServiceBindingObjC(params: Void())
     }
 }
 
@@ -53,12 +58,12 @@ public class ServiceParamsProviderObjC: NSObject {
     
     /// Get Service with detail information throwed error.
     @objc public func getService(params: Any) throws -> Any {
-        return try swiftProvider.tryServiceBindingObjC(params: params)
+        return try swiftProvider.getServiceBindingObjC(params: params)
     }
     
     /// Get Service if there are no errors.
     @objc public func getService(params: Any) -> Any? {
-        return try? swiftProvider.tryServiceBindingObjC(params: params)
+        return try? swiftProvider.getServiceBindingObjC(params: params)
     }
 }
 
@@ -66,29 +71,29 @@ public class ServiceParamsProviderObjC: NSObject {
 
 /// Base protocol for Service[Params]Provider<T>
 private protocol ServiceProviderBindingObjC {
-    func tryServiceBindingObjC(params: Any) throws -> NSObject
+    func getServiceBindingObjC(params: Any) throws -> NSObject
 }
 
 extension ServiceProvider: ServiceProviderBindingObjC {
-    fileprivate func tryServiceBindingObjC(params: Any) throws -> NSObject {
-        if let service = try tryService() as? NSObject {
+    fileprivate func getServiceBindingObjC(params: Any) throws -> NSObject {
+        if let service = try getService() as? NSObject {
             return service
         } else {
-            throw ServiceProviderError.notSupportObjC
+            throw ServiceProviderObjC.errorNotSupportObjCError
         }
     }
 }
 
 extension ServiceParamsProvider: ServiceProviderBindingObjC {
-    fileprivate func tryServiceBindingObjC(params: Any) throws -> NSObject {
+    fileprivate func getServiceBindingObjC(params: Any) throws -> NSObject {
         guard let params = params as? ParamsType else {
-            throw ServiceProviderError.wrongParams
+            throw ServiceObtainError(service: ServiceType.self, error: ServiceFactoryError.wrongParams)
         }
         
-        if let service = try tryService(params: params) as? NSObject {
+        if let service = try getService(params: params) as? NSObject {
             return service
         } else {
-            throw ServiceProviderError.notSupportObjC
+            throw ServiceProviderObjC.errorNotSupportObjCError
         }
     }
 }

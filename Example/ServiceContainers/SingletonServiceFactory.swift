@@ -13,7 +13,7 @@ import ServiceContainerKit
 typealias SingletonServiceLocatorKey = ServiceLocatorEasyKey<SingletonService>
 
 struct SingletonServiceFactory: ServiceFactory {
-    let factoryType: ServiceFactoryType = .atOne
+    let mode: ServiceFactoryMode = .atOne
     
     func makeService() throws -> SingletonService {
         let instance = SingletonService()

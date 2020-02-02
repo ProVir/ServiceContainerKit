@@ -1,5 +1,5 @@
 //
-//  ServiceBaseTypes.swift
+//  BaseTypes.swift
 //  ServiceContainerKit/ServiceProvider 2.0.0
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
@@ -8,24 +8,8 @@
 
 import Foundation
 
-/// Errors for ServiceProvider and ServiceFactory
-public enum ServiceProviderError: LocalizedError {
-    case wrongParams
-    case wrongService
-    case notSupportObjC
-//    case common(serviceType: Any.Type, Error)
-
-    public var errorDescription: String? {
-        switch self {
-        case .wrongParams: return "Params type invalid for ServiceParamsFactory"
-        case .wrongService: return "Service type invalid"
-        case .notSupportObjC: return "Service require support Objective-C"
-        }
-    }
-}
-
-/// Factory type. Used only when added to provider.
-public enum ServiceFactoryType {
+/// Factory mode to make. Used only when added to provider.
+public enum ServiceFactoryMode {
     /// Create service at one when added to provider.
     case atOne
     
@@ -40,8 +24,8 @@ public enum ServiceFactoryType {
 public protocol ServiceFactory: ServiceCoreFactory {
     associatedtype ServiceType
     
-    /// Factory type. Used only when added to provider. Recommendation use as constant (let).
-    var factoryType: ServiceFactoryType { get }
+    /// Factory mode to make. Used only when added to provider. Recommendation use as constant (let).
+    var mode: ServiceFactoryMode { get }
     
     /// Make new instance service. Parameter settings use only for multiple factory.
     func makeService() throws -> ServiceType
@@ -60,18 +44,18 @@ public protocol ServiceParamsFactory: ServiceCoreFactory {
 ///Also can used for lazy create singleton instance services.
 public class ServiceClosureFactory<T>: ServiceFactory {
     public let closure: () throws -> T
-    public let factoryType: ServiceFactoryType
+    public let mode: ServiceFactoryMode
     
     /**
      Constructor for ServiceFactory used closure for make service
      
      - Parameters:
         - closureFactory: Closure with logic create service.
-        - lazyRegime: If `true` - Create service at one after first need and reused next. Default false.
+        - lazyMode: If `true` - Create service at one after first need and reused next. Default false.
      */
-    public init(closureFactory closure: @escaping () throws -> T, lazyRegime: Bool = false) {
+    public init(closureFactory closure: @escaping () throws -> T, lazyMode: Bool = false) {
         self.closure = closure
-        self.factoryType = lazyRegime ? .lazy : .many
+        self.mode = lazyMode ? .lazy : .many
     }
 
     public func makeService() throws -> T {
@@ -96,7 +80,7 @@ public extension ServiceParamsFactory {
         if let params = params as? ParamsType {
             return try makeService(params: params)
         } else {
-            throw ServiceProviderError.wrongParams
+            throw ServiceFactoryError.wrongParams
         }
     }
 }

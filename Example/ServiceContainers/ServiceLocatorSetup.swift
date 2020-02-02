@@ -37,7 +37,7 @@ extension ServiceLocator {
         let secondServiceProvider = SecondServiceFactory(lazyServiceProvider: lazyServiceProvider,
                                                          firstServiceProvider: firstServiceProvider).serviceProvider()
         
-        let sharedFirstService: FirstService = firstServiceProvider.getService()!
+        let sharedFirstService: FirstService = firstServiceProvider.getServiceOrFatal()
         
         //Setup ServiceLocator
         let serviceLocator = ServiceLocator()
@@ -75,7 +75,7 @@ extension ServiceEasyLocator {
         let secondServiceProvider = SecondServiceFactory(lazyServiceProvider: lazyServiceProvider,
                                                          firstServiceProvider: firstServiceProvider).serviceProvider()
         
-        let sharedFirstService: FirstService = firstServiceProvider.getService()!
+        let sharedFirstService: FirstService = firstServiceProvider.getServiceOrFatal()
         
         //Setup ServiceLocator
         let serviceLocator = ServiceEasyLocator()

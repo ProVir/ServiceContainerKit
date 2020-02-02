@@ -8,19 +8,6 @@
 
 import Foundation
 
-///Errors for ServiceLocator
-public enum ServiceLocatorError: LocalizedError {
-    case serviceNotFound
-    case wrongParams
-
-    public var errorDescription: String? {
-        switch self {
-        case .serviceNotFound: return "Service not found in ServiceLocator"
-        case .wrongParams: return "Params type invalid for ServiceParamsFactory"
-        }
-    }
-}
-
 /// ServiceLocator as storage ServiceProviders.
 open class ServiceLocator {
 
@@ -129,28 +116,59 @@ open class ServiceLocator {
         return providers.removeValue(forKey: key.storeKey) != nil
     }
     
-    // MARK: - Get
+    // MARK: - Get services
     /// Get Service by key with detail information throwed error.
-    open func tryService<Key: ServiceLocatorKey>(key: Key) throws -> Key.ServiceType {
+    open func getServiceAsResult<Key: ServiceLocatorKey>(key: Key) -> Result<Key.ServiceType, ServiceObtainError> {
         //swiftlint:disable:next syntactic_sugar
-        return try tryService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
+        return internalGetService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
+    }
+
+    /// Get Service by key with params with detail information throwed error.
+    open func getServiceAsResult<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) -> Result<Key.ServiceType, ServiceObtainError> {
+        return internalGetService(storeKey: key.storeKey, params: params)
+    }
+
+    /// Get Service by key with detail information throwed error.
+    public func getService<Key: ServiceLocatorKey>(key: Key) throws -> Key.ServiceType {
+        //swiftlint:disable:next syntactic_sugar
+        return try getServiceAsResult(key: key).get()
     }
     
     /// Get Service by key with params with detail information throwed error.
-    open func tryService<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) throws -> Key.ServiceType {
-        return try tryService(storeKey: key.storeKey, params: params)
+    public func getService<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) throws -> Key.ServiceType {
+        return try getServiceAsResult(key: key, params: params).get()
     }
     
     /// Get Service by key if there are no errors.
-    open func getService<Key: ServiceLocatorKey>(key: Key) -> Key.ServiceType? {
-        return try? tryService(key: key)
+    public func getServiceAsOptional<Key: ServiceLocatorKey>(key: Key) -> Key.ServiceType? {
+        return try? getServiceAsResult(key: key).get()
     }
     
     /// Get Service by key with params if there are no errors
-    open func getService<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) -> Key.ServiceType? {
-        return try? tryService(key: key, params: params)
+    public func getServiceAsOptional<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) -> Key.ServiceType? {
+        return try? getServiceAsResult(key: key, params: params).get()
     }
-    
+
+    /// Get Service by key if there are no errors.
+    public func getServiceOrFatal<Key: ServiceLocatorKey>(key: Key) -> Key.ServiceType {
+        let result = getServiceAsResult(key: key)
+        switch result {
+        case .success(let service): return service
+        case .failure(let error): fatalError(error.fatalMessage)
+        }
+    }
+
+    /// Get Service by key if there are no errors.
+    public func getServiceOrFatal<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) -> Key.ServiceType {
+        let result = getServiceAsResult(key: key, params: params)
+        switch result {
+        case .success(let service): return service
+        case .failure(let error): fatalError(error.fatalMessage)
+        }
+    }
+
+    // MARK: Get providers
+
     /// Get ServiceProvider by key with service
     open func getServiceProvider<Key: ServiceLocatorKey>(key: Key) -> ServiceProvider<Key.ServiceType>? {
         lock.lock()
@@ -169,41 +187,24 @@ open class ServiceLocator {
     
     // MARK: ObjC
     /// Get Service by ObjC Key
-    open func tryServiceObjC(key: ServiceLocatorObjCKey) throws -> NSObject {
-        //swiftlint:disable:next syntactic_sugar
-        return try tryService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
+    open func getServiceObjC(key: ServiceLocatorObjCKey) -> Result<NSObject, ServiceObtainError> {
+        return internalGetService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
     }
 
     /// Get Service by ObjC Key with params
-    open func tryServiceObjC(key: ServiceLocatorObjCKey, params: Any) throws -> NSObject {
-        return try tryService(storeKey: key.storeKey, params: params)
+    open func getServiceObjC(key: ServiceLocatorObjCKey, params: Any) -> Result<NSObject, ServiceObtainError> {
+        return internalGetService(storeKey: key.storeKey, params: params)
     }
 
     // MARK: - Private
-    private func tryService<ServiceType>(storeKey: String, params: Any) throws -> ServiceType {
+    private func internalGetService<ServiceType>(storeKey: String, params: Any) -> Result<ServiceType, ServiceObtainError> {
         lock.lock()
         defer { lock.unlock() }
         
         if let provider = providers[storeKey] {
-            do {
-                return try provider.tryServiceBinding(ServiceType.self, params: params)
-            } catch {
-                throw convertError(error)
-            }
+            return provider.getServiceBinding(ServiceType.self, params: params)
         } else {
-            throw ServiceLocatorError.serviceNotFound
-        }
-    }
-    
-    private func convertError(_ error: Error) -> Error {
-        if let error = error as? ServiceProviderError {
-            switch error {
-            case .wrongService: return ServiceLocatorError.serviceNotFound
-            case .wrongParams: return ServiceLocatorError.wrongParams
-            case .notSupportObjC: return ServiceLocatorError.serviceNotFound
-            }
-        } else {
-            return error
+            return .failure(ServiceObtainError(service: ServiceType.self, error: ServiceLocatorError.serviceNotFound))
         }
     }
 }
@@ -211,29 +212,33 @@ open class ServiceLocator {
 // MARK: Provider binding to ServiceLocator
 /// Base protocol for ServiceProvider<T>
 private protocol ServiceLocatorProviderBinding {
-    func tryServiceBinding<ServiceType>(_ type: ServiceType.Type, params: Any) throws -> ServiceType
+    func getServiceBinding<ServiceType>(_ type: ServiceType.Type, params: Any) -> Result<ServiceType, ServiceObtainError>
 }
 
 extension ServiceProvider: ServiceLocatorProviderBinding {
-    fileprivate func tryServiceBinding<ServiceType>(_ type: ServiceType.Type, params: Any) throws -> ServiceType {
-        if let service = try tryService() as? ServiceType {
-            return service
-        } else {
-            throw ServiceLocatorError.serviceNotFound
+    fileprivate func getServiceBinding<ServiceType>(_ type: ServiceType.Type, params: Any) -> Result<ServiceType, ServiceObtainError> {
+        return getServiceAsResult().flatMap {
+            if let service = $0 as? ServiceType {
+                return .success(service)
+            } else {
+                return .failure(ServiceObtainError(service: ServiceType.self, error: ServiceLocatorError.invalidProvider))
+            }
         }
     }
 }
 
 extension ServiceParamsProvider: ServiceLocatorProviderBinding {
-    fileprivate func tryServiceBinding<ServiceType>(_ type: ServiceType.Type, params: Any) throws -> ServiceType {
+    fileprivate func getServiceBinding<ServiceType>(_ type: ServiceType.Type, params: Any) -> Result<ServiceType, ServiceObtainError> {
         guard let params = params as? ParamsType else {
-            throw ServiceLocatorError.wrongParams
+            return .failure(ServiceObtainError(service: ServiceType.self, error: ServiceFactoryError.wrongParams))
         }
         
-        if let service = try tryService(params: params) as? ServiceType {
-            return service
-        } else {
-            throw ServiceLocatorError.serviceNotFound
+        return getServiceAsResult(params: params).flatMap {
+            if let service = $0 as? ServiceType {
+                return .success(service)
+            } else {
+                return .failure(ServiceObtainError(service: ServiceType.self, error: ServiceLocatorError.invalidProvider))
+            }
         }
     }
 }

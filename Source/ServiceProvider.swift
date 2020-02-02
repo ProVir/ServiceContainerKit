@@ -53,22 +53,36 @@ public struct ServiceProvider<ServiceType> {
     
     /// ServiceProvider with lazy create service in closure.
     public init(lazy: @escaping () throws -> ServiceType) {
-        self.storage = ServiceProvider.makeStorage(factory: ServiceClosureFactory(closureFactory: lazy, lazyRegime: true))
+        self.storage = ServiceProvider.makeStorage(factory: ServiceClosureFactory(closureFactory: lazy, lazyMode: true))
     }
     
     /// ServiceProvider with many instance service type, create service in closure.
     public init(manyFactory: @escaping () throws -> ServiceType) {
-        self.storage = ServiceProvider.makeStorage(factory: ServiceClosureFactory(closureFactory: manyFactory, lazyRegime: false))
+        self.storage = ServiceProvider.makeStorage(factory: ServiceClosureFactory(closureFactory: manyFactory, lazyMode: false))
     }
-    
+
     /// Get Service with detail information throwed error.
-    public func tryService() throws -> ServiceType {
-        return try internalTryService(params: Void())
+    public func getServiceAsResult() -> Result<ServiceType, ServiceObtainError> {
+        return internalGetService(params: Void())
+    }
+
+    /// Get Service with detail information throwed error.
+    public func getService() throws -> ServiceType {
+        return try internalGetService(params: Void()).get()
+    }
+
+    /// Get Service if there are no errors.
+    public func getServiceAsOptional() -> ServiceType? {
+        return try? internalGetService(params: Void()).get()
     }
     
-    /// Get Service if there are no errors.
-    public func getService() -> ServiceType? {
-        return try? internalTryService(params: Void())
+    /// Get Service if there are no errors or fatal when failure obtain.
+    public func getServiceOrFatal() -> ServiceType {
+        let result = internalGetService(params: Void())
+        switch result {
+        case .success(let service): return service
+        case .failure(let error): fatalError(error.fatalMessage)
+        }
     }
 }
 
@@ -82,13 +96,27 @@ public struct ServiceParamsProvider<ServiceType, ParamsType> {
     }
     
     /// Get Service with detail information throwed error.
-    public func tryService(params: ParamsType) throws -> ServiceType {
-        return try internalTryService(params: params)
+    public func getServiceAsResult(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
+        return internalGetService(params: params)
     }
-    
+
+    /// Get Service with detail information throwed error.
+    public func getService(params: ParamsType) throws -> ServiceType {
+        return try internalGetService(params: params).get()
+    }
+
     /// Get Service if there are no errors.
-    public func getService(params: ParamsType) -> ServiceType? {
-        return try? internalTryService(params: params)
+    public func getServiceAsOptional(params: ParamsType) -> ServiceType? {
+        return try? internalGetService(params: params).get()
+    }
+
+    /// Get Service if there are no errors or fatal when failure obtain.
+    public func getServiceOrFatal(params: ParamsType) -> ServiceType {
+        let result = internalGetService(params: params)
+        switch result {
+        case .success(let service): return service
+        case .failure(let error): fatalError(error.fatalMessage)
+        }
     }
     
     /// Get ServiceProvider without params with specific params.
@@ -108,7 +136,7 @@ private enum ServiceProviderStorage<ServiceType> {
     case lazy(Lazy)
     case factory(ServiceCoreFactory)
     case factoryParams(ServiceCoreFactory, Any)
-    case atOneError(Error)
+    case atOneError(ServiceObtainError)
     
     class Lazy {
         var factory: ServiceCoreFactory?
@@ -132,17 +160,17 @@ extension ServiceProvider: ServiceProviderPrivate {
         do {
             return try tryMakeStorage(factory: factory, params: params)
         } catch {
-            return .atOneError(error)
+            return .atOneError(convertToObtainError(error: error))
         }
     }
     
     private static func tryMakeStorage<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) throws -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
-        switch factory.factoryType {
+        switch factory.mode {
         case .atOne:
             if let service = try factory.coreMakeService(params: params) as? ServiceType {
                 return .atOne(service)
             } else {
-                throw ServiceProviderError.wrongService
+                throw ServiceFactoryError.invalidFactory
             }
             
         case .lazy:
@@ -160,27 +188,31 @@ extension ServiceParamsProvider: ServiceProviderPrivate { }
 
 extension ServiceProviderPrivate {
     /// Get Services with core implementation
-    fileprivate func internalTryService(params: Any) throws -> ServiceType {
+    fileprivate func internalGetService(params: Any) -> Result<ServiceType, ServiceObtainError> {
         switch storage {
         // Return single instance
         case .atOne(let service):
-            return service
+            return .success(service)
             
         case .atOneError(let error):
-            throw error
+            return .failure(error)
             
         // Lazy service
         case .lazy(let lazy):
             if let service = lazy.instance {
-                return service
+                return .success(service)
             } else if let factory = lazy.factory {
-                if let service = try factory.coreMakeService(params: params) as? ServiceType {
-                    lazy.instance = service
-                    lazy.factory = nil
-                    
-                    return service
-                } else {
-                    throw ServiceProviderError.wrongService
+                do {
+                    if let service = try factory.coreMakeService(params: params) as? ServiceType {
+                        lazy.instance = service
+                        lazy.factory = nil
+
+                        return .success(service)
+                    } else {
+                        throw ServiceFactoryError.invalidFactory
+                    }
+                } catch {
+                    return .failure(convertToObtainError(error: error))
                 }
             } else {
                 fatalError("ServiceProvider: Internal error")
@@ -188,18 +220,34 @@ extension ServiceProviderPrivate {
             
         //Multiple service
         case .factory(let factory):
-            if let service = try factory.coreMakeService(params: params) as? ServiceType {
-                return service
-            } else {
-                throw ServiceProviderError.wrongService
+            do {
+                if let service = try factory.coreMakeService(params: params) as? ServiceType {
+                    return .success(service)
+                } else {
+                    throw ServiceFactoryError.invalidFactory
+                }
+            } catch {
+                return .failure(convertToObtainError(error: error))
             }
         
         case .factoryParams(let factory, let params):
-            if let service = try factory.coreMakeService(params: params) as? ServiceType {
-                return service
-            } else {
-                throw ServiceProviderError.wrongService
+            do {
+                if let service = try factory.coreMakeService(params: params) as? ServiceType {
+                    return .success(service)
+                } else {
+                    throw ServiceFactoryError.invalidFactory
+                }
+            } catch {
+                return .failure(convertToObtainError(error: error))
             }
         }
+    }
+}
+
+private func convertToObtainError(error: Error) -> ServiceObtainError {
+    if let error = error as? ServiceObtainError {
+        return error.withAddedToPath(service: ServiceType.self)
+    } else {
+        return ServiceObtainError(service: ServiceType.self, error: error)
     }
 }

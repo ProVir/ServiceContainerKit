@@ -17,7 +17,7 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 1, "Real create service need when create provider")
 
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -26,7 +26,7 @@ class ServiceProviderTests: XCTestCase {
 
         let service2: ServiceSingleton
         do {
-            service2 = try provider.tryService()
+            service2 = try provider.getService()
         } catch {
             XCTFail("Service not exist")
             return
@@ -46,18 +46,16 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 1, "Real create service need when create provider")
 
-        if provider.getService() != nil {
+        if provider.getServiceAsOptional() != nil {
             XCTFail("Service need failure create")
         }
 
         XCTAssertEqual(factory.callCount, 1)
         factory.error = nil
 
-        do {
-            _ = try provider.tryService()
-            XCTFail("Service need failure create")
-        } catch {
-            XCTAssert(error is ServiceCreateError)
+        switch provider.getServiceAsResult() {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
         }
 
         XCTAssertEqual(factory.callCount, 1)
@@ -69,14 +67,14 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Real create service when first needed")
 
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
         XCTAssertEqual(factory.callCount, 1, "Real create service when first needed")
         service1.value = "Test1"
 
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -95,24 +93,22 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Real create service when first needed")
 
-        if provider.getService() != nil {
+        if provider.getServiceAsOptional() != nil {
             XCTFail("Service need failure create")
         }
 
         XCTAssertEqual(factory.callCount, 1, "Real create service when first needed")
 
-        do {
-            _ = try provider.tryService()
-            XCTFail("Service need failure create")
-        } catch {
-            XCTAssert(error is ServiceCreateError)
+        switch provider.getServiceAsResult() {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
         }
 
         XCTAssertEqual(factory.callCount, 2, "While the error repeats - try to re-create")
 
         //Next without error
         factory.error = nil
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -120,7 +116,7 @@ class ServiceProviderTests: XCTestCase {
         XCTAssertEqual(factory.callCount, 3, "While the error repeats - try to re-create")
 
         service1.value = "Test1"
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -139,14 +135,14 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
 
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
         XCTAssertEqual(factory.callCount, 1, "Create service new")
         service1.value = "Test1"
 
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -165,24 +161,22 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Real create service when needed")
 
-        if provider.getService() != nil {
+        if provider.getServiceAsOptional() != nil {
             XCTFail("Service need failure create")
         }
 
         XCTAssertEqual(factory.callCount, 1, "Create service new with error")
 
-        do {
-            _ = try provider.tryService()
-            XCTFail("Service need failure create")
-        } catch {
-            XCTAssert(error is ServiceCreateError)
+        switch provider.getServiceAsResult() {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
         }
 
         XCTAssertEqual(factory.callCount, 2, "Create service new with error")
 
         //Next without error
         factory.error = nil
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -190,7 +184,7 @@ class ServiceProviderTests: XCTestCase {
         XCTAssertEqual(factory.callCount, 3, "Create service new")
 
         service1.value = "Test1"
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -204,19 +198,19 @@ class ServiceProviderTests: XCTestCase {
     }
 
     func testServiceAsProtocol() {
-        let factory = SpyServiceValueFactory<ServiceSingleton>.init(factoryType: .atOne)
+        let factory = SpyServiceValueFactory<ServiceSingleton>.init(mode: .atOne)
         let provider = factory.serviceProvider()
 
         XCTAssertEqual(factory.callCount, 1, "Real create service need when create provider")
 
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
         XCTAssertEqual(factory.callCount, 1)
         service1.value = "Test1"
 
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -238,14 +232,14 @@ class ServiceProviderTests: XCTestCase {
         
         XCTAssertEqual(callCount, 0, "Real create service when first needed")
         
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
         XCTAssertEqual(callCount, 1, "Real create service when first needed")
         service1.value = "Test1"
         
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -272,24 +266,22 @@ class ServiceProviderTests: XCTestCase {
         
         XCTAssertEqual(callCount, 0, "Real create service when first needed")
         
-        if provider.getService() != nil {
+        if provider.getServiceAsOptional() != nil {
             XCTFail("Service need failure create")
         }
         
         XCTAssertEqual(callCount, 1, "Real create service when first needed")
-        
-        do {
-            _ = try provider.tryService()
-            XCTFail("Service need failure create")
-        } catch {
-            XCTAssert(error is ServiceCreateError)
+
+        switch provider.getServiceAsResult() {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
         }
         
         XCTAssertEqual(callCount, 2, "While the error repeats - try to re-create")
         
         //Next without error
         errorClosure = nil
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -297,7 +289,7 @@ class ServiceProviderTests: XCTestCase {
         XCTAssertEqual(callCount, 3, "While the error repeats - try to re-create")
         
         service1.value = "Test1"
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -319,14 +311,14 @@ class ServiceProviderTests: XCTestCase {
         
         XCTAssertEqual(callCount, 0, "Create service when needed")
         
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
         XCTAssertEqual(callCount, 1, "Create service new")
         service1.value = "Test1"
         
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -353,24 +345,22 @@ class ServiceProviderTests: XCTestCase {
         
         XCTAssertEqual(callCount, 0, "Real create service when needed")
         
-        if provider.getService() != nil {
+        if provider.getServiceAsOptional() != nil {
             XCTFail("Service need failure create")
         }
         
         XCTAssertEqual(callCount, 1, "Create service new with error")
-        
-        do {
-            _ = try provider.tryService()
-            XCTFail("Service need failure create")
-        } catch {
-            XCTAssert(error is ServiceCreateError)
+
+        switch provider.getServiceAsResult() {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
         }
-        
+
         XCTAssertEqual(callCount, 2, "Create service new with error")
         
         //Next without error
         errorClosure = nil
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -378,7 +368,7 @@ class ServiceProviderTests: XCTestCase {
         XCTAssertEqual(callCount, 3, "Create service new")
         
         service1.value = "Test1"
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -399,14 +389,14 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
 
-        guard let service1 = provider.getService(params: .init(value: "Test1", error: nil)) else {
+        guard let service1 = provider.getServiceAsOptional(params: .init(value: "Test1", error: nil)) else {
             XCTFail("Service not exist")
             return
         }
         XCTAssertEqual(factory.callCount, 1, "Create service new")
         XCTAssertEqual(service1.value, "Test1")
 
-        guard let service2 = provider.getService(params: .init(value: "Test2", error: nil)) else {
+        guard let service2 = provider.getServiceAsOptional(params: .init(value: "Test2", error: nil)) else {
             XCTFail("Service not exist")
             return
         }
@@ -425,23 +415,21 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Real create service when needed")
 
-        if provider.getService(params: .init(value: "Test1", error: ServiceCreateError.someError)) != nil {
+        if provider.getServiceAsOptional(params: .init(value: "Test1", error: ServiceCreateError.someError)) != nil {
             XCTFail("Service need failure create")
         }
 
         XCTAssertEqual(factory.callCount, 1, "Create service new with error")
 
-        do {
-            _ = try provider.tryService(params: .init(value: "Test2", error: ServiceCreateError.someError))
-            XCTFail("Service need failure create")
-        } catch {
-            XCTAssert(error is ServiceCreateError)
+        switch provider.getServiceAsResult(params: .init(value: "Test2", error: ServiceCreateError.someError)) {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
         }
 
         XCTAssertEqual(factory.callCount, 2, "Create service new with error")
 
         //Next without error
-        guard let service1 = provider.getService(params: .init(value: "Test3", error: nil)) else {
+        guard let service1 = provider.getServiceAsOptional(params: .init(value: "Test3", error: nil)) else {
             XCTFail("Service not exist")
             return
         }
@@ -449,7 +437,7 @@ class ServiceProviderTests: XCTestCase {
         XCTAssertEqual(factory.callCount, 3, "Create service new")
         XCTAssertEqual(service1.value, "Test3")
 
-        guard let service2 = provider.getService(params: .init(value: "Test4", error: nil)) else {
+        guard let service2 = provider.getServiceAsOptional(params: .init(value: "Test4", error: nil)) else {
             XCTFail("Service not exist")
             return
         }
@@ -468,14 +456,14 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
 
-        guard let service1 = provider.getService() else {
+        guard let service1 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
         XCTAssertEqual(factory.callCount, 1, "Create service new")
         XCTAssertEqual(service1.value, "TestDef")
 
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -495,14 +483,14 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
 
-        guard let service1 = providerParams.getService(params: .init(value: "Test1", error: nil)) else {
+        guard let service1 = providerParams.getServiceAsOptional(params: .init(value: "Test1", error: nil)) else {
             XCTFail("Service not exist")
             return
         }
         XCTAssertEqual(factory.callCount, 1, "Create service new")
         XCTAssertEqual(service1.value, "Test1")
 
-        guard let service2 = provider.getService() else {
+        guard let service2 = provider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -521,14 +509,14 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
 
-        guard let service1 = provider.getService(params: .init(value: "Test1", error: nil)) else {
+        guard let service1 = provider.getServiceAsOptional(params: .init(value: "Test1", error: nil)) else {
             XCTFail("Service not exist")
             return
         }
         XCTAssertEqual(factory.callCount, 1, "Create service new")
         XCTAssertEqual(service1.value, "Test1")
 
-        guard let service2 = provider.getService(params: .init(value: "Test2", error: nil)) else {
+        guard let service2 = provider.getServiceAsOptional(params: .init(value: "Test2", error: nil)) else {
             XCTFail("Service not exist")
             return
         }
@@ -581,7 +569,7 @@ class ServiceProviderTests: XCTestCase {
             return
         }
 
-        guard let service3 = swiftProvider.getService() else {
+        guard let service3 = swiftProvider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }
@@ -653,7 +641,7 @@ class ServiceProviderTests: XCTestCase {
             return
         }
 
-        guard let service3 = swiftProvider.getService() else {
+        guard let service3 = swiftProvider.getServiceAsOptional() else {
             XCTFail("Service not exist")
             return
         }

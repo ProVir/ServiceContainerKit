@@ -27,21 +27,21 @@ open class ServiceLocatorObjC: NSObject {
 
     /// Get Service by key with detail information throwed error.
     @objc public func getService(key: ServiceLocatorObjCKey) throws -> Any {
-        return try serviceLocator.tryServiceObjC(key: key)
+        return try serviceLocator.getServiceObjC(key: key).get()
     }
 
     /// Get Service by key with params with detail information throwed error.
     @objc public func getService(key: ServiceLocatorObjCKey, params: Any) throws -> Any {
-        return try serviceLocator.tryServiceObjC(key: key, params: params)
+        return try serviceLocator.getServiceObjC(key: key, params: params).get()
     }
 
     /// Get Service by key if there are no errors.
     @objc public func getService(key: ServiceLocatorObjCKey) -> Any? {
-        return try? serviceLocator.tryServiceObjC(key: key)
+        return try? serviceLocator.getServiceObjC(key: key).get()
     }
 
     /// Get Service by key with params if there are no errors
     @objc public func getService(key: ServiceLocatorObjCKey, params: Any) -> Any? {
-        return try? serviceLocator.tryServiceObjC(key: key, params: params)
+        return try? serviceLocator.getServiceObjC(key: key, params: params).get()
     }
 }

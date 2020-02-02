@@ -45,7 +45,7 @@ extension ServiceContainer {
         let secondServiceProvider = SecondServiceFactory(lazyServiceProvider: lazyServiceProvider,
                                                          firstServiceProvider: firstServiceProvider).serviceProvider()
 
-        let sharedFirstService: FirstService = firstServiceProvider.getService()!
+        let sharedFirstService: FirstService = firstServiceProvider.getServiceOrFatal()
         let secondServiceNumber0Provider = secondServiceProvider.convert(params: .init(number: 0))
         
         return ServiceContainer(singletonServiceProvider: singletonServiceProvider,
