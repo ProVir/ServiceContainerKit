@@ -8,9 +8,9 @@
 
 import Foundation
 
-public typealias ServiceType = Any.Type
-
 public struct ServiceObtainError: LocalizedError {
+    public typealias ServiceType = Any.Type
+
     public let pathServices: [ServiceType]
     public let service: ServiceType
     public let error: Error

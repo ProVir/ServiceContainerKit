@@ -38,12 +38,12 @@ public struct ServiceProvider<ServiceType> {
     
     /// ServiceProvider with factory. If service factoryType == .atOne and throw error when make - throw this error from constructor.
     public init<FactoryType: ServiceFactory>(tryFactory factory: FactoryType) throws where FactoryType.ServiceType == ServiceType {
-        self.storage = try ServiceProvider.tryMakeStorage(factory: factory)
+        self.storage = try ServiceProvider.makeStorageAsResult(factory: factory).get()
     }
     
     /// ServiceProvider with factory.
     public init<FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
-        self.storage = ServiceProvider.makeStorage(factory: factory)
+        self.storage = ServiceProvider.makeStorageWithError(factory: factory)
     }
     
     /// ServiceProvider with factory, use specific params.
@@ -53,12 +53,12 @@ public struct ServiceProvider<ServiceType> {
     
     /// ServiceProvider with lazy create service in closure.
     public init(lazy: @escaping () throws -> ServiceType) {
-        self.storage = ServiceProvider.makeStorage(factory: ServiceClosureFactory(closureFactory: lazy, lazyMode: true))
+        self.storage = ServiceProvider.makeStorageWithError(factory: ServiceClosureFactory(closureFactory: lazy, lazyMode: true))
     }
     
     /// ServiceProvider with many instance service type, create service in closure.
     public init(manyFactory: @escaping () throws -> ServiceType) {
-        self.storage = ServiceProvider.makeStorage(factory: ServiceClosureFactory(closureFactory: manyFactory, lazyMode: false))
+        self.storage = ServiceProvider.makeStorageWithError(factory: ServiceClosureFactory(closureFactory: manyFactory, lazyMode: false))
     }
 
     /// Get Service with detail information throwed error.
@@ -155,31 +155,35 @@ extension ServiceProvider: ServiceProviderPrivate {
     fileprivate init(coreFactory: ServiceCoreFactory, params: Any) {
         self.storage = .factoryParams(coreFactory, params)
     }
-    
-    private static func makeStorage<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
-        do {
-            return try tryMakeStorage(factory: factory, params: params)
-        } catch {
-            return .atOneError(convertToObtainError(error: error))
+
+    private static func makeStorageWithError<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
+        let result = makeStorageAsResult(factory: factory, params: params)
+        switch result {
+        case .success(let storage): return storage
+        case .failure(let error): return .atOneError(error)
         }
     }
-    
-    private static func tryMakeStorage<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) throws -> ServiceProviderStorage<ServiceType> where FactoryType.ServiceType == ServiceType {
+
+    private static func makeStorageAsResult<FactoryType: ServiceFactory>(factory: FactoryType, params: Any = Void()) -> Result<ServiceProviderStorage<ServiceType>, ServiceObtainError> where FactoryType.ServiceType == ServiceType {
         switch factory.mode {
         case .atOne:
-            if let service = try factory.coreMakeService(params: params) as? ServiceType {
-                return .atOne(service)
-            } else {
-                throw ServiceFactoryError.invalidFactory
+            do {
+                if let service = try factory.coreMakeService(params: params) as? ServiceType {
+                    return .success(.atOne(service))
+                } else {
+                    throw ServiceFactoryError.invalidFactory
+                }
+            } catch {
+                return .failure(convertToObtainError(ServiceType.self, error: error))
             }
-            
+
         case .lazy:
             let lazy = ServiceProviderStorage<ServiceType>.Lazy()
             lazy.factory = factory
-            return .lazy(lazy)
-            
+            return .success(.lazy(lazy))
+
         case .many:
-            return .factory(factory)
+            return .success(.factory(factory))
         }
     }
 }
@@ -212,7 +216,7 @@ extension ServiceProviderPrivate {
                         throw ServiceFactoryError.invalidFactory
                     }
                 } catch {
-                    return .failure(convertToObtainError(error: error))
+                    return .failure(convertToObtainError(ServiceType.self, error: error))
                 }
             } else {
                 fatalError("ServiceProvider: Internal error")
@@ -227,7 +231,7 @@ extension ServiceProviderPrivate {
                     throw ServiceFactoryError.invalidFactory
                 }
             } catch {
-                return .failure(convertToObtainError(error: error))
+                return .failure(convertToObtainError(ServiceType.self, error: error))
             }
         
         case .factoryParams(let factory, let params):
@@ -238,13 +242,13 @@ extension ServiceProviderPrivate {
                     throw ServiceFactoryError.invalidFactory
                 }
             } catch {
-                return .failure(convertToObtainError(error: error))
+                return .failure(convertToObtainError(ServiceType.self, error: error))
             }
         }
     }
 }
 
-private func convertToObtainError(error: Error) -> ServiceObtainError {
+private func convertToObtainError<ServiceType>(_ serviceType: ServiceType.Type, error: Error) -> ServiceObtainError {
     if let error = error as? ServiceObtainError {
         return error.withAddedToPath(service: ServiceType.self)
     } else {
