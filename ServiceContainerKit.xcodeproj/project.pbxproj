@@ -33,6 +33,8 @@
 		888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888823202257AB4F00D0D132 /* ServiceStubs.swift */; };
 		889307DC226865B900CB4D3C /* ServiceEasyLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889307DB226865B900CB4D3C /* ServiceEasyLocator.swift */; };
 		88984317226E1329002F49B4 /* ServiceSimpleLocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88984316226E1329002F49B4 /* ServiceSimpleLocatorTests.swift */; };
+		88A9C9B723EDD1DB002DB7CD /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A9C9B523EDD1CF002DB7CD /* Helpers.swift */; };
+		88A9C9B923EDD258002DB7CD /* ServiceParamsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A9C9B823EDD258002DB7CD /* ServiceParamsProvider.swift */; };
 		88DE96D123E4780B00B369D7 /* ServiceProviderObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */; };
 		88DE96D223E48DB900B369D7 /* ServiceLocatorKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A1C6A9226BAD01003A8554 /* ServiceLocatorKey.swift */; };
 		88DE96D723E6065B00B369D7 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88DE96D523E6065800B369D7 /* Errors.swift */; };
@@ -116,6 +118,8 @@
 		888823202257AB4F00D0D132 /* ServiceStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceStubs.swift; sourceTree = "<group>"; };
 		889307DB226865B900CB4D3C /* ServiceEasyLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceEasyLocator.swift; sourceTree = "<group>"; };
 		88984316226E1329002F49B4 /* ServiceSimpleLocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceSimpleLocatorTests.swift; sourceTree = "<group>"; };
+		88A9C9B523EDD1CF002DB7CD /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		88A9C9B823EDD258002DB7CD /* ServiceParamsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceParamsProvider.swift; sourceTree = "<group>"; };
 		88DE96D523E6065800B369D7 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		88DE96DD23E6D29E00B369D7 /* ServiceLocatorError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -153,7 +157,9 @@
 				506F9EFA20E3E3F100E44CBD /* Info.plist */,
 				50DA160620C4507D00B756B3 /* BaseTypes.swift */,
 				88DE96D523E6065800B369D7 /* Errors.swift */,
+				88A9C9B523EDD1CF002DB7CD /* Helpers.swift */,
 				50DA160820C4509E00B756B3 /* ServiceProvider.swift */,
+				88A9C9B823EDD258002DB7CD /* ServiceParamsProvider.swift */,
 				50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */,
 				506F9F1720E3E44D00E44CBD /* ServiceLocator */,
 				50A1C6A622667137003A8554 /* ServiceSimpleLocator */,
@@ -457,11 +463,13 @@
 				88DE96D223E48DB900B369D7 /* ServiceLocatorKey.swift in Sources */,
 				88DE96D723E6065B00B369D7 /* Errors.swift in Sources */,
 				88DE96DF23E6D2C600B369D7 /* ServiceSimpleLocator.swift in Sources */,
+				88A9C9B723EDD1DB002DB7CD /* Helpers.swift in Sources */,
 				88DE96E023E6D54D00B369D7 /* ServiceSimpleLocatorObjC.swift in Sources */,
 				88DE96D123E4780B00B369D7 /* ServiceProviderObjC.swift in Sources */,
 				506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */,
 				88DE96DE23E6D29E00B369D7 /* ServiceLocatorError.swift in Sources */,
 				506F9F3120E3EA1100E44CBD /* BaseTypes.swift in Sources */,
+				88A9C9B923EDD258002DB7CD /* ServiceParamsProvider.swift in Sources */,
 				88DE96DB23E6CF4B00B369D7 /* ServiceLocatorObjC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

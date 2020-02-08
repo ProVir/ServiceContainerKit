@@ -15,25 +15,13 @@ public extension ServiceFactory {
     }
 }
 
-public extension ServiceParamsFactory {
-    /// Wrap the factory in ServiceParamsProvider
-    func serviceProvider() -> ServiceParamsProvider<ServiceType, ParamsType> {
-        return ServiceParamsProvider<ServiceType, ParamsType>.init(factory: self)
-    }
-    
-    /// Wrap the factory in ServiceProvider with specific params.
-    func serviceProvider(params: ParamsType) -> ServiceProvider<ServiceType> {
-        return ServiceProvider<ServiceType>.init(factory: self, params: params)
-    }
-}
-
-
 /// ServiceProvider with information for make service (singleton or many instances)
-public final class ServiceProvider<ServiceType> {
+public class ServiceProvider<ServiceType> {
     private enum Storage<ServiceType> {
         case instance(ServiceType)
         case atOneError(ServiceObtainError)
-        case factory(ServiceCoreFactory, params: Any, lazy: Bool)
+        case lazy(ServiceCoreFactory)
+        case factory(ServiceCoreFactory, params: Any)
 
         func validateError() throws {
             switch self {
@@ -43,6 +31,7 @@ public final class ServiceProvider<ServiceType> {
         }
     }
 
+    private let helper = ServiceProviderHelper<ServiceType>()
     private var storage: Storage<ServiceType>
     
     /// ServiceProvider with at one instance services.
@@ -54,31 +43,27 @@ public final class ServiceProvider<ServiceType> {
     public init<FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
         switch factory.mode {
         case .atOne:
-            do {
-                if let service = try factory.coreMakeService(params: Void()) as? ServiceType {
-                    self.storage = .instance(service)
-                } else {
-                    throw ServiceFactoryError.invalidFactory
-                }
-            } catch {
-                self.storage =  .atOneError(convertToObtainError(ServiceType.self, error: error))
+            let result = helper.makeService(factory: factory, params: Void())
+            switch result {
+            case let .success(service): self.storage = .instance(service)
+            case let .failure(error): self.storage = .atOneError(error)
             }
 
         case .lazy:
-            self.storage =  .factory(factory, params: Void(), lazy: true)
+            self.storage =  .lazy(factory)
 
         case .many:
-            self.storage =  .factory(factory, params: Void(), lazy: false)
+            self.storage =  .factory(factory, params: Void())
         }
     }
     
     /// ServiceProvider with factory, use specific params.
     public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, params: FactoryType.ParamsType) where FactoryType.ServiceType == ServiceType {
-        self.storage = .factory(factory, params: params, lazy: false)
+        self.storage = .factory(factory, params: params)
     }
 
-    public init<ParamsType>(provider: ServiceParamsProvider<ServiceType, ParamsType>, params: ParamsType) {
-        self.storage = .factory(provider.factory, params: params, lazy: false)
+    init(coreFactory: ServiceCoreFactory, params: Any) {
+        self.storage = .factory(coreFactory, params: params)
     }
 
     /// ServiceProvider with factory. If service factoryType == .atOne and throw error when make - throw this error from constructor.
@@ -107,17 +92,15 @@ public final class ServiceProvider<ServiceType> {
         case let .atOneError(error):
             return .failure(error)
 
-        case let .factory(factory, params, lazy):
-            do {
-                if let service = try factory.coreMakeService(params: params) as? ServiceType {
-                    if lazy { storage = .instance(service) }
-                    return .success(service)
-                } else {
-                    throw ServiceFactoryError.invalidFactory
-                }
-            } catch {
-                return .failure(convertToObtainError(ServiceType.self, error: error))
+        case let.lazy(factory):
+            let result = helper.makeService(factory: factory, params: Void())
+            if case let .success(service) = result {
+                storage = .instance(service)
             }
+            return result
+
+        case let .factory(factory, params):
+            return helper.makeService(factory: factory, params: params)
         }
     }
 
@@ -141,57 +124,5 @@ public final class ServiceProvider<ServiceType> {
     }
 }
 
-/// ServiceProvider with information for create service (static or factory)
-public final class ServiceParamsProvider<ServiceType, ParamsType> {
-    fileprivate let factory: ServiceCoreFactory
-    
-    /// ServiceProvider with factory.
-    public init<FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
-        self.factory = factory
-    }
-    
-    /// Get Service with detail information throwed error.
-    public func getServiceAsResult(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
-        do {
-            if let service = try factory.coreMakeService(params: params) as? ServiceType {
-                return .success(service)
-            } else {
-                throw ServiceFactoryError.invalidFactory
-            }
-        } catch {
-            return .failure(convertToObtainError(ServiceType.self, error: error))
-        }
-    }
 
-    /// Get Service with detail information throwed error.
-    public func getService(params: ParamsType) throws -> ServiceType {
-        return try getServiceAsResult(params: params).get()
-    }
 
-    /// Get Service if there are no errors.
-    public func getServiceAsOptional(params: ParamsType) -> ServiceType? {
-        return try? getServiceAsResult(params: params).get()
-    }
-
-    /// Get Service if there are no errors or fatal when failure obtain.
-    public func getServiceOrFatal(params: ParamsType) -> ServiceType {
-        let result = getServiceAsResult(params: params)
-        switch result {
-        case .success(let service): return service
-        case .failure(let error): fatalError(error.fatalMessage)
-        }
-    }
-
-    /// Get ServiceProvider without params with specific params.
-    public func convert(params: ParamsType) -> ServiceProvider<ServiceType> {
-        return .init(provider: self, params: params)
-    }
-}
-
-private func convertToObtainError<ServiceType>(_ serviceType: ServiceType.Type, error: Error) -> ServiceObtainError {
-    if let error = error as? ServiceObtainError {
-        return error.withAddedToPath(service: ServiceType.self)
-    } else {
-        return ServiceObtainError(service: ServiceType.self, error: error)
-    }
-}
