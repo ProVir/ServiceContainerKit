@@ -11,19 +11,29 @@ import Foundation
 public extension ServiceParamsFactory {
     /// Wrap the factory in ServiceParamsProvider
     func serviceProvider() -> ServiceParamsProvider<ServiceType, ParamsType> {
-        return ServiceParamsProvider<ServiceType, ParamsType>.init(factory: self)
+        return .init(factory: self)
     }
 
     /// Wrap the factory in ServiceProvider with specific params.
     func serviceProvider(params: ParamsType) -> ServiceProvider<ServiceType> {
-        return ServiceProvider<ServiceType>.init(factory: self, params: params)
+        return .init(factory: self, params: params)
+    }
+
+    /// Wrap the factory in ServiceParamsSafeProvider
+    func serviceSafeProvider(safeThread kind: ServiceSafeProviderKind = .lock) -> ServiceParamsSafeProvider<ServiceType, ParamsType> {
+        return .init(factory: self, safeThread: kind)
+    }
+
+    /// Wrap the factory in ServiceSafeProvider with specific params.
+    func serviceSafeProvider(params: ParamsType, safeThread kind: ServiceSafeProviderKind = .lock) -> ServiceSafeProvider<ServiceType> {
+        return .init(factory: self, params: params, safeThread: kind)
     }
 }
 
 /// ServiceProvider with information for create service (static or factory)
-public final class ServiceParamsProvider<ServiceType, ParamsType> {
+public class ServiceParamsProvider<ServiceType, ParamsType> {
     private let helper = ServiceProviderHelper<ServiceType>()
-    private let factory: ServiceCoreFactory
+    fileprivate let factory: ServiceCoreFactory
 
     /// ServiceProvider with factory.
     public init<FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
@@ -57,5 +67,30 @@ public final class ServiceParamsProvider<ServiceType, ParamsType> {
     /// Get ServiceProvider without params with specific params.
     public func convert(params: ParamsType) -> ServiceProvider<ServiceType> {
         return .init(coreFactory: factory, params: params)
+    }
+}
+
+// MARK: - Safe thread
+public class ServiceParamsSafeProvider<ServiceType, ParamsType>: ServiceParamsProvider<ServiceType, ParamsType> {
+    private let hanlder: ServiceSafeProviderHandler
+
+    /// ServiceProvider with factory.
+    public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
+        self.hanlder = .init(kind: kind)
+        super.init(factory: factory)
+    }
+
+    /// Get Service with detail information throwed error.
+    public override func getServiceAsResult(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
+        return hanlder.safelyHandling { super.getServiceAsResult(params: params) }
+    }
+
+    public func getServiceAsResultNotSafe(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
+        return super.getServiceAsResult(params: params)
+    }
+
+    /// Get ServiceProvider without params with specific params.
+    public override func convert(params: ParamsType) -> ServiceSafeProvider<ServiceType> {
+        return .init(coreFactory: factory, params: params, handler: hanlder)
     }
 }

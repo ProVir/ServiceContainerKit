@@ -63,6 +63,13 @@ public class ServiceClosureFactory<T>: ServiceFactory {
     }
 }
 
+// MARK: Safe thread
+public enum ServiceSafeProviderKind {
+    case lock
+    case semaphore
+    case queue(qos: DispatchQoS = .utility, label: String? = nil)
+}
+
 // MARK: - Core protocols
 public protocol ServiceCoreFactory {
     /// Can not implementation! Used only with framework implementation. 
