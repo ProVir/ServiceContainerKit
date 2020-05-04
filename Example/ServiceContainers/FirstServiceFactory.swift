@@ -23,11 +23,11 @@ struct FirstServiceFactory: ServiceFactory {
     }
 }
 
-struct FirstServiceLocatorKey: ServiceLocatorKey {
+struct FirstServiceLocatorKey: ServiceLocatorKey, Hashable {
     typealias ServiceType = FirstService
     
     let isShared: Bool
-    var storeKey: String {
-        return isShared ? "FirstServiceShared" : "FirstService"
+    var storeKey: AnyHashable {
+        return self
     }
 }

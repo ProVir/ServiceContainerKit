@@ -12,8 +12,8 @@ import Foundation
 public protocol ServiceLocatorKey {
     associatedtype ServiceType
 
-    /// Key as unique string for store in dictionary, usually "\(ServiceType.self)"
-    var storeKey: String { get }
+    /// Key as unique hashable value for store in dictionary, usually "\(ServiceType.self)"
+    var storeKey: AnyHashable { get }
 }
 
 /// Base protocol ServiceLocator key for services with params
@@ -24,13 +24,13 @@ public protocol ServiceLocatorParamsKey: ServiceLocatorKey {
 /// Default implementation ServiceLocator key
 public struct ServiceLocatorSimpleKey<ServiceType>: ServiceLocatorKey {
     public init() { }
-    public var storeKey: String { return "\(ServiceType.self)" }
+    public var storeKey: AnyHashable { return "\(ServiceType.self)" }
 }
 
 /// Default implementation ServiceLocator key for services with params
 public struct ServiceLocatorParamsSimpleKey<ServiceType, ParamsType>: ServiceLocatorParamsKey {
     public init() { }
-    public var storeKey: String { return "\(ServiceType.self)" }
+    public var storeKey: AnyHashable { return "\(ServiceType.self)" }
 }
 
 extension ServiceFactory {
@@ -47,7 +47,7 @@ extension ServiceParamsFactory {
 /// ServiceLocator ObjC Key as wrapper for swift ServiceLocatorKey
 @objc(ServiceLocatorKey)
 public class ServiceLocatorObjCKey: NSObject {
-    public let storeKey: String
+    public let storeKey: AnyHashable
 
     public init<Key: ServiceLocatorKey>(_ key: Key) {
         self.storeKey = key.storeKey
@@ -55,7 +55,7 @@ public class ServiceLocatorObjCKey: NSObject {
     }
 
     /// Not recomendation constructor - used for ServiceSimpleLocator as internal logic
-    public init(storeKey: String) {
+    public init(storeKey: AnyHashable) {
         self.storeKey = storeKey
         super.init()
     }

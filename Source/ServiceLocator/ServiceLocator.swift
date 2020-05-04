@@ -17,7 +17,7 @@ open class ServiceLocator {
     public let lock = NSRecursiveLock()
     
     /// Private list providers with services
-    private var providers = [String: ServiceLocatorProviderBinding]()
+    private var providers = [AnyHashable: ServiceLocatorProviderBinding]()
     
     // MARK: Setup locator
     /// Services list support and factoryes don't can change if is `true`.
@@ -197,7 +197,7 @@ open class ServiceLocator {
     }
 
     // MARK: - Private
-    private func internalGetService<ServiceType>(storeKey: String, params: Any) -> Result<ServiceType, ServiceObtainError> {
+    private func internalGetService<ServiceType>(storeKey: AnyHashable, params: Any) -> Result<ServiceType, ServiceObtainError> {
         lock.lock()
         defer { lock.unlock() }
         
