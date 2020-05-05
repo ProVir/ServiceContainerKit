@@ -58,8 +58,41 @@ class ViewController: UIViewController {
         print("\n\nCreate and test SecondService with number = 0")
         let secondNum0Service = serviceContainer.secondServiceNumber0Provider.getServiceOrFatal()
         secondNum0Service.test()
-        
-        
+
+        print("\n\nCreate and test SingletonService with UserSession")
+        let service1 = serviceContainer.sessionSingletonServiceProvider.getServiceOrFatal()
+        service1.test()
+
+        let service2 = serviceContainer.sessionSingletonServiceProvider.getServiceOrFatal()
+        service2.test()
+
+        serviceContainer.userMediator.updateSession(.init(userId: 5))
+        let service3 = serviceContainer.sessionSingletonServiceProvider.getServiceOrFatal()
+        service3.test()
+
+        serviceContainer.userMediator.updateSession(.init(userId: 0))
+        let service4 = serviceContainer.sessionSingletonServiceProvider.getServiceOrFatal()
+        service4.test()
+        service3.test()
+
+        if service1 === service2 {
+            print("\nSUCCESS")
+        } else {
+            print("\nFAILURE Service1 !== Service2")
+        }
+
+        if service1 !== service3 {
+            print("\nSUCCESS")
+        } else {
+            print("\nFAILURE Service2 === Service3")
+        }
+
+        if service1 === service4 {
+            print("\nSUCCESS")
+        } else {
+            print("\nFAILURE Service1 !== Service4")
+        }
+
         print("\n\nAll experiments completed, removed all services created in current function.")
     }
     

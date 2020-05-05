@@ -20,12 +20,25 @@ public extension ServiceFactory {
     }
 }
 
+public extension ServiceSessionFactory {
+    /// Wrap the factory in ServiceProvider
+    func serviceProvider(mediator: ServiceSessionMediator<SessionType>) -> ServiceProvider<ServiceType> {
+        return .init(factory: self, mediator: mediator)
+    }
+
+    /// Wrap the factory in ServiceSafeProvider
+    func serviceSafeProvider(mediator: ServiceSessionMediator<SessionType>, safeThread kind: ServiceSafeProviderKind = .lock) -> ServiceSafeProvider<ServiceType> {
+        return .init(factory: self, mediator: mediator, safeThread: kind)
+    }
+}
+
 /// ServiceProvider with information for make service (singleton or many instances)
 public class ServiceProvider<ServiceType> {
-    private enum Storage<ServiceType> {
+    private enum Storage {
         case instance(ServiceType)
         case atOneError(ServiceObtainError)
         case lazy(ServiceCoreFactory)
+        case session(SessionStorage)
         case factory(ServiceCoreFactory, params: Any)
 
         func validateError() throws {
@@ -36,8 +49,19 @@ public class ServiceProvider<ServiceType> {
         }
     }
 
+    fileprivate final class SessionStorage {
+        let factory: ServiceSessionCoreFactory
+        var token: ServiceSessionMediatorToken?
+        var currentSession: ServiceSession?
+        var services: [AnyHashable: ServiceType] = [:]
+
+        init(factory: ServiceSessionCoreFactory) {
+            self.factory = factory
+        }
+    }
+
     private let helper = ServiceProviderHelper<ServiceType>()
-    private var storage: Storage<ServiceType>
+    private var storage: Storage
     
     /// ServiceProvider with at one instance services.
     public init(_ service: ServiceType) {
@@ -67,6 +91,21 @@ public class ServiceProvider<ServiceType> {
         self.storage = .factory(factory, params: params)
     }
 
+    public convenience init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
+        self.init(factory: factory) { storage in
+            storage.sessionChanged(mediator.session)
+            storage.token = mediator.addObserver { [weak storage] session in
+                storage?.sessionChanged(session)
+            }
+        }
+    }
+
+    fileprivate init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, storageConfigurator: (SessionStorage) -> Void) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
+        let storage = SessionStorage(factory: factory)
+        self.storage = .session(storage)
+        storageConfigurator(storage)
+    }
+
     init(coreFactory: ServiceCoreFactory, params: Any) {
         self.storage = .factory(coreFactory, params: params)
     }
@@ -87,7 +126,6 @@ public class ServiceProvider<ServiceType> {
         self.init(factory: ServiceClosureFactory(closureFactory: manyFactory, lazyMode: false))
     }
 
-
     /// Get Service with detail information throwed error.
     public func getServiceAsResult() -> Result<ServiceType, ServiceObtainError> {
         switch storage {
@@ -97,12 +135,15 @@ public class ServiceProvider<ServiceType> {
         case let .atOneError(error):
             return .failure(error)
 
-        case let.lazy(factory):
+        case let .lazy(factory):
             let result = helper.makeService(factory: factory, params: Void())
             if case let .success(service) = result {
                 storage = .instance(service)
             }
             return result
+
+        case let .session(storage):
+            return storage.getServiceAsResult(helper: helper)
 
         case let .factory(factory, params):
             return helper.makeService(factory: factory, params: params)
@@ -133,6 +174,50 @@ public class ServiceProvider<ServiceType> {
     }
 }
 
+private extension ServiceProvider.SessionStorage {
+    func sessionChanged(_ session: ServiceSession) {
+        let newKey = session.key
+        let currentKey = currentSession?.key
+        guard currentKey != newKey else { return }
+
+        //Deactivate old service
+        if let currentSession = currentSession, let key = currentKey, let service = services[key] {
+            let canUseNext = factory.coreDeactivateService(service, session: currentSession)
+            if canUseNext == false {
+                services.removeValue(forKey: key)
+            }
+        }
+
+        //Activate or make new service
+        currentSession = session
+
+        if let service = services[newKey] {
+            factory.coreActivateService(service, session: session)
+
+        } else if factory.coreIsLazy == false,
+            let serviceAny = try? factory.coreMakeService(session: session),
+            let service = serviceAny as? ServiceType {
+            services[newKey] = service
+        }
+    }
+
+    func getServiceAsResult(helper: ServiceProviderHelper<ServiceType>) -> Result<ServiceType, ServiceObtainError> {
+        guard let session = currentSession else {
+            return helper.makeNoSessionFindResult()
+        }
+
+        let currentKey = session.key
+        if let service = services[currentKey] {
+            return .success(service)
+        }
+
+        let result = helper.makeSessionService(factory: factory, session: session)
+        if case let .success(service) = result {
+            services[currentKey] = service
+        }
+        return result
+    }
+}
 
 // MARK: - Safe thread
 public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
@@ -157,6 +242,19 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, params: FactoryType.ParamsType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType {
         self.hanlder = .init(kind: kind)
         super.init(factory: factory, params: params)
+    }
+
+    public init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
+        let handler = ServiceSafeProviderHandler(kind: kind)
+        self.hanlder = handler
+        super.init(factory: factory) { storage in
+            storage.sessionChanged(mediator.session)
+            storage.token = mediator.addObserver { [weak storage, handler] session in
+                handler.safelyHandling {
+                    storage?.sessionChanged(session)
+                }
+            }
+        }
     }
 
     init(coreFactory: ServiceCoreFactory, params: Any, handler: ServiceSafeProviderHandler) {

@@ -19,6 +19,9 @@ struct ServiceContainer {
     
     let sharedFirstService: FirstService
     let secondServiceNumber0Provider: ServiceProvider<SecondService>
+
+    let userMediator: ServiceSessionMediator<UserSession>
+    let sessionSingletonServiceProvider: ServiceProvider<SingletonService>
 }
 
 /// DI Container for ObjC
@@ -47,12 +50,17 @@ extension ServiceContainer {
 
         let sharedFirstService: FirstService = firstServiceProvider.getServiceOrFatal()
         let secondServiceNumber0Provider = secondServiceProvider.convert(params: .init(number: 0))
+
+        let userMediator = ServiceSessionMediator<UserSession>(session: .init(userId: 0))
+        let sessionSingletonServiceProvider = SingletonServiceSessionFactory().serviceProvider(mediator: userMediator)
         
         return ServiceContainer(singletonServiceProvider: singletonServiceProvider,
                                 lazyServiceProvider: lazyServiceProvider,
                                 firstServiceProvider: firstServiceProvider,
                                 secondServiceProvider: secondServiceProvider,
                                 sharedFirstService: sharedFirstService,
-                                secondServiceNumber0Provider: secondServiceNumber0Provider)
+                                secondServiceNumber0Provider: secondServiceNumber0Provider,
+                                userMediator: userMediator,
+                                sessionSingletonServiceProvider: sessionSingletonServiceProvider)
     }
 }

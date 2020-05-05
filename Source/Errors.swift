@@ -44,11 +44,13 @@ public struct ServiceObtainError: LocalizedError {
 
 public enum ServiceFactoryError: LocalizedError {
     case wrongParams
+    case wrongSession
     case invalidFactory
 
     public var errorDescription: String? {
         switch self {
         case .wrongParams: return "Params type invalid for ServiceParamsFactory"
+        case .wrongSession: return "Session type invalid for ServiceSessionFactory"
         case .invalidFactory: return "Factory with invalid service type"
         }
     }

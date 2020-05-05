@@ -29,6 +29,8 @@
 		50DA15D320C44AF700B756B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D120C44AF700B756B3 /* Main.storyboard */; };
 		50DA15D520C44AF800B756B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D420C44AF800B756B3 /* Assets.xcassets */; };
 		50DA15D820C44AF800B756B3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D620C44AF800B756B3 /* LaunchScreen.storyboard */; };
+		881B561A2461888400BB70A8 /* SessionMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881B56192461888400BB70A8 /* SessionMediator.swift */; };
+		881B561C2461C86600BB70A8 /* SessionServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881B561B2461C86600BB70A8 /* SessionServiceFactory.swift */; };
 		8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8888231322575AA800D0D132 /* ServiceProviderTests.swift */; };
 		888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888823202257AB4F00D0D132 /* ServiceStubs.swift */; };
 		889307DC226865B900CB4D3C /* ServiceEasyLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889307DB226865B900CB4D3C /* ServiceEasyLocator.swift */; };
@@ -114,6 +116,8 @@
 		50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		50DA160E20C4D9B600B756B3 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		50DA160F20C4DB6700B756B3 /* ServiceContainerKit.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = ServiceContainerKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		881B56192461888400BB70A8 /* SessionMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMediator.swift; sourceTree = "<group>"; };
+		881B561B2461C86600BB70A8 /* SessionServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionServiceFactory.swift; sourceTree = "<group>"; };
 		8888231322575AA800D0D132 /* ServiceProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderTests.swift; sourceTree = "<group>"; };
 		888823202257AB4F00D0D132 /* ServiceStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceStubs.swift; sourceTree = "<group>"; };
 		889307DB226865B900CB4D3C /* ServiceEasyLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceEasyLocator.swift; sourceTree = "<group>"; };
@@ -156,6 +160,7 @@
 				506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */,
 				506F9EFA20E3E3F100E44CBD /* Info.plist */,
 				50DA160620C4507D00B756B3 /* BaseTypes.swift */,
+				881B56192461888400BB70A8 /* SessionMediator.swift */,
 				88DE96D523E6065800B369D7 /* Errors.swift */,
 				88A9C9B523EDD1CF002DB7CD /* Helpers.swift */,
 				50DA160820C4509E00B756B3 /* ServiceProvider.swift */,
@@ -211,6 +216,7 @@
 				506F9F4220E3F88700E44CBD /* LazyServiceFactory.swift */,
 				506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */,
 				506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */,
+				881B561B2461C86600BB70A8 /* SessionServiceFactory.swift */,
 			);
 			path = ServiceContainers;
 			sourceTree = "<group>";
@@ -469,6 +475,7 @@
 				506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */,
 				88DE96DE23E6D29E00B369D7 /* ServiceLocatorError.swift in Sources */,
 				506F9F3120E3EA1100E44CBD /* BaseTypes.swift in Sources */,
+				881B561A2461888400BB70A8 /* SessionMediator.swift in Sources */,
 				88A9C9B923EDD258002DB7CD /* ServiceParamsProvider.swift in Sources */,
 				88DE96DB23E6CF4B00B369D7 /* ServiceLocatorObjC.swift in Sources */,
 			);
@@ -490,6 +497,7 @@
 				50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */,
 				506F9F4120E3F81600E44CBD /* SingletonServiceFactory.swift in Sources */,
 				506F9F3D20E3F6CF00E44CBD /* ServiceContainer.swift in Sources */,
+				881B561C2461C86600BB70A8 /* SessionServiceFactory.swift in Sources */,
 				50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */,
 				506F9F3A20E3F5E300E44CBD /* SecondService.swift in Sources */,
 			);

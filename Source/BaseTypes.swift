@@ -20,6 +20,10 @@ public enum ServiceFactoryMode {
     case many
 }
 
+public protocol ServiceSession {
+    var key: AnyHashable { get }
+}
+
 ///Factory services for ServiceProvider or ServiceLocator.
 public protocol ServiceFactory: ServiceCoreFactory {
     associatedtype ServiceType
@@ -27,7 +31,7 @@ public protocol ServiceFactory: ServiceCoreFactory {
     /// Factory mode to make. Used only when added to provider. Recommendation use as constant (let).
     var mode: ServiceFactoryMode { get }
     
-    /// Make new instance service. Parameter settings use only for multiple factory.
+    /// Make new instance service.
     func makeService() throws -> ServiceType
 }
 
@@ -38,6 +42,23 @@ public protocol ServiceParamsFactory: ServiceCoreFactory {
     
     /// Make new instance service.
     func makeService(params: ParamsType) throws -> ServiceType
+}
+
+public protocol ServiceSessionFactory: ServiceSessionCoreFactory {
+    associatedtype ServiceType
+    associatedtype SessionType: ServiceSession
+
+    /// Create service at one after first need and reused next. If false - create after chnage session.
+    var isLazy: Bool { get }
+
+    /// Deactivate current service after change. Return true if can activate after, false - delete service.
+    func deactivateService(_ service: ServiceType, session: SessionType) -> Bool
+
+    /// Activate instance for new session
+    func activateService(_ service: ServiceType, session: SessionType)
+
+    /// Make new instance service.
+    func makeService(session: SessionType) throws -> ServiceType
 }
 
 ///Factory for ServiceProvider or ServiceLocator with generate service in closure.
@@ -76,6 +97,14 @@ public protocol ServiceCoreFactory {
     func coreMakeService(params: Any) throws -> Any
 }
 
+public protocol ServiceSessionCoreFactory {
+    /// Can not implementation! Used only with framework implementation.
+    var coreIsLazy: Bool { get }
+    func coreDeactivateService(_ service: Any, session: ServiceSession) -> Bool
+    func coreActivateService(_ service: Any, session: ServiceSession)
+    func coreMakeService(session: ServiceSession) throws -> Any
+}
+
 public extension ServiceFactory {
     func coreMakeService(params: Any) throws -> Any {
         return try makeService()
@@ -88,6 +117,34 @@ public extension ServiceParamsFactory {
             return try makeService(params: params)
         } else {
             throw ServiceFactoryError.wrongParams
+        }
+    }
+}
+
+public extension ServiceSessionFactory {
+    var coreIsLazy: Bool {
+        return isLazy
+    }
+
+    func coreDeactivateService(_ service: Any, session: ServiceSession) -> Bool {
+        if let service = service as? ServiceType, let session = session as? SessionType {
+            return deactivateService(service, session: session)
+        } else {
+            return false
+        }
+    }
+
+    func coreActivateService(_ service: Any, session: ServiceSession) {
+        if let service = service as? ServiceType, let session = session as? SessionType {
+            activateService(service, session: session)
+        }
+    }
+
+    func coreMakeService(session: ServiceSession) throws -> Any {
+        if let session = session as? SessionType {
+            return try makeService(session: session)
+        } else {
+            throw ServiceFactoryError.wrongSession
         }
     }
 }

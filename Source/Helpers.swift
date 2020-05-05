@@ -21,6 +21,22 @@ struct ServiceProviderHelper<ServiceType> {
         }
     }
 
+    func makeSessionService(factory: ServiceSessionCoreFactory, session: ServiceSession) -> Result<ServiceType, ServiceObtainError> {
+        do {
+            if let service = try factory.coreMakeService(session: session) as? ServiceType {
+                return .success(service)
+            } else {
+                throw ServiceFactoryError.invalidFactory
+            }
+        } catch {
+            return .failure(convertToObtainError(error: error))
+        }
+    }
+
+    func makeNoSessionFindResult() -> Result<ServiceType, ServiceObtainError> {
+        return .failure(convertToObtainError(error: ServiceFactoryError.wrongSession))
+    }
+
     private func convertToObtainError(error: Error) -> ServiceObtainError {
         if let error = error as? ServiceObtainError {
             return error.withAddedToPath(service: ServiceType.self)
