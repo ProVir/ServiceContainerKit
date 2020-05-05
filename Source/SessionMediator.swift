@@ -14,10 +14,22 @@ public struct ServiceVoidSession: ServiceSession {
 
 protocol ServiceSessionMediatorToken: class { }
 
+public enum ServiceSessionRemakePolicy {
+    case none
+    case force
+    case clearAll
+}
+
+open class ServiceVoidSessionMediator: ServiceSessionMediator<ServiceVoidSession> {
+    public func clearServices() {
+        updateSession(.init(), remakePolicy: .clearAll)
+    }
+}
+
 open class ServiceSessionMediator<ServiceSession> {
     private final class Token: ServiceSessionMediatorToken {
-        let observer: (ServiceSession) -> Void
-        init(_ observer: @escaping (ServiceSession) -> Void) {
+        let observer: (ServiceSession, ServiceSessionRemakePolicy) -> Void
+        init(_ observer: @escaping (ServiceSession, ServiceSessionRemakePolicy) -> Void) {
             self.observer = observer
         }
     }
@@ -43,17 +55,17 @@ open class ServiceSessionMediator<ServiceSession> {
         self.currentSession = session
     }
 
-    public func updateSession(_ session: ServiceSession) {
+    public func updateSession(_ session: ServiceSession, remakePolicy: ServiceSessionRemakePolicy = .none) {
         lock.lock()
         self.currentSession = session
         self.observers = self.observers.filter { $0.token != nil }
         let observers = self.observers
         lock.unlock()
 
-        observers.forEach { $0.token?.observer(session) }
+        observers.forEach { $0.token?.observer(session, remakePolicy) }
     }
 
-    func addObserver(_ observer: @escaping (ServiceSession) -> Void) -> ServiceSessionMediatorToken {
+    func addObserver(_ observer: @escaping (ServiceSession, ServiceSessionRemakePolicy) -> Void) -> ServiceSessionMediatorToken {
         lock.lock()
         defer { lock.unlock() }
 
@@ -63,3 +75,4 @@ open class ServiceSessionMediator<ServiceSession> {
         return token
     }
 }
+

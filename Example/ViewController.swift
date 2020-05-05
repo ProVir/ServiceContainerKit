@@ -63,6 +63,7 @@ class ViewController: UIViewController {
         let service1 = serviceContainer.sessionSingletonServiceProvider.getServiceOrFatal()
         service1.test()
 
+        serviceContainer.userMediator.updateSession(.init(userId: 0))
         let service2 = serviceContainer.sessionSingletonServiceProvider.getServiceOrFatal()
         service2.test()
 
@@ -81,16 +82,16 @@ class ViewController: UIViewController {
             print("\nFAILURE Service1 !== Service2")
         }
 
-        if service1 !== service3 {
+        if service2 !== service3 {
             print("\nSUCCESS")
         } else {
             print("\nFAILURE Service2 === Service3")
         }
 
-        if service1 === service4 {
+        if service2 === service4 {
             print("\nSUCCESS")
         } else {
-            print("\nFAILURE Service1 !== Service4")
+            print("\nFAILURE Service2 !== Service4")
         }
 
         print("\n\nAll experiments completed, removed all services created in current function.")

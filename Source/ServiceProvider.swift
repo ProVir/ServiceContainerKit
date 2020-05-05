@@ -93,9 +93,9 @@ public class ServiceProvider<ServiceType> {
 
     public convenience init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
         self.init(factory: factory) { storage in
-            storage.sessionChanged(mediator.session)
-            storage.token = mediator.addObserver { [weak storage] session in
-                storage?.sessionChanged(session)
+            storage.sessionChanged(mediator.session, remakePolicy: .force)
+            storage.token = mediator.addObserver { [weak storage] session, remakePolicy in
+                storage?.sessionChanged(session, remakePolicy: remakePolicy)
             }
         }
     }
@@ -174,51 +174,6 @@ public class ServiceProvider<ServiceType> {
     }
 }
 
-private extension ServiceProvider.SessionStorage {
-    func sessionChanged(_ session: ServiceSession) {
-        let newKey = session.key
-        let currentKey = currentSession?.key
-        guard currentKey != newKey else { return }
-
-        //Deactivate old service
-        if let currentSession = currentSession, let key = currentKey, let service = services[key] {
-            let canUseNext = factory.coreDeactivateService(service, session: currentSession)
-            if canUseNext == false {
-                services.removeValue(forKey: key)
-            }
-        }
-
-        //Activate or make new service
-        currentSession = session
-
-        if let service = services[newKey] {
-            factory.coreActivateService(service, session: session)
-
-        } else if factory.coreIsLazy == false,
-            let serviceAny = try? factory.coreMakeService(session: session),
-            let service = serviceAny as? ServiceType {
-            services[newKey] = service
-        }
-    }
-
-    func getServiceAsResult(helper: ServiceProviderHelper<ServiceType>) -> Result<ServiceType, ServiceObtainError> {
-        guard let session = currentSession else {
-            return helper.makeNoSessionFindResult()
-        }
-
-        let currentKey = session.key
-        if let service = services[currentKey] {
-            return .success(service)
-        }
-
-        let result = helper.makeSessionService(factory: factory, session: session)
-        if case let .success(service) = result {
-            services[currentKey] = service
-        }
-        return result
-    }
-}
-
 // MARK: - Safe thread
 public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     private let hanlder: ServiceSafeProviderHandler
@@ -248,10 +203,10 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
         let handler = ServiceSafeProviderHandler(kind: kind)
         self.hanlder = handler
         super.init(factory: factory) { storage in
-            storage.sessionChanged(mediator.session)
-            storage.token = mediator.addObserver { [weak storage, handler] session in
+            storage.sessionChanged(mediator.session, remakePolicy: .force)
+            storage.token = mediator.addObserver { [weak storage, handler] session, remakePolicy in
                 handler.safelyHandling {
-                    storage?.sessionChanged(session)
+                    storage?.sessionChanged(session, remakePolicy: remakePolicy)
                 }
             }
         }
@@ -288,3 +243,55 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     }
 }
 
+// MARK: - Sessions
+private extension ServiceProvider.SessionStorage {
+    func sessionChanged(_ session: ServiceSession, remakePolicy: ServiceSessionRemakePolicy) {
+        let newKey = session.key
+        let currentKey = currentSession?.key
+        guard remakePolicy != .none || currentKey != newKey else { return }
+
+        //Deactivate old service
+        if let currentSession = currentSession, let key = currentKey, let service = services[key] {
+            let canUseNext = factory.coreDeactivateService(service, session: currentSession)
+            if canUseNext == false {
+                services.removeValue(forKey: key)
+            }
+        }
+
+        //Process remake
+        switch remakePolicy {
+        case .none: break
+        case .force: services.removeValue(forKey: newKey)
+        case .clearAll: services.removeAll()
+        }
+
+        //Activate or make new service
+        currentSession = session
+
+        if remakePolicy != .force, let service = services[newKey] {
+            factory.coreActivateService(service, session: session)
+
+        } else if factory.coreIsLazy == false,
+            let serviceAny = try? factory.coreMakeService(session: session),
+            let service = serviceAny as? ServiceType {
+            services[newKey] = service
+        }
+    }
+
+    func getServiceAsResult(helper: ServiceProviderHelper<ServiceType>) -> Result<ServiceType, ServiceObtainError> {
+        guard let session = currentSession else {
+            return helper.makeNoSessionFindResult()
+        }
+
+        let currentKey = session.key
+        if let service = services[currentKey] {
+            return .success(service)
+        }
+
+        let result = helper.makeSessionService(factory: factory, session: session)
+        if case let .success(service) = result {
+            services[currentKey] = service
+        }
+        return result
+    }
+}
