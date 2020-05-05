@@ -146,6 +146,11 @@ open class ServiceSimpleLocator {
     open func getServiceProvider<ServiceType, ParamsType>(serviceType: ServiceType.Type = ServiceType.self) -> ServiceParamsProvider<ServiceType, ParamsType>? {
         return keyLocator.getServiceProvider(key: ServiceLocatorParamsSimpleKey<ServiceType, ParamsType>())
     }
+
+    @discardableResult
+    open func testContainsService<ServiceType>(_ serviceType: ServiceType.Type, assert: Bool = true, file: StaticString = #file, line: UInt = #line) -> Bool {
+        keyLocator.testContainsService(key: ServiceLocatorSimpleKey<ServiceType>(), assert: assert, file: file, line: line)
+    }
     
     // MARK: ObjC
     /// Get Service use typeName as ServiceLocatorKey.storeKey

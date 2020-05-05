@@ -184,6 +184,26 @@ open class ServiceLocator {
         
         return providers[key.storeKey] as? ServiceParamsProvider<Key.ServiceType, Key.ParamsType>
     }
+
+    @discardableResult
+    open func testContainsService<Key: ServiceLocatorKey>(key: Key, assert: Bool = true, file: StaticString = #file, line: UInt = #line) -> Bool {
+        if providers[key.storeKey] != nil {
+            return true
+        } else {
+            if assert { assertionFailure("Service not found: \(Key.ServiceType.self)", file: file, line: line) }
+            return false
+        }
+    }
+
+    @discardableResult
+    open func testContainsService<Key: ServiceLocatorParamsKey>(key: Key, assert: Bool = true, file: StaticString = #file, line: UInt = #line) -> Bool {
+        if providers[key.storeKey] != nil {
+            return true
+        } else {
+            if assert { assertionFailure("Service not found: \(Key.ServiceType.self)", file: file, line: line) }
+            return false
+        }
+    }
     
     // MARK: ObjC
     /// Get Service by ObjC Key
