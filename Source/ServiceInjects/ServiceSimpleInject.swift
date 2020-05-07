@@ -18,7 +18,8 @@ public extension ServiceSimpleLocator {
 
 @propertyWrapper
 public final class ServiceSimpleInject<ServiceType> {
-    private let locator: ServiceSimpleLocator
+    public let lazy: Bool
+    private var locator: ServiceSimpleLocator?
     private var service: ServiceType?
     
     public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
@@ -26,9 +27,11 @@ public final class ServiceSimpleInject<ServiceType> {
             fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
         }
         
-        self.locator = locator
+        self.lazy = lazy
         
-        if lazy == false {
+        if lazy {
+            self.locator = locator
+        } else {
             self.service = locator.getServiceOrFatal(ServiceType.self, file: file, line: line)
         }
     }
@@ -36,18 +39,21 @@ public final class ServiceSimpleInject<ServiceType> {
     public var wrappedValue: ServiceType {
         if let service = self.service {
             return service
-        } else {
+        } else if self.lazy, let locator = locator {
             let service = locator.getServiceOrFatal(ServiceType.self)
             self.service = service
+            self.locator = nil
             return service
+        } else {
+            fatalError("Unknown error in Inject")
         }
     }
 }
 
 @propertyWrapper
 public final class ServiceOptionalSimpleInject<ServiceType> {
-    private let lazy: Bool
-    private let locator: ServiceSimpleLocator
+    public let lazy: Bool
+    private var locator: ServiceSimpleLocator?
     private var service: ServiceType?
     
     public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
@@ -55,10 +61,11 @@ public final class ServiceOptionalSimpleInject<ServiceType> {
             fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
         }
         
-        self.locator = locator
         self.lazy = lazy
         
-        if lazy == false {
+        if lazy {
+            self.locator = locator
+        } else {
             self.service = locator.getServiceAsOptional(ServiceType.self)
         }
     }
@@ -66,8 +73,9 @@ public final class ServiceOptionalSimpleInject<ServiceType> {
     public var wrappedValue: ServiceType? {
         if let service = self.service {
             return service
-        } else if self.lazy, let service = locator.getServiceAsOptional(ServiceType.self) {
+        } else if self.lazy, let service = locator?.getServiceAsOptional(ServiceType.self) {
             self.service = service
+            self.locator = nil
             return service
         } else {
             return nil
