@@ -18,8 +18,7 @@ public extension ServiceSimpleLocator {
 
 @propertyWrapper
 public final class ServiceSimpleInject<ServiceType> {
-    public let lazy: Bool
-    private var locator: ServiceSimpleLocator?
+    private var factory: (() -> ServiceType)?
     private var service: ServiceType?
     
     public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
@@ -27,22 +26,31 @@ public final class ServiceSimpleInject<ServiceType> {
             fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
         }
         
-        self.lazy = lazy
-        
         if lazy {
-            self.locator = locator
+            self.factory = { locator.getServiceOrFatal(ServiceType.self, file: file, line: line) }
         } else {
             self.service = locator.getServiceOrFatal(ServiceType.self, file: file, line: line)
+        }
+    }
+    
+    public init<ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
+        guard let locator = serviceLocatorShared else {
+            fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
+        }
+        
+        if lazy {
+            self.factory = { locator.getServiceOrFatal(ServiceType.self, params: params, file: file, line: line) }
+        } else {
+            self.service = locator.getServiceOrFatal(ServiceType.self, params: params, file: file, line: line)
         }
     }
     
     public var wrappedValue: ServiceType {
         if let service = self.service {
             return service
-        } else if self.lazy, let locator = locator {
-            let service = locator.getServiceOrFatal(ServiceType.self)
+        } else if let service = factory?() {
             self.service = service
-            self.locator = nil
+            self.factory = nil
             return service
         } else {
             fatalError("Unknown error in Inject")
@@ -52,8 +60,7 @@ public final class ServiceSimpleInject<ServiceType> {
 
 @propertyWrapper
 public final class ServiceOptionalSimpleInject<ServiceType> {
-    public let lazy: Bool
-    private var locator: ServiceSimpleLocator?
+    private var factory: (() -> ServiceType?)?
     private var service: ServiceType?
     
     public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
@@ -61,21 +68,31 @@ public final class ServiceOptionalSimpleInject<ServiceType> {
             fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
         }
         
-        self.lazy = lazy
-        
         if lazy {
-            self.locator = locator
+            self.factory = { locator.getServiceAsOptional(ServiceType.self) }
         } else {
             self.service = locator.getServiceAsOptional(ServiceType.self)
+        }
+    }
+    
+    public init<ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
+        guard let locator = serviceLocatorShared else {
+            fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
+        }
+        
+        if lazy {
+            self.factory = { locator.getServiceAsOptional(ServiceType.self, params: params) }
+        } else {
+            self.service = locator.getServiceAsOptional(ServiceType.self, params: params)
         }
     }
     
     public var wrappedValue: ServiceType? {
         if let service = self.service {
             return service
-        } else if self.lazy, let service = locator?.getServiceAsOptional(ServiceType.self) {
+        } else if let service = factory?() {
             self.service = service
-            self.locator = nil
+            self.factory = nil
             return service
         } else {
             return nil

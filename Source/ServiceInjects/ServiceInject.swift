@@ -17,34 +17,40 @@ public extension ServiceLocator {
 }
 
 @propertyWrapper
-public final class ServiceInject<Key: ServiceLocatorKey> {
-    public let key: Key
-    public let lazy: Bool
-    private var locator: ServiceLocator?
-    private var service: Key.ServiceType?
+public final class ServiceInject<ServiceType> {
+    private var factory: (() -> ServiceType)?
+    private var service: ServiceType?
     
-    public init(_ key: Key, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
+    public init<Key: ServiceLocatorKey>(_ key: Key, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Key.ServiceType == ServiceType {
         guard let locator = serviceLocatorShared else {
             fatalError("Not found ServiceLocator for Inject", file: file, line: line)
         }
         
-        self.key = key
-        self.lazy = lazy
-        
         if lazy {
-            self.locator = locator
+            self.factory = { locator.getServiceOrFatal(key: key, file: file, line: line) }
         } else {
             self.service = locator.getServiceOrFatal(key: key, file: file, line: line)
         }
     }
     
-    public var wrappedValue: Key.ServiceType {
+    public init<Key: ServiceLocatorParamsKey>(_ key: Key, params: Key.ParamsType, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Key.ServiceType == ServiceType {
+        guard let locator = serviceLocatorShared else {
+            fatalError("Not found ServiceLocator for Inject", file: file, line: line)
+        }
+        
+        if lazy {
+            self.factory = { locator.getServiceOrFatal(key: key, params: params, file: file, line: line) }
+        } else {
+            self.service = locator.getServiceOrFatal(key: key, params: params, file: file, line: line)
+        }
+    }
+    
+    public var wrappedValue: ServiceType {
         if let service = self.service {
             return service
-        } else if self.lazy, let locator = locator {
-            let service = locator.getServiceOrFatal(key: key)
+        } else if let service = factory?() {
             self.service = service
-            self.locator = nil
+            self.factory = nil
             return service
         } else {
             fatalError("Unknown error in Inject")
@@ -53,33 +59,40 @@ public final class ServiceInject<Key: ServiceLocatorKey> {
 }
 
 @propertyWrapper
-public final class ServiceOptionalInject<Key: ServiceLocatorKey> {
-    public let key: Key
-    public let lazy: Bool
-    private var locator: ServiceLocator?
-    private var service: Key.ServiceType?
+public final class ServiceOptionalInject<ServiceType> {
+    private var factory: (() -> ServiceType?)?
+    private var service: ServiceType?
     
-    public init(_ key: Key, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
+    public init<Key: ServiceLocatorKey>(_ key: Key, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Key.ServiceType == ServiceType {
         guard let locator = serviceLocatorShared else {
             fatalError("Not found ServiceLocator for Inject", file: file, line: line)
         }
         
-        self.key = key
-        self.lazy = lazy
-        
         if lazy {
-            self.locator = locator
+            self.factory = { locator.getServiceAsOptional(key: key) }
         } else {
             self.service = locator.getServiceAsOptional(key: key)
         }
     }
     
-    public var wrappedValue: Key.ServiceType? {
+    public init<Key: ServiceLocatorParamsKey>(_ key: Key, params: Key.ParamsType, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Key.ServiceType == ServiceType {
+        guard let locator = serviceLocatorShared else {
+            fatalError("Not found ServiceLocator for Inject", file: file, line: line)
+        }
+        
+        if lazy {
+            self.factory = { locator.getServiceAsOptional(key: key, params: params) }
+        } else {
+            self.service = locator.getServiceAsOptional(key: key, params: params)
+        }
+    }
+    
+    public var wrappedValue: ServiceType? {
         if let service = self.service {
             return service
-        } else if self.lazy, let service = locator?.getServiceAsOptional(key: key) {
+        } else if let service = factory?() {
             self.service = service
-            self.locator = nil
+            self.factory = nil
             return service
         } else {
             return nil
