@@ -1,5 +1,5 @@
 //
-//  ServiceSimpleInject.swift
+//  SLSimpleInject.swift
 //  ServiceContainerKit
 //
 //  Created by Короткий Виталий on 06.05.2020.
@@ -17,7 +17,7 @@ public extension ServiceSimpleLocator {
 }
 
 @propertyWrapper
-public final class ServiceSimpleInject<ServiceType> {
+public final class SLSimpleInject<ServiceType> {
     private var factory: (() -> ServiceType)?
     private var service: ServiceType?
     
@@ -59,7 +59,7 @@ public final class ServiceSimpleInject<ServiceType> {
 }
 
 @propertyWrapper
-public final class ServiceOptionalSimpleInject<ServiceType> {
+public final class SLSimpleOptionalInject<ServiceType> {
     private var factory: (() -> ServiceType?)?
     private var service: ServiceType?
     

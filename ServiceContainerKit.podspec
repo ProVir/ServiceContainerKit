@@ -39,13 +39,13 @@ Pod::Spec.new do |s|
     ss.dependency 'ServiceContainerKit/ServiceLocator'
   end
   
-  s.subspec 'ServiceInject' do |ss|
-    ss.source_files = 'Source/ServiceInjects/ServiceInject.swift'
+  s.subspec 'SLInject' do |ss|
+    ss.source_files = 'Source/Injects/SLInject.swift'
     ss.dependency 'ServiceContainerKit/ServiceLocator'
   end
   
-  s.subspec 'ServiceSimpleInject' do |ss|
-    ss.source_files = 'Source/ServiceInjects/ServiceSimpleInject.swift'
+  s.subspec 'SLSimpleInject' do |ss|
+    ss.source_files = 'Source/Injects/SLSimpleInject.swift'
     ss.dependency 'ServiceContainerKit/ServiceSimpleLocator'
   end
 

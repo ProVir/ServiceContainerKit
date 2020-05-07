@@ -17,7 +17,7 @@ public extension ServiceLocator {
 }
 
 @propertyWrapper
-public final class ServiceInject<ServiceType> {
+public final class SLInject<ServiceType> {
     private var factory: (() -> ServiceType)?
     private var service: ServiceType?
     
@@ -59,7 +59,7 @@ public final class ServiceInject<ServiceType> {
 }
 
 @propertyWrapper
-public final class ServiceOptionalInject<ServiceType> {
+public final class SLOptionalInject<ServiceType> {
     private var factory: (() -> ServiceType?)?
     private var service: ServiceType?
     

@@ -161,11 +161,11 @@ public class ServiceProvider<ServiceType> {
     }
     
     /// Get Service if there are no errors or fatal when failure obtain.
-    public func getServiceOrFatal() -> ServiceType {
+    public func getServiceOrFatal(file: StaticString = #file, line: UInt = #line) -> ServiceType {
         let result = getServiceAsResult()
         switch result {
         case .success(let service): return service
-        case .failure(let error): fatalError(error.fatalMessage)
+        case .failure(let error): fatalError(error.fatalMessage, file: file, line: line)
         }
     }
 

@@ -56,11 +56,11 @@ public class ServiceParamsProvider<ServiceType, ParamsType> {
     }
 
     /// Get Service if there are no errors or fatal when failure obtain.
-    public func getServiceOrFatal(params: ParamsType) -> ServiceType {
+    public func getServiceOrFatal(params: ParamsType, file: StaticString = #file, line: UInt = #line) -> ServiceType {
         let result = getServiceAsResult(params: params)
         switch result {
         case .success(let service): return service
-        case .failure(let error): fatalError(error.fatalMessage)
+        case .failure(let error): fatalError(error.fatalMessage, file: file, line: line)
         }
     }
 
