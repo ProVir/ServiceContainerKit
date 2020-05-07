@@ -130,7 +130,6 @@ open class ServiceLocator {
 
     /// Get Service by key with detail information throwed error.
     public func getService<Key: ServiceLocatorKey>(key: Key) throws -> Key.ServiceType {
-        //swiftlint:disable:next syntactic_sugar
         return try getServiceAsResult(key: key).get()
     }
     
@@ -208,6 +207,7 @@ open class ServiceLocator {
     // MARK: ObjC
     /// Get Service by ObjC Key
     open func getServiceObjC(key: ServiceLocatorObjCKey) -> Result<NSObject, ServiceObtainError> {
+        //swiftlint:disable:next syntactic_sugar
         return internalGetService(storeKey: key.storeKey, params: Optional<Any>.none as Any)
     }
 

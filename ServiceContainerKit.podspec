@@ -1,13 +1,13 @@
 Pod::Spec.new do |s|
   s.name         = "ServiceContainerKit"
-  s.version      = "2.0.1"
+  s.version      = "3.0.0-beta1"
   s.summary      = "Kit to create your own IoC Container or ServiceLocator. Use ServiceProvider as core, ServiceLocator as ready IoC Container"
   s.description  = <<-DESC
 			Written in Swift.
             Kit to create your own IoC Container or ServiceLocator for help implementation Dependency Injection (DI).
             ServiceProvider: wrapper for the service to hide the details of its creation.
             Allows you to create your custom IoC Container or ServiceLocator.
-            Also includes a dynamic ServiceLocator as an option. Require Swift 4 and above, support Objective-C in readOnly regime.
+            Also includes a dynamic ServiceLocator as an option. Require Swift 5.1 and above, support Objective-C in readOnly regime.
                    DESC
 
   s.homepage     = "https://github.com/ProVir/ServiceContainerKit"
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.author       = { "ViR (Vitaliy Korotkiy)" => "admin@provir.ru" }
   s.source       = { :git => "https://github.com/ProVir/ServiceContainerKit.git", :tag => "#{s.version}" }
 
-  s.swift_version = '5.0'
+  s.swift_version = '5.2'
 
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.10'
@@ -37,6 +37,16 @@ Pod::Spec.new do |s|
   s.subspec 'ServiceSimpleLocator' do |ss|
     ss.source_files = 'Source/ServiceSimpleLocator/*.swift'
     ss.dependency 'ServiceContainerKit/ServiceLocator'
+  end
+  
+  s.subspec 'ServiceInject' do |ss|
+    ss.source_files = 'Source/ServiceInjects/ServiceInject.swift'
+    ss.dependency 'ServiceContainerKit/ServiceLocator'
+  end
+  
+  s.subspec 'ServiceSimpleInject' do |ss|
+    ss.source_files = 'Source/ServiceInjects/ServiceSimpleInject.swift'
+    ss.dependency 'ServiceContainerKit/ServiceSimpleLocator'
   end
 
 end

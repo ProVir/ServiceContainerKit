@@ -9,6 +9,24 @@
 import UIKit
 import ServiceContainerKit
 
+struct SimpleKeyModel {
+    @ServiceInject(ServiceLocatorKeys.firstService, lazy: true) var firstService
+    
+    func test() {
+        print("START TEST MODEL")
+        firstService.test()
+    }
+}
+
+struct SimpleModel {
+    @ServiceSimpleInject(FirstService.self, lazy: true) var firstService
+    
+    func test() {
+        print("START TEST MODEL")
+        firstService.test()
+    }
+}
+
 
 class ViewController: UIViewController {
     
@@ -137,6 +155,9 @@ class ViewController: UIViewController {
         secondNumDefService.test()
         
         print("\n\nAll experiments completed, removed all services created in current function.")
+        
+        let model = SimpleKeyModel()
+        model.test()
     }
     
     @IBAction func testLocator() {
@@ -177,5 +198,8 @@ class ViewController: UIViewController {
         secondNumDefService.test()
         
         print("\n\nAll experiments completed, removed all services created in current function.")
+        
+        let model = SimpleModel()
+        model.test()
     }
 }

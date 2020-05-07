@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		500F8BA3246338CD005C1F5C /* ServiceInject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500F8BA2246338CD005C1F5C /* ServiceInject.swift */; };
+		500F8BA524634D49005C1F5C /* ServiceSimpleInject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500F8BA424634D49005C1F5C /* ServiceSimpleInject.swift */; };
 		504C7A95226C6DBD00762BC7 /* ServiceLocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504C7A94226C6DBD00762BC7 /* ServiceLocatorTests.swift */; };
 		506F9F2620E3E4B400E44CBD /* ServiceContainerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; };
 		506F9F2720E3E4B400E44CBD /* ServiceContainerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -79,6 +81,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		500F8BA2246338CD005C1F5C /* ServiceInject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceInject.swift; sourceTree = "<group>"; };
+		500F8BA424634D49005C1F5C /* ServiceSimpleInject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceSimpleInject.swift; sourceTree = "<group>"; };
 		504C7A91226BB86100762BC7 /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
 		504C7A94226C6DBD00762BC7 /* ServiceLocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorTests.swift; sourceTree = "<group>"; };
 		506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceContainerKit.h; sourceTree = "<group>"; };
@@ -154,6 +158,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		500F8BA12463376E005C1F5C /* ServiceInjects */ = {
+			isa = PBXGroup;
+			children = (
+				500F8BA2246338CD005C1F5C /* ServiceInject.swift */,
+				500F8BA424634D49005C1F5C /* ServiceSimpleInject.swift */,
+			);
+			path = ServiceInjects;
+			sourceTree = "<group>";
+		};
 		506F9EF820E3E3F100E44CBD /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -168,6 +181,7 @@
 				50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */,
 				506F9F1720E3E44D00E44CBD /* ServiceLocator */,
 				50A1C6A622667137003A8554 /* ServiceSimpleLocator */,
+				500F8BA12463376E005C1F5C /* ServiceInjects */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -465,12 +479,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				500F8BA3246338CD005C1F5C /* ServiceInject.swift in Sources */,
 				88DE96DA23E6C53500B369D7 /* ServiceLocator.swift in Sources */,
 				88DE96D223E48DB900B369D7 /* ServiceLocatorKey.swift in Sources */,
 				88DE96D723E6065B00B369D7 /* Errors.swift in Sources */,
 				88DE96DF23E6D2C600B369D7 /* ServiceSimpleLocator.swift in Sources */,
 				88A9C9B723EDD1DB002DB7CD /* Helpers.swift in Sources */,
 				88DE96E023E6D54D00B369D7 /* ServiceSimpleLocatorObjC.swift in Sources */,
+				500F8BA524634D49005C1F5C /* ServiceSimpleInject.swift in Sources */,
 				88DE96D123E4780B00B369D7 /* ServiceProviderObjC.swift in Sources */,
 				506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */,
 				88DE96DE23E6D29E00B369D7 /* ServiceLocatorError.swift in Sources */,

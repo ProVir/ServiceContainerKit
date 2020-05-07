@@ -75,4 +75,3 @@ open class ServiceSessionMediator<ServiceSession> {
         return token
     }
 }
-

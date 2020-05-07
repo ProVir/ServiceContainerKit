@@ -27,6 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let container = ServiceContainer.createDefault()
         print("End setup ServiceContainer")
         
+        let locator = ServiceLocator.createDefault()
+        locator.setupForInject()
+        ServiceSimpleLocator.shared?.setupForInject()
+        
         let viewController = (window?.rootViewController as? UINavigationController)?.viewControllers.first as? ViewController
         viewController?.serviceContainer = container
         
