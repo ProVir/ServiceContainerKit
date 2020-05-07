@@ -119,19 +119,19 @@ open class ServiceSimpleLocator {
         return try? getServiceAsResult(type, params: params).get()
     }
 
-    public func getServiceOrFatal<ServiceType>(_ type: ServiceType.Type = ServiceType.self) -> ServiceType {
+    public func getServiceOrFatal<ServiceType>(_ type: ServiceType.Type = ServiceType.self, file: StaticString = #file, line: UInt = #line) -> ServiceType {
         let result = getServiceAsResult(type)
         switch result {
         case .success(let service): return service
-        case .failure(let error): fatalError(error.fatalMessage)
+        case .failure(let error): fatalError(error.fatalMessage, file: file, line: line)
         }
     }
 
-    public func getServiceOrFatal<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType) -> ServiceType {
+    public func getServiceOrFatal<ServiceType, ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType, file: StaticString = #file, line: UInt = #line) -> ServiceType {
         let result = getServiceAsResult(type, params: params)
         switch result {
         case .success(let service): return service
-        case .failure(let error): fatalError(error.fatalMessage)
+        case .failure(let error): fatalError(error.fatalMessage, file: file, line: line)
         }
     }
 

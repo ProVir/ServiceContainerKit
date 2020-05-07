@@ -149,20 +149,20 @@ open class ServiceLocator {
     }
 
     /// Get Service by key if there are no errors.
-    public func getServiceOrFatal<Key: ServiceLocatorKey>(key: Key) -> Key.ServiceType {
+    public func getServiceOrFatal<Key: ServiceLocatorKey>(key: Key, file: StaticString = #file, line: UInt = #line) -> Key.ServiceType {
         let result = getServiceAsResult(key: key)
         switch result {
         case .success(let service): return service
-        case .failure(let error): fatalError(error.fatalMessage)
+        case .failure(let error): fatalError(error.fatalMessage, file: file, line: line)
         }
     }
 
     /// Get Service by key if there are no errors.
-    public func getServiceOrFatal<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType) -> Key.ServiceType {
+    public func getServiceOrFatal<Key: ServiceLocatorParamsKey>(key: Key, params: Key.ParamsType, file: StaticString = #file, line: UInt = #line) -> Key.ServiceType {
         let result = getServiceAsResult(key: key, params: params)
         switch result {
         case .success(let service): return service
-        case .failure(let error): fatalError(error.fatalMessage)
+        case .failure(let error): fatalError(error.fatalMessage, file: file, line: line)
         }
     }
 

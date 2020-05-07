@@ -16,14 +16,20 @@ public extension ServiceSimpleLocator {
     }
 }
 
-
 @propertyWrapper
 public final class ServiceSimpleInject<ServiceType> {
+    private let locator: ServiceSimpleLocator
     private var service: ServiceType?
     
-    public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false) {
+    public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
+        guard let locator = serviceLocatorShared else {
+            fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
+        }
+        
+        self.locator = locator
+        
         if lazy == false {
-            self.service = getService(ServiceType.self)
+            self.service = locator.getServiceOrFatal(ServiceType.self, file: file, line: line)
         }
     }
     
@@ -31,7 +37,7 @@ public final class ServiceSimpleInject<ServiceType> {
         if let service = self.service {
             return service
         } else {
-            let service = getService(ServiceType.self)
+            let service = locator.getServiceOrFatal(ServiceType.self)
             self.service = service
             return service
         }
@@ -41,40 +47,30 @@ public final class ServiceSimpleInject<ServiceType> {
 @propertyWrapper
 public final class ServiceOptionalSimpleInject<ServiceType> {
     private let lazy: Bool
+    private let locator: ServiceSimpleLocator
     private var service: ServiceType?
     
-    public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false) {
+    public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
+        guard let locator = serviceLocatorShared else {
+            fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
+        }
+        
+        self.locator = locator
         self.lazy = lazy
         
         if lazy == false {
-            self.service = getServiceAsOptional(ServiceType.self)
+            self.service = locator.getServiceAsOptional(ServiceType.self)
         }
     }
     
     public var wrappedValue: ServiceType? {
         if let service = self.service {
             return service
-        } else if self.lazy, let service = getServiceAsOptional(ServiceType.self) {
+        } else if self.lazy, let service = locator.getServiceAsOptional(ServiceType.self) {
             self.service = service
             return service
         } else {
             return nil
         }
     }
-}
-
-private func getService<ServiceType>(_ type: ServiceType.Type, file: StaticString = #file, line: UInt = #line) -> ServiceType {
-    guard let locator = serviceLocatorShared else {
-        fatalError("Not found ServiceLocator for Inject", file: file, line: line)
-    }
-    
-    return locator.getServiceOrFatal(type)
-}
-
-private func getServiceAsOptional<ServiceType>(_ type: ServiceType.Type, file: StaticString = #file, line: UInt = #line) -> ServiceType? {
-    guard let locator = serviceLocatorShared else {
-        fatalError("Not found ServiceLocator for Inject", file: file, line: line)
-    }
-    
-    return locator.getServiceAsOptional(type)
 }
