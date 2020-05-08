@@ -30,7 +30,7 @@ public final class SLSimpleInject<ServiceType>: SLSimpleInjectBase {
     private var service: ServiceType?
     
     public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
-        setup { locator in
+        setup { [unowned self] locator in
             guard let locator = locator else {
                 fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
             }
@@ -44,7 +44,7 @@ public final class SLSimpleInject<ServiceType>: SLSimpleInjectBase {
     }
     
     public init<ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
-        setup { locator in
+        setup { [unowned self] locator in
             guard let locator = locator else {
                 fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
             }
@@ -79,7 +79,7 @@ public final class SLSimpleOptionalInject<ServiceType>: SLSimpleInjectBase {
     private var service: ServiceType?
     
     public init(_ type: ServiceType.Type = ServiceType.self, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
-        setup { locator in
+        setup { [unowned self] locator in
             guard let locator = locator else {
                 fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
             }
@@ -93,7 +93,7 @@ public final class SLSimpleOptionalInject<ServiceType>: SLSimpleInjectBase {
     }
     
     public init<ParamsType>(_ type: ServiceType.Type = ServiceType.self, params: ParamsType, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
-        setup { locator in
+        setup { [unowned self] locator in
             guard let locator = locator else {
                 fatalError("Not found ServiceSimpleLocator for Inject", file: file, line: line)
             }

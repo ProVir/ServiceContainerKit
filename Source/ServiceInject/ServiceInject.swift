@@ -1,0 +1,104 @@
+//
+//  ServiceInject.swift
+//  ServiceContainerKit
+//
+//  Created by Короткий Виталий on 08.05.2020.
+//  Copyright © 2020 ProVir. All rights reserved.
+//
+
+import Foundation
+
+@propertyWrapper
+public final class ServiceInject<Container, Service> {
+    private var lazyInit: ((Container?) -> Void)?
+    private var lazyInitToken: ServiceInjectToken?
+    private var factory: (() -> Service)?
+    private var service: Service?
+    
+    public init(_ keyPath: KeyPath<Container, ServiceProvider<Service>>, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
+        setup { [unowned self] container in
+            guard let container = container else {
+                fatalError("Not found Container for Inject", file: file, line: line)
+            }
+            
+            if lazy {
+                self.factory = { container[keyPath: keyPath].getServiceOrFatal(file: file, line: line) }
+            } else {
+                self.service = container[keyPath: keyPath].getServiceOrFatal(file: file, line: line)
+            }
+        }
+    }
+    
+    public init<T>(_ keyPath: KeyPath<Container, ServiceProvider<T>?>, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Service == T? {
+        setup { [unowned self] container in
+            guard let container = container else {
+                fatalError("Not found Container for Inject", file: file, line: line)
+            }
+            
+            if lazy {
+                self.factory = { container[keyPath: keyPath]?.getServiceOrFatal(file: file, line: line) }
+            } else {
+                self.service = container[keyPath: keyPath]?.getServiceOrFatal(file: file, line: line)
+            }
+        }
+    }
+    
+    public init<Params>(_ keyPath: KeyPath<Container, ServiceParamsProvider<Service, Params>>, params: Params, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
+        setup { [unowned self] container in
+            guard let container = container else {
+                fatalError("Not found Container for Inject", file: file, line: line)
+            }
+            
+            if lazy {
+                self.factory = { container[keyPath: keyPath].getServiceOrFatal(params: params, file: file, line: line) }
+            } else {
+                self.service = container[keyPath: keyPath].getServiceOrFatal(params: params, file: file, line: line)
+            }
+        }
+    }
+    
+    public init<T, Params>(_ keyPath: KeyPath<Container, ServiceParamsProvider<T, Params>?>, params: Params, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Service == T? {
+        setup { [unowned self] container in
+            guard let container = container else {
+                fatalError("Not found Container for Inject", file: file, line: line)
+            }
+            
+            if lazy {
+                self.factory = { container[keyPath: keyPath]?.getServiceOrFatal(params: params, file: file, line: line) }
+            } else {
+                self.service = container[keyPath: keyPath]?.getServiceOrFatal(params: params, file: file, line: line)
+            }
+        }
+    }
+    
+    public var wrappedValue: Service {
+        lazyInit?(nil)
+        
+        if let service = self.service {
+            return service
+        } else if let service = factory?() {
+            self.service = service
+            self.factory = nil
+            return service
+        } else {
+            fatalError("Unknown error in Inject")
+        }
+    }
+    
+    private func setup(_ configurator: @escaping (Container?) -> Void) {
+        if let container = ServiceInjectResolver.resolve(Container.self) {
+            configurator(container)
+        } else {
+            self.lazyInit = configurator
+            self.lazyInitToken = ServiceInjectMediator.shared.observe(Container.self) { [weak self] in
+                self?.resolved($0)
+            }
+        }
+    }
+    
+    private func resolved(_ container: Container) {
+        lazyInitToken = nil
+        lazyInit?(container)
+        lazyInit = nil
+    }
+}

@@ -20,10 +20,14 @@ struct SimpleKeyModel {
 
 struct SimpleModel {
     @SLSimpleInject(FirstService.self, lazy: true) var firstService
+    @ServiceInject(\ServiceContainer.firstServiceProvider) var firstService2
     
     func test() {
         print("START TEST MODEL")
         firstService.test()
+        
+        print("START TEST MODEL 2")
+        firstService2.test()
     }
 }
 
@@ -31,6 +35,7 @@ struct SimpleModel {
 class ViewController: UIViewController {
     @SLInject(ServiceLocatorKeys.firstService, lazy: false) var firstService
     @SLSimpleInject(FirstService.self, lazy: false) var firstService2
+    @ServiceInject(\ServiceContainer.singletonServiceProvider) var singletonService
     
     var serviceContainer: ServiceContainer!
     
@@ -115,6 +120,8 @@ class ViewController: UIViewController {
         }
 
         print("\n\nAll experiments completed, removed all services created in current function.")
+        
+        singletonService.test()
     }
     
     @IBAction func testKeyLocator() {

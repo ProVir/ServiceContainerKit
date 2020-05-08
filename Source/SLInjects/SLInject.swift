@@ -1,5 +1,5 @@
 //
-//  ServiceInject.swift
+//  SLInject.swift
 //  ServiceContainerKit
 //
 //  Created by Короткий Виталий on 06.05.2020.
@@ -30,7 +30,7 @@ public final class SLInject<ServiceType>: SLInjectBase {
     private var service: ServiceType?
     
     public init<Key: ServiceLocatorKey>(_ key: Key, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Key.ServiceType == ServiceType {
-        setup { locator in
+        setup { [unowned self] locator in
             guard let locator = locator else {
                 fatalError("Not found ServiceLocator for Inject", file: file, line: line)
             }
@@ -44,7 +44,7 @@ public final class SLInject<ServiceType>: SLInjectBase {
     }
     
     public init<Key: ServiceLocatorParamsKey>(_ key: Key, params: Key.ParamsType, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Key.ServiceType == ServiceType {
-        setup { locator in
+        setup {[unowned self] locator in
             guard let locator = locator else {
                 fatalError("Not found ServiceLocator for Inject", file: file, line: line)
             }
@@ -79,7 +79,7 @@ public final class SLOptionalInject<ServiceType>: SLInjectBase {
     private var service: ServiceType?
     
     public init<Key: ServiceLocatorKey>(_ key: Key, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Key.ServiceType == ServiceType {
-        setup { locator in
+        setup { [unowned self] locator in
             guard let locator = locator else {
                 fatalError("Not found ServiceLocator for Inject", file: file, line: line)
             }
@@ -93,7 +93,7 @@ public final class SLOptionalInject<ServiceType>: SLInjectBase {
     }
     
     public init<Key: ServiceLocatorParamsKey>(_ key: Key, params: Key.ParamsType, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Key.ServiceType == ServiceType {
-        setup { locator in
+        setup { [unowned self] locator in
             guard let locator = locator else {
                 fatalError("Not found ServiceLocator for Inject", file: file, line: line)
             }

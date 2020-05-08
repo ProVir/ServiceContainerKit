@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		500F8BA3246338CD005C1F5C /* SLInject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500F8BA2246338CD005C1F5C /* SLInject.swift */; };
 		500F8BA524634D49005C1F5C /* SLSimpleInject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500F8BA424634D49005C1F5C /* SLSimpleInject.swift */; };
+		500F8BA72465DA07005C1F5C /* ServiceInject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500F8BA62465DA07005C1F5C /* ServiceInject.swift */; };
+		500F8BAA2465E1CF005C1F5C /* ServiceInjectResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500F8BA92465E1CF005C1F5C /* ServiceInjectResolver.swift */; };
+		500F8BAC2465F1F0005C1F5C /* ServiceInjectMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500F8BAB2465F1F0005C1F5C /* ServiceInjectMediator.swift */; };
 		504C7A95226C6DBD00762BC7 /* ServiceLocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504C7A94226C6DBD00762BC7 /* ServiceLocatorTests.swift */; };
 		506F9F2620E3E4B400E44CBD /* ServiceContainerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; };
 		506F9F2720E3E4B400E44CBD /* ServiceContainerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -83,6 +86,9 @@
 /* Begin PBXFileReference section */
 		500F8BA2246338CD005C1F5C /* SLInject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLInject.swift; sourceTree = "<group>"; };
 		500F8BA424634D49005C1F5C /* SLSimpleInject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLSimpleInject.swift; sourceTree = "<group>"; };
+		500F8BA62465DA07005C1F5C /* ServiceInject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceInject.swift; sourceTree = "<group>"; };
+		500F8BA92465E1CF005C1F5C /* ServiceInjectResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceInjectResolver.swift; sourceTree = "<group>"; };
+		500F8BAB2465F1F0005C1F5C /* ServiceInjectMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceInjectMediator.swift; sourceTree = "<group>"; };
 		504C7A91226BB86100762BC7 /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
 		504C7A94226C6DBD00762BC7 /* ServiceLocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorTests.swift; sourceTree = "<group>"; };
 		506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceContainerKit.h; sourceTree = "<group>"; };
@@ -158,13 +164,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		500F8BA12463376E005C1F5C /* Injects */ = {
+		500F8BA12463376E005C1F5C /* SLInjects */ = {
 			isa = PBXGroup;
 			children = (
 				500F8BA2246338CD005C1F5C /* SLInject.swift */,
 				500F8BA424634D49005C1F5C /* SLSimpleInject.swift */,
 			);
-			path = Injects;
+			path = SLInjects;
+			sourceTree = "<group>";
+		};
+		500F8BA82465E1B4005C1F5C /* ServiceInject */ = {
+			isa = PBXGroup;
+			children = (
+				500F8BA92465E1CF005C1F5C /* ServiceInjectResolver.swift */,
+				500F8BAB2465F1F0005C1F5C /* ServiceInjectMediator.swift */,
+				500F8BA62465DA07005C1F5C /* ServiceInject.swift */,
+			);
+			path = ServiceInject;
 			sourceTree = "<group>";
 		};
 		506F9EF820E3E3F100E44CBD /* Source */ = {
@@ -179,9 +195,10 @@
 				50DA160820C4509E00B756B3 /* ServiceProvider.swift */,
 				88A9C9B823EDD258002DB7CD /* ServiceParamsProvider.swift */,
 				50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */,
+				500F8BA82465E1B4005C1F5C /* ServiceInject */,
 				506F9F1720E3E44D00E44CBD /* ServiceLocator */,
 				50A1C6A622667137003A8554 /* ServiceSimpleLocator */,
-				500F8BA12463376E005C1F5C /* Injects */,
+				500F8BA12463376E005C1F5C /* SLInjects */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -491,6 +508,9 @@
 				506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */,
 				88DE96DE23E6D29E00B369D7 /* ServiceLocatorError.swift in Sources */,
 				506F9F3120E3EA1100E44CBD /* BaseTypes.swift in Sources */,
+				500F8BAA2465E1CF005C1F5C /* ServiceInjectResolver.swift in Sources */,
+				500F8BAC2465F1F0005C1F5C /* ServiceInjectMediator.swift in Sources */,
+				500F8BA72465DA07005C1F5C /* ServiceInject.swift in Sources */,
 				881B561A2461888400BB70A8 /* SessionMediator.swift in Sources */,
 				88A9C9B923EDD258002DB7CD /* ServiceParamsProvider.swift in Sources */,
 				88DE96DB23E6CF4B00B369D7 /* ServiceLocatorObjC.swift in Sources */,
