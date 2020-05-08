@@ -29,6 +29,8 @@ struct SimpleModel {
 
 
 class ViewController: UIViewController {
+    @SLInject(ServiceLocatorKeys.firstService, lazy: false) var firstService
+    @SLSimpleInject(FirstService.self, lazy: false) var firstService2
     
     var serviceContainer: ServiceContainer!
     
