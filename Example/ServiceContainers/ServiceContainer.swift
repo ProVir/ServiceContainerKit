@@ -16,9 +16,11 @@ struct ServiceContainer {
     
     let firstServiceProvider: ServiceProvider<FirstService>
     let secondServiceProvider: ServiceParamsProvider<SecondService, SecondServiceParams?>
+    let numberParamsProvider: ServiceParamsProvider<NumberService, SecondServiceParams>
     
     let sharedFirstService: FirstService
     let secondServiceNumber0Provider: ServiceProvider<SecondService>
+    let numberProvider: ServiceProvider<NumberService>
 
     let userMediator: ServiceSessionMediator<UserSession>
     let sessionSingletonServiceProvider: ServiceProvider<SingletonService>
@@ -50,6 +52,8 @@ extension ServiceContainer {
 
         let sharedFirstService: FirstService = firstServiceProvider.getServiceOrFatal()
         let secondServiceNumber0Provider = secondServiceProvider.convert(params: .init(number: 0))
+        let numberProvider = ServiceProvider<NumberService> { try secondServiceNumber0Provider.getService() }
+        let numberParamsProvider = ServiceParamsProvider<NumberService, SecondServiceParams> { try secondServiceProvider.getService(params: $0) }
 
         let userMediator = ServiceSessionMediator<UserSession>(session: .init(userId: 0))
         let sessionSingletonServiceProvider = SingletonServiceSessionFactory().serviceProvider(mediator: userMediator)
@@ -58,8 +62,10 @@ extension ServiceContainer {
                                 lazyServiceProvider: lazyServiceProvider,
                                 firstServiceProvider: firstServiceProvider,
                                 secondServiceProvider: secondServiceProvider,
+                                numberParamsProvider: numberParamsProvider,
                                 sharedFirstService: sharedFirstService,
                                 secondServiceNumber0Provider: secondServiceNumber0Provider,
+                                numberProvider: numberProvider,
                                 userMediator: userMediator,
                                 sessionSingletonServiceProvider: sessionSingletonServiceProvider)
     }

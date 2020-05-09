@@ -78,8 +78,13 @@ open class ServiceSimpleLocator {
     }
     
     /// Add service with many instance service type, create service in closure
-    open func addService<ServiceType>(manyFactory closure: @escaping () throws -> ServiceType) {
-        keyLocator.addService(key: ServiceLocatorSimpleKey<ServiceType>(), manyFactory: closure)
+    open func addManyService<ServiceType>(factory: @escaping () throws -> ServiceType) {
+        keyLocator.addManyService(key: ServiceLocatorSimpleKey<ServiceType>(), factory: factory)
+    }
+    
+    /// Add service by key with many instance service type, make service in closure
+    open func addParamsService<ServiceType, ParamsType>(factory: @escaping (ParamsType) throws -> ServiceType) {
+        keyLocator.addParamsService(key: ServiceLocatorParamsSimpleKey<ServiceType, ParamsType>(), factory: factory)
     }
     
     /// Remove service from ServiceSimpleLocator.

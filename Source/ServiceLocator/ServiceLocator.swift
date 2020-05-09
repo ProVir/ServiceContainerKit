@@ -93,13 +93,18 @@ open class ServiceLocator {
     }
     
     /// Add service by key with lazy make service in closure
-    open func addLazyService<Key: ServiceLocatorKey>(key: Key, _ lazy: @escaping () throws -> Key.ServiceType) {
-        addService(key: key, provider: ServiceProvider(lazy: lazy))
+    open func addLazyService<Key: ServiceLocatorKey>(key: Key, _ factory: @escaping () throws -> Key.ServiceType) {
+        addService(key: key, provider: ServiceProvider(lazySingleton: true, factory: factory))
     }
     
     /// Add service by key with many instance service type, make service in closure
-    open func addService<Key: ServiceLocatorKey>(key: Key, manyFactory closure: @escaping () throws -> Key.ServiceType) {
-        addService(key: key, provider: ServiceProvider(manyFactory: closure))
+    open func addManyService<Key: ServiceLocatorKey>(key: Key, factory: @escaping () throws -> Key.ServiceType) {
+        addService(key: key, provider: ServiceProvider(lazySingleton: false, factory: factory))
+    }
+    
+    /// Add service by key with many instance service type, make service in closure
+    open func addParamsService<Key: ServiceLocatorParamsKey>(key: Key, factory: @escaping (Key.ParamsType) throws -> Key.ServiceType) {
+        addService(key: key, provider: ServiceParamsProvider(factory: factory))
     }
     
     /// Remove service by key from ServiceLocator.

@@ -64,23 +64,38 @@ public protocol ServiceSessionFactory: ServiceSessionCoreFactory {
 ///Factory for ServiceProvider or ServiceLocator with generate service in closure.
 ///Also can used for lazy create singleton instance services.
 public class ServiceClosureFactory<T>: ServiceFactory {
-    public let closure: () throws -> T
+    public let factory: () throws -> T
     public let mode: ServiceFactoryMode
     
     /**
      Constructor for ServiceFactory used closure for make service
      
      - Parameters:
-        - closureFactory: Closure with logic create service.
-        - lazyMode: If `true` - Create service at one after first need and reused next. Default false.
+        - mode: Mode factory - atOne, lazy or many
+        - factory: Closure with logic create service.
      */
-    public init(closureFactory closure: @escaping () throws -> T, lazyMode: Bool = false) {
-        self.closure = closure
-        self.mode = lazyMode ? .lazy : .many
+    public init(mode: ServiceFactoryMode, factory: @escaping () throws -> T) {
+        self.factory = factory
+        self.mode = mode
     }
 
     public func makeService() throws -> T {
-        return try closure()
+        return try factory()
+    }
+}
+
+///Factory for ServiceProvider or ServiceLocator with generate service in closure.
+///Also can used for lazy create singleton instance services.
+public class ServiceParamsClosureFactory<T, P>: ServiceParamsFactory {
+    public let factory: (P) throws -> T
+    
+    /// Constructor for ServiceParamsFactory used closure for make service
+    public init(factory: @escaping (P) throws -> T) {
+        self.factory = factory
+    }
+
+    public func makeService(params: P) throws -> T {
+        return try factory(params)
     }
 }
 

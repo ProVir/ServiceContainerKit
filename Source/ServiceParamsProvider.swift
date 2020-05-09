@@ -39,6 +39,11 @@ public class ServiceParamsProvider<ServiceType, ParamsType> {
     public init<FactoryType: ServiceParamsFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
         self.factory = factory
     }
+    
+    /// ServiceProvider with create service in closure.
+    public convenience init(factory: @escaping (ParamsType) throws -> ServiceType) {
+        self.init(factory: ServiceParamsClosureFactory(factory: factory))
+    }
 
     /// Get Service with detail information throwed error.
     public func getServiceAsResult(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
@@ -78,6 +83,11 @@ public class ServiceParamsSafeProvider<ServiceType, ParamsType>: ServiceParamsPr
     public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
         self.hanlder = .init(kind: kind)
         super.init(factory: factory)
+    }
+    
+    /// ServiceProvider with create service in closure.
+    public convenience init(safeThread kind: ServiceSafeProviderKind = .lock, factory: @escaping (ParamsType) throws -> ServiceType) {
+        self.init(factory: ServiceParamsClosureFactory(factory: factory), safeThread: kind)
     }
 
     /// Get Service with detail information throwed error.

@@ -115,15 +115,10 @@ public class ServiceProvider<ServiceType> {
         self.init(factory: factory)
         try validateError()
     }
-
-    /// ServiceProvider with lazy create service in closure.
-    public convenience init(lazy: @escaping () throws -> ServiceType) {
-        self.init(factory: ServiceClosureFactory(closureFactory: lazy, lazyMode: true))
-    }
     
-    /// ServiceProvider with many instance service type, create service in closure.
-    public convenience init(manyFactory: @escaping () throws -> ServiceType) {
-        self.init(factory: ServiceClosureFactory(closureFactory: manyFactory, lazyMode: false))
+    /// ServiceProvider with many or lazy singleton instance service type, create service in closure.
+    public convenience init(lazySingleton: Bool = false, factory: @escaping () throws -> ServiceType) {
+        self.init(factory: ServiceClosureFactory(mode: lazySingleton ? .lazy : .many, factory: factory))
     }
 
     /// Get Service with detail information throwed error.
@@ -222,15 +217,10 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
         self.init(factory: factory, safeThread: kind)
         try validateError()
     }
-
-    /// ServiceProvider with lazy create service in closure.
-    public convenience init(lazy: @escaping () throws -> ServiceType, safeThread kind: ServiceSafeProviderKind = .lock) {
-        self.init(factory: ServiceClosureFactory(closureFactory: lazy, lazyMode: true), safeThread: kind)
-    }
-
-    /// ServiceProvider with many instance service type, create service in closure.
-    public convenience init(manyFactory: @escaping () throws -> ServiceType, safeThread kind: ServiceSafeProviderKind = .lock) {
-        self.init(factory: ServiceClosureFactory(closureFactory: manyFactory, lazyMode: false), safeThread: kind)
+    
+    /// ServiceProvider with many or lazy singleton instance service type, create service in closure.
+    public convenience init(lazySingleton: Bool = false, safeThread kind: ServiceSafeProviderKind = .lock, factory: @escaping () throws -> ServiceType) {
+        self.init(factory: ServiceClosureFactory(mode: lazySingleton ? .lazy : .many, factory: factory), safeThread: kind)
     }
 
     /// Get Service with detail information throwed error.

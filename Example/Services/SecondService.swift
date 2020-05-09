@@ -8,8 +8,11 @@
 
 import Foundation
 
+protocol NumberService {
+    var number: Int { get set }
+}
 
-class SecondService {
+class SecondService: NumberService {
     var number: Int = 0
     
     let lazyService: LazyService
