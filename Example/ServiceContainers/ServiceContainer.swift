@@ -11,6 +11,14 @@ import ServiceContainerKit
 
 /// DI Continer for swift
 struct ServiceContainer {
+    struct Second {
+        let secondServiceProvider: ServiceParamsProvider<SecondService, SecondServiceParams?>
+        let numberParamsProvider: ServiceParamsProvider<NumberService, SecondServiceParams>
+        let secondServiceNumber0Provider: ServiceProvider<SecondService>
+    }
+    
+    let second: Second
+    
     let singletonServiceProvider: ServiceProvider<SingletonService>
     let lazyServiceProvider: ServiceProvider<LazyService>
     
@@ -58,7 +66,14 @@ extension ServiceContainer {
         let userMediator = ServiceSessionMediator<UserSession>(session: .init(userId: 0))
         let sessionSingletonServiceProvider = SingletonServiceSessionFactory().serviceProvider(mediator: userMediator)
         
-        return ServiceContainer(singletonServiceProvider: singletonServiceProvider,
+        let secondConatainer = ServiceContainer.Second(
+            secondServiceProvider: secondServiceProvider,
+            numberParamsProvider: numberParamsProvider,
+            secondServiceNumber0Provider: secondServiceNumber0Provider
+        )
+        
+        return ServiceContainer(second: secondConatainer,
+                                singletonServiceProvider: singletonServiceProvider,
                                 lazyServiceProvider: lazyServiceProvider,
                                 firstServiceProvider: firstServiceProvider,
                                 secondServiceProvider: secondServiceProvider,

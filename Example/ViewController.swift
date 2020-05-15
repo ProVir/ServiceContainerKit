@@ -21,6 +21,10 @@ struct SimpleKeyModel {
 struct SimpleModel {
     @SLSimpleInject(FirstService.self, lazy: true) var firstService
     @ServiceInject(\ServiceContainer.firstServiceProvider) var firstService2
+    @ServiceInject(
+        \ServiceContainer.second.secondServiceProvider,
+        params: .init(number: 9)
+    ) var secondService
     
     func test() {
         print("START TEST MODEL")
@@ -28,6 +32,9 @@ struct SimpleModel {
         
         print("START TEST MODEL 2")
         firstService2.test()
+        
+        print("START TEST MODEL SECOND")
+        secondService.test()
     }
 }
 
