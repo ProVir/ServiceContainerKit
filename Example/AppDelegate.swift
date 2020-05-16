@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         locator.setupForInject()
         ServiceSimpleLocator.shared?.setupForInject()
         
-        ServiceInjectResolver.register(container)
+        ServiceInjectResolver.register(container: container)
         
         let viewController = (window?.rootViewController as? UINavigationController)?.viewControllers.first as? ViewController
         viewController?.serviceContainer = container

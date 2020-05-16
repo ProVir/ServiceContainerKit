@@ -13,7 +13,7 @@ public final class ServiceInject<Container, Service> {
     private var lazyInit: ((Container?) -> Void)?
     private var lazyInitToken: ServiceInjectToken?
     private var factory: (() -> Service)?
-    private var service: Service?
+    private var storage = InjectStorage<Service>()
     
     public init(_ keyPath: KeyPath<Container, ServiceProvider<Service>>, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
         setup { [unowned self] container in
@@ -24,7 +24,8 @@ public final class ServiceInject<Container, Service> {
             if lazy {
                 self.factory = { container[keyPath: keyPath].getServiceOrFatal(file: file, line: line) }
             } else {
-                self.service = container[keyPath: keyPath].getServiceOrFatal(file: file, line: line)
+                let service = container[keyPath: keyPath].getServiceOrFatal(file: file, line: line)
+                self.storage.setEntity(service)
             }
         }
     }
@@ -38,7 +39,8 @@ public final class ServiceInject<Container, Service> {
             if lazy {
                 self.factory = { container[keyPath: keyPath]?.getServiceOrFatal(file: file, line: line) }
             } else {
-                self.service = container[keyPath: keyPath]?.getServiceOrFatal(file: file, line: line)
+                let service = container[keyPath: keyPath]?.getServiceOrFatal(file: file, line: line)
+                self.storage.setEntity(service)
             }
         }
     }
@@ -52,7 +54,8 @@ public final class ServiceInject<Container, Service> {
             if lazy {
                 self.factory = { container[keyPath: keyPath].getServiceOrFatal(params: params, file: file, line: line) }
             } else {
-                self.service = container[keyPath: keyPath].getServiceOrFatal(params: params, file: file, line: line)
+                let service = container[keyPath: keyPath].getServiceOrFatal(params: params, file: file, line: line)
+                self.storage.setEntity(service)
             }
         }
     }
@@ -66,7 +69,8 @@ public final class ServiceInject<Container, Service> {
             if lazy {
                 self.factory = { container[keyPath: keyPath]?.getServiceOrFatal(params: params, file: file, line: line) }
             } else {
-                self.service = container[keyPath: keyPath]?.getServiceOrFatal(params: params, file: file, line: line)
+                let service = container[keyPath: keyPath]?.getServiceOrFatal(params: params, file: file, line: line)
+                self.storage.setEntity(service)
             }
         }
     }
@@ -74,23 +78,25 @@ public final class ServiceInject<Container, Service> {
     public var wrappedValue: Service {
         lazyInit?(nil)
         
-        if let service = self.service {
+        if let service = self.storage.entity {
             return service
         } else if let service = factory?() {
-            self.service = service
             self.factory = nil
+            self.storage.setEntity(service)
             return service
         } else {
             fatalError("Unknown error in Inject")
         }
     }
     
+    public var projectedValue: InjectState<Service> { return .init(storage) }
+    
     private func setup(_ configurator: @escaping (Container?) -> Void) {
         if let container = ServiceInjectResolver.resolve(Container.self) {
             configurator(container)
         } else {
             self.lazyInit = configurator
-            self.lazyInitToken = ServiceInjectMediator.shared.observe(Container.self) { [weak self] in
+            self.lazyInitToken = ServiceInjectResolver.observe(Container.self) { [weak self] in
                 self?.resolved($0)
             }
         }

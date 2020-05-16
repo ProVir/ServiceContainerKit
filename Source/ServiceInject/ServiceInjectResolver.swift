@@ -8,67 +8,82 @@
 
 import Foundation
 
-extension ServiceInjectResolver {
-    public static func register<ContainerType>(_ container: ContainerType) {
+public extension ServiceInjectResolver {
+    static func register<ContainerType>(container: ContainerType) {
         ServiceInjectResolver.shared.register(container)
-        ServiceInjectMediator.shared.registered(container)
     }
     
-    public static func registerSome(_ containers: [Any]) {
+    static func registerSome(containers: [Any]) {
         ServiceInjectResolver.shared.register(containers)
-        ServiceInjectMediator.shared.registeredSome(containers)
     }
     
-    public static func removeAll<ContainerType>(container: ContainerType) {
+    static func removeAll<ContainerType>(container: ContainerType) {
         ServiceInjectResolver.shared.removeAll(container)
+    }
+    
+    static func setReadyContainerHandler<T>(_ type: T.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
+        return shared.setReadyContainerHandler(type, handler: handler)
     }
 }
 
 
 // MARK: Internal
+public typealias ServiceInjectToken = MultipleMediatorToken
+
 extension ServiceInjectResolver {
     static func resolve<ContainerType>(_ type: ContainerType.Type) -> ContainerType? {
         return shared.resolve(type)
     }
+    
+    static func observe<T>(_ type: T.Type, handler: @escaping (T) -> Void) -> ServiceInjectToken {
+        return shared.observe(type, handler: handler)
+    }
 }
 
 public final class ServiceInjectResolver {
-    static let shared = ServiceInjectResolver(safe: false)
+    static let shared = ServiceInjectResolver()
     
-    private let lock: NSLock?
+    private let mediator = MultipleMediator()
+    private let userMediator = MultipleMediator()
     private var list: [Any] = []
     
-    private init(safe: Bool) {
-        lock = safe ? NSLock() : nil
-    }
+    private init() { }
     
     func register<ContainerType>(_ container: ContainerType) {
-        lock?.lock()
         list.append(container)
-        lock?.unlock()
+        mediator.notify(container)
+        userMediator.notify(container)
     }
     
     func registerSome(_ containers: [Any]) {
-        lock?.lock()
         list += containers
-        lock?.unlock()
+        mediator.notifySome(containers)
+        userMediator.notifySome(containers)
     }
     
     func removeAll<ContainerType>(_ container: ContainerType) {
-        lock?.lock()
         list = list.filter { ($0 is ContainerType) == false }
-        lock?.unlock()
     }
     
     func resolve<ContainerType>(_ type: ContainerType.Type) -> ContainerType? {
-        lock?.lock()
-        defer { lock?.unlock() }
-        
         for entry in list {
             if let container = entry as? ContainerType {
                 return container
             }
         }
         return nil
+    }
+    
+    func observe<T>(_ type: T.Type, handler: @escaping (T) -> Void) -> ServiceInjectToken {
+        mediator.observe(type, single: true, handler: handler)
+    }
+    
+    func setReadyContainerHandler<T>(_ type: T.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
+        if resolve(type) != nil {
+            handler()
+            return nil
+        } else {
+            return userMediator.observe(type, single: true) { _ in handler() }
+        }
     }
 }

@@ -44,10 +44,27 @@ class ViewController: UIViewController {
     @SLSimpleInject(FirstService.self, lazy: false) var firstService2
     @ServiceInject(\ServiceContainer.singletonServiceProvider) var singletonService
     
+    var token: ServiceInjectToken?
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        
+        token = ServiceInjectResolver.setReadyContainerHandler(ServiceContainer.self) {
+            print("ServiceContainer Ready")
+        }
+        
+        $singletonService.setReadyHandler { service in
+            print("SingletonService Maked")
+            service.test()
+        }
+    }
+    
     var serviceContainer: ServiceContainer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -128,7 +145,7 @@ class ViewController: UIViewController {
 
         print("\n\nAll experiments completed, removed all services created in current function.")
         
-        singletonService.test()
+        self.singletonService.test()
     }
     
     @IBAction func testKeyLocator() {
