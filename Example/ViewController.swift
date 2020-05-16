@@ -108,6 +108,23 @@ class ViewController: UIViewController {
         let secondNum0Service = serviceContainer.secondServiceNumber0Provider.getServiceOrFatal()
         secondNum0Service.test()
 
+        
+        print("\n\nWeak service")
+        var weakService = serviceContainer.weakServiceProvider.getServiceAsOptional()
+        weakService?.value = "ONE"
+        weakService?.test()
+        
+        serviceContainer.weakServiceProvider.getServiceOrFatal().test()
+        
+        weakService = nil
+        weakService = serviceContainer.weakServiceProvider.getServiceAsOptional()
+        weakService?.test()
+        
+        print("\n\nWeak service with session")
+        var weakService1 = serviceContainer.sessionWeakServiceProvider.getServiceAsOptional()
+        weakService1?.test()
+        
+        
         print("\n\nCreate and test SingletonService with UserSession")
         let service1 = serviceContainer.sessionSingletonServiceProvider.getServiceOrFatal()
         service1.test()
@@ -119,11 +136,18 @@ class ViewController: UIViewController {
         serviceContainer.userMediator.updateSession(.init(userId: 5))
         let service3 = serviceContainer.sessionSingletonServiceProvider.getServiceOrFatal()
         service3.test()
+        
+        var weakService2 = serviceContainer.sessionWeakServiceProvider.getServiceAsOptional()
+        weakService2?.test()
+        serviceContainer.sessionWeakServiceProvider.getServiceAsOptional()?.test()
 
         serviceContainer.userMediator.updateSession(.init(userId: 0))
         let service4 = serviceContainer.sessionSingletonServiceProvider.getServiceOrFatal()
         service4.test()
         service3.test()
+        
+        var weakService3 = serviceContainer.sessionWeakServiceProvider.getServiceAsOptional()
+        weakService3?.test()
 
         if service1 === service2 {
             print("\nSUCCESS")
@@ -142,6 +166,16 @@ class ViewController: UIViewController {
         } else {
             print("\nFAILURE Service2 !== Service4")
         }
+        
+        if weakService1 === weakService3 {
+            print("\nSUCCESS")
+        } else {
+            print("\nFAILURE WeakService1 !== WeakService3")
+        }
+        
+        weakService1 = nil
+        weakService2 = nil
+        weakService3 = nil
 
         print("\n\nAll experiments completed, removed all services created in current function.")
         

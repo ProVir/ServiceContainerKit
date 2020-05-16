@@ -16,8 +16,24 @@ public enum ServiceFactoryMode {
     /// Create service at one after first need and reused next.
     case lazy
     
+    /// As lazy, but instance exists only while in use
+    case weak
+    
     /// Create a new instance service for each request.
     case many
+}
+
+/// Factory mode to make. Used only when added to provider.
+public enum ServiceSessionFactoryMode {
+    
+    /// Create service at one when added to provider and after change session.
+    case atOne
+    
+    /// Create service at one after first need and reused next.
+    case lazy
+    
+    /// As lazy, but instance exists only while in use
+    case weak
 }
 
 public protocol ServiceSession {
@@ -48,8 +64,8 @@ public protocol ServiceSessionFactory: ServiceSessionCoreFactory {
     associatedtype ServiceType
     associatedtype SessionType: ServiceSession
 
-    /// Create service at one after first need and reused next. If false - create after chnage session.
-    var isLazy: Bool { get }
+    /// Factory mode to make. Used only when added to provider. Recommendation use as constant (let).
+    var mode: ServiceSessionFactoryMode { get }
 
     /// Deactivate current service after change. Return true if can activate after, false - delete service.
     func deactivateService(_ service: ServiceType, session: SessionType) -> Bool
@@ -114,7 +130,6 @@ public protocol ServiceCoreFactory {
 
 public protocol ServiceSessionCoreFactory {
     /// Can not implementation! Used only with framework implementation.
-    var coreIsLazy: Bool { get }
     func coreDeactivateService(_ service: Any, session: ServiceSession) -> Bool
     func coreActivateService(_ service: Any, session: ServiceSession)
     func coreMakeService(session: ServiceSession) throws -> Any
@@ -137,10 +152,6 @@ public extension ServiceParamsFactory {
 }
 
 public extension ServiceSessionFactory {
-    var coreIsLazy: Bool {
-        return isLazy
-    }
-
     func coreDeactivateService(_ service: Any, session: ServiceSession) -> Bool {
         if let service = service as? ServiceType, let session = session as? SessionType {
             return deactivateService(service, session: session)

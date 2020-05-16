@@ -16,7 +16,7 @@ struct UserSession: ServiceSession {
 }
 
 struct SingletonServiceSessionFactory: ServiceSessionFactory {
-    let isLazy = false
+    let mode: ServiceSessionFactoryMode = .atOne
 
     func deactivateService(_ service: SingletonService, session: UserSession) -> Bool {
         print("> deactivateService SingletonService, userId = \(session.userId)")

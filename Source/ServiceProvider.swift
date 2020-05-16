@@ -38,6 +38,7 @@ public class ServiceProvider<ServiceType> {
         case instance(ServiceType)
         case atOneError(ServiceObtainError)
         case lazy(ServiceCoreFactory)
+        case weak(ServiceCoreFactory, ServiceWeakWrapper)
         case session(SessionStorage)
         case factory(ServiceCoreFactory, params: Any)
 
@@ -48,15 +49,39 @@ public class ServiceProvider<ServiceType> {
             }
         }
     }
+    
+    fileprivate final class ServiceWeakWrapper {
+        private weak var instance: AnyObject?
+        
+        init() { }
+        init(service: ServiceType) {
+            instance = service as AnyObject
+        }
+        
+        var service: ServiceType? {
+            get { instance as? ServiceType }
+            set {
+                if let service = newValue {
+                    instance = service as AnyObject
+                } else {
+                    instance = nil
+                }
+            }
+        }
+    }
 
     fileprivate final class SessionStorage {
         let factory: ServiceSessionCoreFactory
+        let mode: ServiceSessionFactoryMode
         var token: ServiceSessionMediatorToken?
         var currentSession: ServiceSession?
-        var services: [AnyHashable: ServiceType] = [:]
+        
+        var strongServices: [AnyHashable: ServiceType] = [:]
+        var weakServices: [AnyHashable: ServiceWeakWrapper] = [:]
 
-        init(factory: ServiceSessionCoreFactory) {
+        init(factory: ServiceSessionCoreFactory, mode: ServiceSessionFactoryMode) {
             self.factory = factory
+            self.mode = mode
         }
     }
 
@@ -79,10 +104,13 @@ public class ServiceProvider<ServiceType> {
             }
 
         case .lazy:
-            self.storage =  .lazy(factory)
+            self.storage = .lazy(factory)
+            
+        case .weak:
+            self.storage = .weak(factory, .init())
 
         case .many:
-            self.storage =  .factory(factory, params: Void())
+            self.storage = .factory(factory, params: Void())
         }
     }
     
@@ -101,7 +129,7 @@ public class ServiceProvider<ServiceType> {
     }
 
     fileprivate init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, storageConfigurator: (SessionStorage) -> Void) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
-        let storage = SessionStorage(factory: factory)
+        let storage = SessionStorage(factory: factory, mode: factory.mode)
         self.storage = .session(storage)
         storageConfigurator(storage)
     }
@@ -136,6 +164,17 @@ public class ServiceProvider<ServiceType> {
                 storage = .instance(service)
             }
             return result
+            
+        case let .weak(factory, wrapper):
+            if let service = wrapper.service {
+                return .success(service)
+            } else {
+                let result = helper.makeService(factory: factory, params: Void())
+                if case let .success(service) = result {
+                    wrapper.service = service
+                }
+                return result
+            }
 
         case let .session(storage):
             return storage.getServiceAsResult(helper: helper)
@@ -183,7 +222,7 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     public init<FactoryType: ServiceFactory>(factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType {
         switch factory.mode {
         case .atOne: self.hanlder = .init(kind: nil)
-        case .lazy, .many: self.hanlder = .init(kind: kind)
+        case .lazy, .weak, .many: self.hanlder = .init(kind: kind)
         }
         super.init(factory: factory)
     }
@@ -235,36 +274,64 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
 
 // MARK: - Sessions
 private extension ServiceProvider.SessionStorage {
+    func findService(key: AnyHashable) -> ServiceType? {
+        return mode == .weak ? weakServices[key]?.service : strongServices[key]
+    }
+    
+    func setService(_ service: ServiceType, key: AnyHashable) {
+        if mode == .weak {
+            weakServices[key] = .init(service: service)
+        } else {
+            strongServices[key] = service
+        }
+    }
+    
+    func removeService(key: AnyHashable) {
+        if mode == .weak {
+            weakServices.removeValue(forKey: key)
+        } else {
+            strongServices.removeValue(forKey: key)
+        }
+    }
+    
+    func removeAllServices() {
+        if mode == .weak {
+            weakServices.removeAll()
+        } else {
+            strongServices.removeAll()
+        }
+    }
+    
     func sessionChanged(_ session: ServiceSession, remakePolicy: ServiceSessionRemakePolicy) {
         let newKey = session.key
         let currentKey = currentSession?.key
         guard remakePolicy != .none || currentKey != newKey else { return }
 
         //Deactivate old service
-        if let currentSession = currentSession, let key = currentKey, let service = services[key] {
+        if let currentSession = currentSession, let key = currentKey, let service = findService(key: key) {
             let canUseNext = factory.coreDeactivateService(service, session: currentSession)
             if canUseNext == false {
-                services.removeValue(forKey: key)
+                removeService(key: key)
             }
         }
 
         //Process remake
         switch remakePolicy {
         case .none: break
-        case .force: services.removeValue(forKey: newKey)
-        case .clearAll: services.removeAll()
+        case .force: removeService(key: newKey)
+        case .clearAll: removeAllServices()
         }
 
         //Activate or make new service
         currentSession = session
 
-        if remakePolicy != .force, let service = services[newKey] {
+        if remakePolicy != .force, let service = findService(key: newKey) {
             factory.coreActivateService(service, session: session)
 
-        } else if factory.coreIsLazy == false,
+        } else if mode == .atOne,
             let serviceAny = try? factory.coreMakeService(session: session),
             let service = serviceAny as? ServiceType {
-            services[newKey] = service
+            setService(service, key: newKey)
         }
     }
 
@@ -274,13 +341,13 @@ private extension ServiceProvider.SessionStorage {
         }
 
         let currentKey = session.key
-        if let service = services[currentKey] {
+        if let service = findService(key: currentKey) {
             return .success(service)
         }
 
         let result = helper.makeSessionService(factory: factory, session: session)
         if case let .success(service) = result {
-            services[currentKey] = service
+            setService(service, key: currentKey)
         }
         return result
     }

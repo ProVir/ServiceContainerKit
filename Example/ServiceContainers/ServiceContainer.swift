@@ -21,6 +21,7 @@ struct ServiceContainer {
     
     let singletonServiceProvider: ServiceProvider<SingletonService>
     let lazyServiceProvider: ServiceProvider<LazyService>
+    let weakServiceProvider: ServiceProvider<WeakService>
     
     let firstServiceProvider: ServiceProvider<FirstService>
     let secondServiceProvider: ServiceParamsProvider<SecondService, SecondServiceParams?>
@@ -32,6 +33,7 @@ struct ServiceContainer {
 
     let userMediator: ServiceSessionMediator<UserSession>
     let sessionSingletonServiceProvider: ServiceProvider<SingletonService>
+    let sessionWeakServiceProvider: ServiceProvider<WeakServiceImpl>
 }
 
 /// DI Container for ObjC
@@ -53,6 +55,7 @@ extension ServiceContainer {
     static func createDefault() -> ServiceContainer {
         let singletonServiceProvider = SingletonServiceFactory().serviceProvider()
         let lazyServiceProvider = ServiceProvider(factory: LazyServiceFactory())
+        let weakServiceProvider = WeakServiceFactory().serviceProvider()
 
         let firstServiceProvider = FirstServiceFactory(singletonServiceProvider: singletonServiceProvider).serviceProvider()
         let secondServiceProvider = SecondServiceFactory(lazyServiceProvider: lazyServiceProvider,
@@ -65,6 +68,7 @@ extension ServiceContainer {
 
         let userMediator = ServiceSessionMediator<UserSession>(session: .init(userId: 0))
         let sessionSingletonServiceProvider = SingletonServiceSessionFactory().serviceProvider(mediator: userMediator)
+        let sessionWeakServiceProvider = WeakServiceSessionFactory().serviceProvider(mediator: userMediator)
         
         let secondConatainer = ServiceContainer.Second(
             secondServiceProvider: secondServiceProvider,
@@ -75,6 +79,7 @@ extension ServiceContainer {
         return ServiceContainer(second: secondConatainer,
                                 singletonServiceProvider: singletonServiceProvider,
                                 lazyServiceProvider: lazyServiceProvider,
+                                weakServiceProvider: weakServiceProvider,
                                 firstServiceProvider: firstServiceProvider,
                                 secondServiceProvider: secondServiceProvider,
                                 numberParamsProvider: numberParamsProvider,
@@ -82,6 +87,7 @@ extension ServiceContainer {
                                 secondServiceNumber0Provider: secondServiceNumber0Provider,
                                 numberProvider: numberProvider,
                                 userMediator: userMediator,
-                                sessionSingletonServiceProvider: sessionSingletonServiceProvider)
+                                sessionSingletonServiceProvider: sessionSingletonServiceProvider,
+                                sessionWeakServiceProvider: sessionWeakServiceProvider)
     }
 }
