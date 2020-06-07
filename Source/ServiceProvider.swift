@@ -121,9 +121,12 @@ public class ServiceProvider<ServiceType> {
 
     public convenience init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
         self.init(factory: factory) { storage in
-            storage.sessionChanged(mediator.session, remakePolicy: .force)
-            storage.token = mediator.addObserver { [weak storage] session, remakePolicy in
-                storage?.sessionChanged(session, remakePolicy: remakePolicy)
+            storage.setBeginSessionAndMake(mediator.session)
+            storage.token = mediator.addObserver { [weak storage] session, remakePolicy, step in
+                switch step {
+                case .general: storage?.sessionChangedGeneralStep(session, remakePolicy: remakePolicy)
+                case .make: storage?.sessionChangedMakeStep(session)
+                }
             }
         }
     }
@@ -237,10 +240,13 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
         let handler = ServiceSafeProviderHandler(kind: kind)
         self.hanlder = handler
         super.init(factory: factory) { storage in
-            storage.sessionChanged(mediator.session, remakePolicy: .force)
-            storage.token = mediator.addObserver { [weak storage, handler] session, remakePolicy in
+            storage.setBeginSessionAndMake(mediator.session)
+            storage.token = mediator.addObserver { [weak storage, handler] session, remakePolicy, step in
                 handler.safelyHandling {
-                    storage?.sessionChanged(session, remakePolicy: remakePolicy)
+                    switch step {
+                    case .general: storage?.sessionChangedGeneralStep(session, remakePolicy: remakePolicy)
+                    case .make: storage?.sessionChangedMakeStep(session)
+                    }
                 }
             }
         }
@@ -302,7 +308,12 @@ private extension ServiceProvider.SessionStorage {
         }
     }
     
-    func sessionChanged(_ session: ServiceSession, remakePolicy: ServiceSessionRemakePolicy) {
+    func setBeginSessionAndMake(_ session: ServiceSession) {
+        currentSession = session
+        sessionChangedMakeStep(session)
+    }
+    
+    func sessionChangedGeneralStep(_ session: ServiceSession, remakePolicy: ServiceSessionRemakePolicy) {
         let newKey = session.key
         let currentKey = currentSession?.key
         guard remakePolicy != .none || currentKey != newKey else { return }
@@ -322,16 +333,22 @@ private extension ServiceProvider.SessionStorage {
         case .clearAll: removeAllServices()
         }
 
-        //Activate or make new service
+        //Activate service
         currentSession = session
-
+        
         if remakePolicy != .force, let service = findService(key: newKey) {
             factory.coreActivateService(service, session: session)
-
-        } else if mode == .atOne,
+        }
+    }
+    
+    func sessionChangedMakeStep(_ session: ServiceSession) {
+        guard mode == .atOne else { return }
+        
+        let key = session.key
+        if findService(key: key) == nil,
             let serviceAny = try? factory.coreMakeService(session: session),
             let service = serviceAny as? ServiceType {
-            setService(service, key: newKey)
+            setService(service, key: key)
         }
     }
 

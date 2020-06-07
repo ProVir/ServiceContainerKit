@@ -14,6 +14,11 @@ public struct ServiceVoidSession: ServiceSession {
 
 protocol ServiceSessionMediatorToken: class { }
 
+enum ServiceSessionMediatorPerformStep: Int {
+    case general = 1
+    case make = 2
+}
+
 public enum ServiceSessionRemakePolicy {
     case none
     case force
@@ -27,9 +32,11 @@ open class ServiceVoidSessionMediator: ServiceSessionMediator<ServiceVoidSession
 }
 
 open class ServiceSessionMediator<ServiceSession> {
+    typealias Observer = (ServiceSession, ServiceSessionRemakePolicy, ServiceSessionMediatorPerformStep) -> Void
+    
     private final class Token: ServiceSessionMediatorToken {
-        let observer: (ServiceSession, ServiceSessionRemakePolicy) -> Void
-        init(_ observer: @escaping (ServiceSession, ServiceSessionRemakePolicy) -> Void) {
+        let observer: Observer
+        init(_ observer: @escaping Observer) {
             self.observer = observer
         }
     }
@@ -62,10 +69,11 @@ open class ServiceSessionMediator<ServiceSession> {
         let observers = self.observers
         lock.unlock()
 
-        observers.forEach { $0.token?.observer(session, remakePolicy) }
+        observers.forEach { $0.token?.observer(session, remakePolicy, .general) }
+        observers.forEach { $0.token?.observer(session, remakePolicy, .make) }
     }
 
-    func addObserver(_ observer: @escaping (ServiceSession, ServiceSessionRemakePolicy) -> Void) -> ServiceSessionMediatorToken {
+    func addObserver(_ observer: @escaping Observer) -> ServiceSessionMediatorToken {
         lock.lock()
         defer { lock.unlock() }
 
