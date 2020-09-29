@@ -1,6 +1,6 @@
 //
 //  ServiceSimpleLocatorObjC.swift
-//  ServiceContainerKit/ServiceSimpleLocator 2.0.0
+//  ServiceLocator
 //
 //  Created by Короткий Виталий (ViR) on 08.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -11,6 +11,10 @@ import Foundation
 /// Wrapper ServiceSimpleLocator for ObjC
 @objc(ServiceSimpleLocator)
 open class ServiceSimpleLocatorObjC: NSObject {
+    @objc static var shared: ServiceSimpleLocatorObjC? {
+        return ServiceSimpleLocator.shared.map { .init($0) }
+    }
+    
     /// Original Swift ServiceLocator
     public let serviceLocator: ServiceSimpleLocator
     

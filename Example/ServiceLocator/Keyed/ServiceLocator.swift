@@ -1,12 +1,13 @@
 //
 //  ServiceLocator.swift
-//  ServiceContainerKit/ServiceLocator 2.0.0
+//  ServiceLocator
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
 //
 
 import Foundation
+import ServiceContainerKit
 
 /// ServiceLocator as storage ServiceProviders.
 open class ServiceLocator {

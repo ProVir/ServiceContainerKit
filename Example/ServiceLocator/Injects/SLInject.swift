@@ -1,6 +1,6 @@
 //
 //  SLInject.swift
-//  ServiceContainerKit
+//  ServiceLocator
 //
 //  Created by Короткий Виталий on 06.05.2020.
 //  Copyright © 2020 ProVir. All rights reserved.
