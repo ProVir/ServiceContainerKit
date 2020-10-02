@@ -175,7 +175,6 @@
 		500F8BA82465E1B4005C1F5C /* ServiceInject */ = {
 			isa = PBXGroup;
 			children = (
-				500F8BB12470095A005C1F5C /* InjectState.swift */,
 				500F8BA92465E1CF005C1F5C /* ServiceInjectResolver.swift */,
 				500F8BA62465DA07005C1F5C /* ServiceInject.swift */,
 				5025E14B2524780300CDB01E /* ServiceParamsInject.swift */,
@@ -223,11 +222,16 @@
 			path = Injects;
 			sourceTree = "<group>";
 		};
-		506F9EF820E3E3F100E44CBD /* Source */ = {
+		5025E24A252791F000CDB01E /* EntityInject */ = {
 			isa = PBXGroup;
 			children = (
-				506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */,
-				506F9EFA20E3E3F100E44CBD /* Info.plist */,
+			);
+			path = EntityInject;
+			sourceTree = "<group>";
+		};
+		5025E24D252796C300CDB01E /* Core */ = {
+			isa = PBXGroup;
+			children = (
 				50DA160620C4507D00B756B3 /* BaseTypes.swift */,
 				881B56192461888400BB70A8 /* SessionMediator.swift */,
 				88DE96D523E6065800B369D7 /* Errors.swift */,
@@ -235,8 +239,28 @@
 				50DA160820C4509E00B756B3 /* ServiceProvider.swift */,
 				88A9C9B823EDD258002DB7CD /* ServiceParamsProvider.swift */,
 				50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		5025E24E252796E200CDB01E /* CoreInject */ = {
+			isa = PBXGroup;
+			children = (
 				500F8BAB2465F1F0005C1F5C /* MultipleMediator.swift */,
+				500F8BB12470095A005C1F5C /* InjectState.swift */,
+			);
+			path = CoreInject;
+			sourceTree = "<group>";
+		};
+		506F9EF820E3E3F100E44CBD /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */,
+				506F9EFA20E3E3F100E44CBD /* Info.plist */,
+				5025E24D252796C300CDB01E /* Core */,
+				5025E24E252796E200CDB01E /* CoreInject */,
 				500F8BA82465E1B4005C1F5C /* ServiceInject */,
+				5025E24A252791F000CDB01E /* EntityInject */,
 			);
 			path = Source;
 			sourceTree = "<group>";

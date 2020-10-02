@@ -49,7 +49,7 @@ class ViewController: UIViewController {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        token = ServiceInjectResolver.setReadyContainerHandler(ServiceContainer.self) {
+        token = ServiceInjectResolver.addReadyContainerHandler(ServiceContainer.self) {
             print("ServiceContainer Ready")
         }
         

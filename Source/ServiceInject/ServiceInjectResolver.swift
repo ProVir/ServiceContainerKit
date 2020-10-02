@@ -21,8 +21,8 @@ public extension ServiceInjectResolver {
         ServiceInjectResolver.shared.removeAll(container)
     }
     
-    static func setReadyContainerHandler<T>(_ type: T.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
-        return shared.setReadyContainerHandler(type, handler: handler)
+    static func addReadyContainerHandler<T>(_ type: T.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
+        return shared.addReadyContainerHandler(type, handler: handler)
     }
 }
 
@@ -78,7 +78,7 @@ public final class ServiceInjectResolver {
         mediator.observe(type, single: true, handler: handler)
     }
     
-    func setReadyContainerHandler<T>(_ type: T.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
+    func addReadyContainerHandler<T>(_ type: T.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
         if resolve(type) != nil {
             handler()
             return nil
