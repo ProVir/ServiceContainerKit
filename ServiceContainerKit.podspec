@@ -36,11 +36,12 @@ Pod::Spec.new do |s|
   
   s.subspec 'CoreInject' do |ss|
     ss.source_files = 'Source/CoreInject/*.swift'
-    ss.dependency 'ServiceContainerKit/Core'
+    ss.public_header_files = 'Source/*.h'
   end
   
   s.subspec 'ServiceInject' do |ss|
     ss.source_files = 'Source/ServiceInject/*.swift'
+    ss.dependency 'ServiceContainerKit/Core'
     ss.dependency 'ServiceContainerKit/CoreInject'
   end
   

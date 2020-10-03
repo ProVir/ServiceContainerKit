@@ -17,19 +17,32 @@ private protocol MultipleMediatorInternalToken: MultipleMediatorToken {
 public final class MultipleMediator {
     private var observers: [ObserverWrapper] = []
     
-    public func notify<T>(_ entity: T) {
-        observers = observers.filter { $0.handle(entity) }
+    @discardableResult
+    public func notify<T>(_ entity: T) -> Bool {
+        var isNotifiedResult = false
+        observers = observers.filter {
+            let isNotified = $0.handle(entity)
+            if isNotified {
+                isNotifiedResult = true
+            }
+            return $0.isValid
+        }
+        return isNotifiedResult
     }
     
-    public func notifySome(_ list: [Any]) {
+    @discardableResult
+    public func notifySome(_ list: [Any]) -> Bool {
+        var isNotifiedResult = false
         observers = observers.filter {
             for entity in list {
-                if $0.handle(entity) == false {
-                    return false
+                let isNotified = $0.handle(entity)
+                if isNotified {
+                    isNotifiedResult = true
                 }
             }
-            return true
+            return $0.isValid
         }
+        return isNotifiedResult
     }
     
     public func observe<T>(_ type: T.Type, single: Bool, handler: @escaping (T) -> Void) -> MultipleMediatorToken {
@@ -64,12 +77,17 @@ public final class MultipleMediator {
             self.single = single
         }
         
+        var isValid: Bool { token != nil }
+        
         func handle(_ entity: Any) -> Bool {
             guard let token = token else {
                 return false
             }
             let isNotified = token.notify(entity)
-            return single || isNotified == false
+            if single && isNotified {
+                self.token = nil
+            }
+            return isNotified
         }
     }
 }

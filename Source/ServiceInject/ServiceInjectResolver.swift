@@ -9,7 +9,7 @@
 import Foundation
 
 public extension ServiceInjectResolver {
-    static func register<ContainerType>(container: ContainerType) {
+    static func register<Container>(container: Container) {
         ServiceInjectResolver.shared.register(container)
     }
     
@@ -17,11 +17,11 @@ public extension ServiceInjectResolver {
         ServiceInjectResolver.shared.register(containers)
     }
     
-    static func removeAll<ContainerType>(container: ContainerType) {
+    static func removeAll<Container>(container: Container) {
         ServiceInjectResolver.shared.removeAll(container)
     }
     
-    static func addReadyContainerHandler<T>(_ type: T.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
+    static func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
         return shared.addReadyContainerHandler(type, handler: handler)
     }
 }
@@ -31,11 +31,11 @@ public extension ServiceInjectResolver {
 public typealias ServiceInjectToken = MultipleMediatorToken
 
 extension ServiceInjectResolver {
-    static func resolve<ContainerType>(_ type: ContainerType.Type) -> ContainerType? {
+    static func resolve<Container>(_ type: Container.Type) -> Container? {
         return shared.resolve(type)
     }
     
-    static func observe<T>(_ type: T.Type, handler: @escaping (T) -> Void) -> ServiceInjectToken {
+    static func observe<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
         return shared.observe(type, handler: handler)
     }
 }
@@ -49,7 +49,7 @@ public final class ServiceInjectResolver {
     
     private init() { }
     
-    func register<ContainerType>(_ container: ContainerType) {
+    func register<Container>(_ container: Container) {
         list.append(container)
         mediator.notify(container)
         userMediator.notify(container)
@@ -61,24 +61,24 @@ public final class ServiceInjectResolver {
         userMediator.notifySome(containers)
     }
     
-    func removeAll<ContainerType>(_ container: ContainerType) {
-        list = list.filter { ($0 is ContainerType) == false }
+    func removeAll<Container>(_ container: Container) {
+        list = list.filter { ($0 is Container) == false }
     }
     
-    func resolve<ContainerType>(_ type: ContainerType.Type) -> ContainerType? {
-        for entry in list {
-            if let container = entry as? ContainerType {
+    func resolve<Container>(_ type: Container.Type) -> Container? {
+        for entry in list.reversed() {
+            if let container = entry as? Container {
                 return container
             }
         }
         return nil
     }
     
-    func observe<T>(_ type: T.Type, handler: @escaping (T) -> Void) -> ServiceInjectToken {
-        mediator.observe(type, single: true, handler: handler)
+    func observe<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
+        return mediator.observe(type, single: true, handler: handler)
     }
     
-    func addReadyContainerHandler<T>(_ type: T.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
+    func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
         if resolve(type) != nil {
             handler()
             return nil
