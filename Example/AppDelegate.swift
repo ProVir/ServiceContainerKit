@@ -16,6 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        let model = SimpleModel()
+        EntityInjectResolver.registerForFirstInject(model, autoRemoveDelay: nil)
+        
+        
         //Variant 1: ServiceLocator setup as singleton
         print("Begin setup ServiceLocator")
         ServiceSimpleLocator.setupSharedDefault()

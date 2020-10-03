@@ -11,10 +11,16 @@ import ServiceContainerKit
 
 struct SimpleKeyModel {
     @SLInject(ServiceLocatorKeys.firstService, lazy: true) var firstService
+    @EntityInject(SimpleModel.self) var model
+    @EntityInject(\SimpleModel.secondService) var secondService
     
     func test() {
         print("START TEST MODEL")
         firstService.test()
+        
+        print("START TEST Simple MODEL")
+        model.test()
+        secondService.test()
     }
 }
 

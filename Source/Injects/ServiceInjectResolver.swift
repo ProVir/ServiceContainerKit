@@ -10,15 +10,15 @@ import Foundation
 
 public extension ServiceInjectResolver {
     static func register<Container>(container: Container) {
-        ServiceInjectResolver.shared.register(container)
+        shared.register(container)
     }
     
     static func registerSome(containers: [Any]) {
-        ServiceInjectResolver.shared.register(containers)
+        shared.register(containers)
     }
     
-    static func removeAll<Container>(container: Container) {
-        ServiceInjectResolver.shared.removeAll(container)
+    static func remove<Container>(container: Container) {
+        shared.remove(container: container)
     }
     
     static func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
@@ -61,7 +61,7 @@ public final class ServiceInjectResolver {
         userMediator.notifySome(containers)
     }
     
-    func removeAll<Container>(_ container: Container) {
+    func remove<Container>(container: Container) {
         list = list.filter { ($0 is Container) == false }
     }
     

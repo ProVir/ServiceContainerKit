@@ -15,7 +15,7 @@ public extension EntityInjectResolver {
         return shared.register(entity)
     }
     
-    static func registerForFirstInject<Entity>(_ entity: Entity, autoRemoveDelay: TimeInterval?) {
+    static func registerForFirstInject<Entity>(_ entity: Entity, autoRemoveDelay: TimeInterval? = nil) {
         shared.registerForFirstInject(entity, autoRemoveDelay: autoRemoveDelay)
     }
     
@@ -23,8 +23,16 @@ public extension EntityInjectResolver {
         return shared.registerSome(entities)
     }
     
-    static func registerForFirstInjectSome(_ entities: [Any], autoRemoveDelay: TimeInterval?) {
+    static func registerForFirstInjectSome(_ entities: [Any], autoRemoveDelay: TimeInterval? = nil) {
         shared.registerForFirstInjectSome(entities, autoRemoveDelay: autoRemoveDelay)
+    }
+    
+    static func remove<Entity>(entity: Entity) {
+        shared.remove(entity: entity)
+    }
+    
+    static func removeAll() {
+        shared.removeAll()
     }
 
     static func addReadyContainerHandler<Entity>(_ type: Entity.Type, handler: @escaping () -> Void) -> EntityInjectToken? {
@@ -82,7 +90,7 @@ public final class EntityInjectResolver {
         }
     }
     
-    func removeAll<Entity>(_ entity: Entity) {
+    func remove<Entity>(entity: Entity) {
         list = list.filter {
             if $0.isValid, let token = $0.token {
                 return (token.entity is Entity) == false
@@ -90,6 +98,10 @@ public final class EntityInjectResolver {
                 return false
             }
         }
+    }
+    
+    func removeAll() {
+        list = []
     }
     
     func resolve<Entity>(_ type: Entity.Type) -> Entity? {
