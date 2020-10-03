@@ -76,9 +76,11 @@ private protocol ServiceProviderBindingObjC {
 
 extension ServiceProvider: ServiceProviderBindingObjC {
     fileprivate func getServiceBindingObjC(params: Any) throws -> NSObject {
-        if let service = try getService() as? NSObject {
-            return service
+        let service = try getService()
+        if let serviceObjC = service as? NSObject {
+            return serviceObjC
         } else {
+            LogRecorder.serviceProviderObjCNotSupport(type: type(of: service))
             throw ServiceProviderObjC.errorNotSupportObjCError
         }
     }
@@ -90,9 +92,11 @@ extension ServiceParamsProvider: ServiceProviderBindingObjC {
             throw ServiceObtainError(service: ServiceType.self, error: ServiceFactoryError.wrongParams)
         }
         
-        if let service = try getService(params: params) as? NSObject {
-            return service
+        let service = try getService(params: params)
+        if let serviceObjC = service as? NSObject {
+            return serviceObjC
         } else {
+            LogRecorder.serviceProviderObjCNotSupport(type: type(of: service))
             throw ServiceProviderObjC.errorNotSupportObjCError
         }
     }

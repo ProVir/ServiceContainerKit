@@ -47,7 +47,11 @@ public class ServiceParamsProvider<ServiceType, ParamsType> {
 
     /// Get Service with detail information throwed error.
     public func getServiceAsResult(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
-        return helper.makeService(factory: factory, params: params)
+        let result = helper.makeService(factory: factory, params: params)
+        if case let .failure(error) = result {
+            LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
+        }
+        return result
     }
 
     /// Get Service with detail information throwed error.
@@ -77,11 +81,11 @@ public class ServiceParamsProvider<ServiceType, ParamsType> {
 
 // MARK: - Safe thread
 public class ServiceParamsSafeProvider<ServiceType, ParamsType>: ServiceParamsProvider<ServiceType, ParamsType> {
-    private let hanlder: ServiceSafeProviderHandler
+    private let handler: ServiceSafeProviderHandler
 
     /// ServiceProvider with factory.
     public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
-        self.hanlder = .init(kind: kind)
+        self.handler = .init(kind: kind)
         super.init(factory: factory)
     }
     
@@ -92,7 +96,7 @@ public class ServiceParamsSafeProvider<ServiceType, ParamsType>: ServiceParamsPr
 
     /// Get Service with detail information throwed error.
     public override func getServiceAsResult(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
-        return hanlder.safelyHandling { super.getServiceAsResult(params: params) }
+        return handler.safelyHandling { super.getServiceAsResult(params: params) }
     }
 
     public func getServiceAsResultNotSafe(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
@@ -101,6 +105,6 @@ public class ServiceParamsSafeProvider<ServiceType, ParamsType>: ServiceParamsPr
 
     /// Get ServiceProvider without params with specific params.
     public override func convert(params: ParamsType) -> ServiceSafeProvider<ServiceType> {
-        return .init(coreFactory: factory, params: params, handler: hanlder)
+        return .init(coreFactory: factory, params: params, handler: handler)
     }
 }

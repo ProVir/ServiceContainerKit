@@ -40,7 +40,6 @@ public extension EntityInjectResolver {
     }
 }
 
-
 // MARK: Internal
 extension EntityInjectResolver {
     static func resolve<Entity>(_ type: Entity.Type) -> Entity? {
@@ -140,8 +139,12 @@ public final class EntityInjectResolver {
             wrapper.clearTokenIfNeeded()
             
         } else if let delay = autoRemoveDelay {
+            let entityType = type(of: entity)
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak wrapper] in
-                wrapper?.clearTokenIfNeeded()
+                let isCleared = wrapper?.clearTokenIfNeeded() ?? false
+                if isCleared {
+                    LogRecorder.entityInjectResolverDidAutoRemove(entityType: entityType, delay: delay)
+                }
             }
         }
     }
@@ -166,14 +169,18 @@ public final class EntityInjectResolver {
         
         var isValid: Bool { token != nil }
         
-        func clearTokenIfNeeded() {
-            if allowClearToken {
-                allowClearToken = false
-                DispatchQueue.main.async { [weak self] in
-                    self?.token = nil
-                    self?.forFirstInjectToken = nil
-                }
+        @discardableResult
+        func clearTokenIfNeeded() -> Bool {
+            guard allowClearToken else {
+                return false
             }
+            
+            allowClearToken = false
+            DispatchQueue.main.async { [weak self] in
+                self?.token = nil
+                self?.forFirstInjectToken = nil
+            }
+            return true
         }
     }
     

@@ -14,6 +14,8 @@ public struct ServiceObtainError: LocalizedError {
     public let pathServices: [ServiceType]
     public let service: ServiceType
     public let error: Error
+    
+    public var isNested: Bool { pathServices.count > 1 }
 
     public init(service: ServiceType, error: Error) {
         self.init(service: service, error: error, path: [service])

@@ -99,8 +99,11 @@ public class ServiceProvider<ServiceType> {
         case .atOne:
             let result = helper.makeService(factory: factory, params: Void())
             switch result {
-            case let .success(service): self.storage = .instance(service)
-            case let .failure(error): self.storage = .atOneError(error)
+            case let .success(service):
+                self.storage = .instance(service)
+            case let .failure(error):
+                self.storage = .atOneError(error)
+                LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
             }
 
         case .lazy:
@@ -152,6 +155,7 @@ public class ServiceProvider<ServiceType> {
         self.init(factory: ServiceClosureFactory(mode: lazySingleton ? .lazy : .many, factory: factory))
     }
 
+    // swiftlint:disable cyclomatic_complexity
     /// Get Service with detail information throwed error.
     public func getServiceAsResult() -> Result<ServiceType, ServiceObtainError> {
         switch storage {
@@ -163,8 +167,9 @@ public class ServiceProvider<ServiceType> {
 
         case let .lazy(factory):
             let result = helper.makeService(factory: factory, params: Void())
-            if case let .success(service) = result {
-                storage = .instance(service)
+            switch result {
+            case let .success(service): storage = .instance(service)
+            case let .failure(error): LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
             }
             return result
             
@@ -173,19 +178,29 @@ public class ServiceProvider<ServiceType> {
                 return .success(service)
             } else {
                 let result = helper.makeService(factory: factory, params: Void())
-                if case let .success(service) = result {
-                    wrapper.service = service
+                switch result {
+                case let .success(service): wrapper.service = service
+                case let .failure(error): LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
                 }
                 return result
             }
 
         case let .session(storage):
-            return storage.getServiceAsResult(helper: helper)
+            let result = storage.getServiceAsResult(helper: helper)
+            if case let .failure(error) = result {
+                LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
+            }
+            return result
 
         case let .factory(factory, params):
-            return helper.makeService(factory: factory, params: params)
+            let result = helper.makeService(factory: factory, params: params)
+            if case let .failure(error) = result {
+                LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
+            }
+            return result
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 
     /// Get Service with detail information throwed error.
     public func getService() throws -> ServiceType {
@@ -213,32 +228,32 @@ public class ServiceProvider<ServiceType> {
 
 // MARK: - Safe thread
 public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
-    private let hanlder: ServiceSafeProviderHandler
+    private let handler: ServiceSafeProviderHandler
 
     /// ServiceProvider with at one instance services.
     public override init(_ service: ServiceType) {
-        self.hanlder = .init(kind: nil)
+        self.handler = .init(kind: nil)
         super.init(service)
     }
 
     /// ServiceProvider with factory.
     public init<FactoryType: ServiceFactory>(factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType {
         switch factory.mode {
-        case .atOne: self.hanlder = .init(kind: nil)
-        case .lazy, .weak, .many: self.hanlder = .init(kind: kind)
+        case .atOne: self.handler = .init(kind: nil)
+        case .lazy, .weak, .many: self.handler = .init(kind: kind)
         }
         super.init(factory: factory)
     }
 
     /// ServiceProvider with factory, use specific params.
     public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, params: FactoryType.ParamsType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType {
-        self.hanlder = .init(kind: kind)
+        self.handler = .init(kind: kind)
         super.init(factory: factory, params: params)
     }
 
     public init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
         let handler = ServiceSafeProviderHandler(kind: kind)
-        self.hanlder = handler
+        self.handler = handler
         super.init(factory: factory) { storage in
             storage.setBeginSessionAndMake(mediator.session)
             storage.token = mediator.addObserver { [weak storage, handler] session, remakePolicy, step in
@@ -253,7 +268,7 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     }
 
     init(coreFactory: ServiceCoreFactory, params: Any, handler: ServiceSafeProviderHandler) {
-        self.hanlder = handler
+        self.handler = handler
         super.init(coreFactory: coreFactory, params: params)
     }
 
@@ -270,7 +285,7 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
 
     /// Get Service with detail information throwed error.
     public override func getServiceAsResult() -> Result<ServiceType, ServiceObtainError> {
-        return hanlder.safelyHandling { super.getServiceAsResult() }
+        return handler.safelyHandling { super.getServiceAsResult() }
     }
 
     public func getServiceAsResultNotSafe() -> Result<ServiceType, ServiceObtainError> {
