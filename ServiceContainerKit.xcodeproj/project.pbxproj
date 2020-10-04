@@ -29,7 +29,6 @@
 		5025E30D252904DE00CDB01E /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025E30C252904DE00CDB01E /* Logger.swift */; };
 		5025E3112529066900CDB01E /* InjectsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025E3102529066900CDB01E /* InjectsLogger.swift */; };
 		5025E315252917C500CDB01E /* ProvidersLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025E314252917C500CDB01E /* ProvidersLogger.swift */; };
-		504C7A95226C6DBD00762BC7 /* ServiceLocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504C7A94226C6DBD00762BC7 /* ServiceLocatorTests.swift */; };
 		506F9F2620E3E4B400E44CBD /* ServiceContainerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; };
 		506F9F2720E3E4B400E44CBD /* ServiceContainerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		506F9F2B20E3E69500E44CBD /* ServiceContainerKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -54,7 +53,6 @@
 		881B561C2461C86600BB70A8 /* SessionServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881B561B2461C86600BB70A8 /* SessionServiceFactory.swift */; };
 		8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8888231322575AA800D0D132 /* ServiceProviderTests.swift */; };
 		888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888823202257AB4F00D0D132 /* ServiceStubs.swift */; };
-		88984317226E1329002F49B4 /* ServiceSimpleLocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88984316226E1329002F49B4 /* ServiceSimpleLocatorTests.swift */; };
 		88A9C9B723EDD1DB002DB7CD /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A9C9B523EDD1CF002DB7CD /* Helpers.swift */; };
 		88A9C9B923EDD258002DB7CD /* ServiceParamsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A9C9B823EDD258002DB7CD /* ServiceParamsProvider.swift */; };
 		88DE96D123E4780B00B369D7 /* ServiceProviderObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */; };
@@ -109,7 +107,6 @@
 		5025E3102529066900CDB01E /* InjectsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InjectsLogger.swift; sourceTree = "<group>"; };
 		5025E314252917C500CDB01E /* ProvidersLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvidersLogger.swift; sourceTree = "<group>"; };
 		504C7A91226BB86100762BC7 /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
-		504C7A94226C6DBD00762BC7 /* ServiceLocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorTests.swift; sourceTree = "<group>"; };
 		506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceContainerKit.h; sourceTree = "<group>"; };
 		506F9EFA20E3E3F100E44CBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		506F9EFF20E3E3F100E44CBD /* ServiceContainerKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ServiceContainerKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,7 +146,6 @@
 		881B561B2461C86600BB70A8 /* SessionServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionServiceFactory.swift; sourceTree = "<group>"; };
 		8888231322575AA800D0D132 /* ServiceProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderTests.swift; sourceTree = "<group>"; };
 		888823202257AB4F00D0D132 /* ServiceStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceStubs.swift; sourceTree = "<group>"; };
-		88984316226E1329002F49B4 /* ServiceSimpleLocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceSimpleLocatorTests.swift; sourceTree = "<group>"; };
 		88A9C9B523EDD1CF002DB7CD /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		88A9C9B823EDD258002DB7CD /* ServiceParamsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceParamsProvider.swift; sourceTree = "<group>"; };
 		88DE96D523E6065800B369D7 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
@@ -270,8 +266,6 @@
 				506F9F0820E3E3F100E44CBD /* Info.plist */,
 				888823202257AB4F00D0D132 /* ServiceStubs.swift */,
 				8888231322575AA800D0D132 /* ServiceProviderTests.swift */,
-				504C7A94226C6DBD00762BC7 /* ServiceLocatorTests.swift */,
-				88984316226E1329002F49B4 /* ServiceSimpleLocatorTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -530,8 +524,6 @@
 			files = (
 				8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */,
 				888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */,
-				88984317226E1329002F49B4 /* ServiceSimpleLocatorTests.swift in Sources */,
-				504C7A95226C6DBD00762BC7 /* ServiceLocatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

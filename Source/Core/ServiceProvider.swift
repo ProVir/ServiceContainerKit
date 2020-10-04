@@ -151,8 +151,8 @@ public class ServiceProvider<ServiceType> {
     }
     
     /// ServiceProvider with many or lazy singleton instance service type, create service in closure.
-    public convenience init(lazySingleton: Bool = false, factory: @escaping () throws -> ServiceType) {
-        self.init(factory: ServiceClosureFactory(mode: lazySingleton ? .lazy : .many, factory: factory))
+    public convenience init(mode: ServiceFactoryMode, factory: @escaping () throws -> ServiceType) {
+        self.init(factory: ServiceClosureFactory(mode: mode, factory: factory))
     }
 
     // swiftlint:disable cyclomatic_complexity

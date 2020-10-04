@@ -225,10 +225,10 @@ class ServiceProviderTests: XCTestCase {
     
     func testServiceLazyClosure() {
         var callCount = 0
-        let provider = ServiceProvider(lazy: { () -> ServiceLazy in
+        let provider = ServiceProvider<ServiceLazy>(mode: .lazy) {
             callCount += 1
             return ServiceLazy()
-        })
+        }
         
         XCTAssertEqual(callCount, 0, "Real create service when first needed")
         
@@ -255,14 +255,14 @@ class ServiceProviderTests: XCTestCase {
     func testServiceLazyClosureFailure() {
         var callCount = 0
         var errorClosure: Error? = ServiceCreateError.someError
-        let provider = ServiceProvider(lazy: { () throws -> ServiceLazy in
+        let provider = ServiceProvider<ServiceLazy>(mode: .lazy) {
             callCount += 1
             if let error = errorClosure {
                 throw error
             } else {
                 return ServiceLazy()
             }
-        })
+        }
         
         XCTAssertEqual(callCount, 0, "Real create service when first needed")
         
@@ -304,10 +304,10 @@ class ServiceProviderTests: XCTestCase {
     
     func testServiceManyProtocolClosure() {
         var callCount = 0
-        let provider = ServiceProvider(manyFactory: { () -> ServiceValue in
+        let provider = ServiceProvider<ServiceValue>(mode: .many) {
             callCount += 1
             return ServiceMany()
-        })
+        }
         
         XCTAssertEqual(callCount, 0, "Create service when needed")
         
@@ -334,14 +334,14 @@ class ServiceProviderTests: XCTestCase {
     func testServiceManyProtocolClosureFailure() {
         var callCount = 0
         var errorClosure: Error? = ServiceCreateError.someError
-        let provider = ServiceProvider(manyFactory: { () throws -> ServiceValue in
+        let provider = ServiceProvider<ServiceValue>(mode: .many) {
             callCount += 1
             if let error = errorClosure {
                 throw error
             } else {
                 return ServiceMany()
             }
-        })
+        }
         
         XCTAssertEqual(callCount, 0, "Real create service when needed")
         

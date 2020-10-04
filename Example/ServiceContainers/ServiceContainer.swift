@@ -63,7 +63,7 @@ extension ServiceContainer {
 
         let sharedFirstService: FirstService = firstServiceProvider.getServiceOrFatal()
         let secondServiceNumber0Provider = secondServiceProvider.convert(params: .init(number: 0))
-        let numberProvider = ServiceProvider<NumberService> { try secondServiceNumber0Provider.getService() }
+        let numberProvider = ServiceProvider<NumberService>(mode: .many) { try secondServiceNumber0Provider.getService() }
         let numberParamsProvider = ServiceParamsProvider<NumberService, SecondServiceParams> { try secondServiceProvider.getService(params: $0) }
 
         let userMediator = ServiceSessionMediator<UserSession>(session: .init(userId: 0))

@@ -8,32 +8,6 @@
 
 @testable import ServiceContainerKit
 
-struct ServiceLocatorKeys {
-    static let serviceSingleton = SpyServiceSingletonFactory.defaultKey
-    static let serviceLazy = SpyServiceLazyFactory.defaultKey
-    static let serviceMany = SpyServiceManyFactory.defaultKey
-    static let serviceSingletonValue = SpyServiceValueFactory<ServiceSingleton>.defaultKey
-    static let serviceManyValue = SpyServiceValueFactory<ServiceMany>.defaultKey
-    static let serviceParams = SpyServiceParamsFactory.defaultKey
-    static let serviceOptParams = SpyServiceOptParamsFactory.defaultKey
-    static let serviceParamsValue = SpyServiceParamsValueFactory.defaultKey
-    
-    static let serviceSingletonObjC = ServiceLocatorCustomKey<ServiceObjC>(storeKey: "SingletonObjC")
-    static let serviceParamsObjC = SpyServiceParamsObjCFactory.defaultKey
-    static let serviceSingletonValueObjC = ServiceLocatorCustomKey<ServiceValueObjC>(storeKey: "SingletonValueObjC")
-    static let serviceParamsValueObjC = SpyServiceParamsValueObjCFactory.defaultKey
-}
-
-extension ServiceLocatorObjCKey {
-    @objc static var serviceSingleton: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.serviceSingletonObjC) }
-    @objc static var serviceParams: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.serviceParamsObjC) }
-    @objc static var serviceSingletonValue: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.serviceSingletonValueObjC) }
-    @objc static var serviceParamsValue: ServiceLocatorObjCKey { return .init(ServiceLocatorKeys.serviceParamsValueObjC) }
-}
-
-struct ServiceLocatorCustomKey<ServiceType>: ServiceLocatorKey {
-    let storeKey: String
-}
 
 // MARK: Services
 protocol ServiceValue: class {
