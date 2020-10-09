@@ -18,19 +18,19 @@ Pod::Spec.new do |s|
   s.swift_versions = ['5.1', '5.2', '5.3']
 
   s.ios.deployment_target = '10.0'
-  s.osx.deployment_target = '10.10'
+  s.osx.deployment_target = '10.12'
   s.tvos.deployment_target = '10.0'
-  s.watchos.deployment_target = '2.0'
+  s.watchos.deployment_target = '3.0'
   
   s.default_subspec = 'Injects'
   
   s.subspec 'Core' do |ss|
-    ss.source_files = ['Source/Core/*.swift', 'Source/*.h']
-    ss.public_header_files = 'Source/*.h'
+    ss.source_files = ['Sources/Core/*.swift', 'Sources/*.h']
+    ss.public_header_files = 'Sources/*.h'
   end
   
   s.subspec 'Injects' do |ss|
-    ss.source_files = 'Source/Injects/*.swift'
+    ss.source_files = 'Sources/Injects/*.swift'
     ss.dependency 'ServiceContainerKit/Core'
   end
   

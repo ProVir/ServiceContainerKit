@@ -6,8 +6,8 @@
 //  Copyright © 2019 ProVir. All rights reserved.
 //
 
+import Foundation
 @testable import ServiceContainerKit
-
 
 // MARK: Services
 protocol ServiceValue: class {

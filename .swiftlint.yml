@@ -1,7 +1,7 @@
 # https://github.com/realm/SwiftLint
 
 included:
-  - Source
+  - Sources
 
 disabled_rules:
   - line_length

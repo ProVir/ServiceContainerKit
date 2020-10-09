@@ -106,6 +106,7 @@
 		5025E30C252904DE00CDB01E /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		5025E3102529066900CDB01E /* InjectsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InjectsLogger.swift; sourceTree = "<group>"; };
 		5025E314252917C500CDB01E /* ProvidersLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvidersLogger.swift; sourceTree = "<group>"; };
+		5033D4452530F7E900977A99 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		504C7A91226BB86100762BC7 /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
 		506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceContainerKit.h; sourceTree = "<group>"; };
 		506F9EFA20E3E3F100E44CBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -249,7 +250,16 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
-		506F9EF820E3E3F100E44CBD /* Source */ = {
+		5033D4442530F7A600977A99 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				888823202257AB4F00D0D132 /* ServiceStubs.swift */,
+				8888231322575AA800D0D132 /* ServiceProviderTests.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		506F9EF820E3E3F100E44CBD /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */,
@@ -257,15 +267,14 @@
 				5025E24D252796C300CDB01E /* Core */,
 				500F8BA82465E1B4005C1F5C /* Injects */,
 			);
-			path = Source;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		506F9F0520E3E3F100E44CBD /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				506F9F0820E3E3F100E44CBD /* Info.plist */,
-				888823202257AB4F00D0D132 /* ServiceStubs.swift */,
-				8888231322575AA800D0D132 /* ServiceProviderTests.swift */,
+				5033D4442530F7A600977A99 /* Core */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -313,8 +322,9 @@
 			children = (
 				50DA160E20C4D9B600B756B3 /* README.md */,
 				50DA160F20C4DB6700B756B3 /* ServiceContainerKit.podspec */,
+				5033D4452530F7E900977A99 /* Package.swift */,
 				50DA15CC20C44AF700B756B3 /* Example */,
-				506F9EF820E3E3F100E44CBD /* Source */,
+				506F9EF820E3E3F100E44CBD /* Sources */,
 				506F9F0520E3E3F100E44CBD /* Tests */,
 				50DA15CB20C44AF700B756B3 /* Products */,
 				50DA160220C4500100B756B3 /* Frameworks */,
@@ -669,7 +679,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -698,7 +708,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
