@@ -17,6 +17,8 @@ private protocol MultipleMediatorInternalToken: MultipleMediatorToken {
 public final class MultipleMediator {
     private var observers: [ObserverWrapper] = []
     
+    public init() { }
+    
     @discardableResult
     public func notify<T>(_ entity: T) -> Bool {
         var isNotifiedResult = false

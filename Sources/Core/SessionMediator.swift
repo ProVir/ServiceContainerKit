@@ -26,13 +26,17 @@ public enum ServiceSessionRemakePolicy {
 }
 
 open class ServiceVoidSessionMediator: ServiceSessionMediator<ServiceVoidSession> {
+    public init() {
+        super.init(session: .init())
+    }
+    
     public func clearServices() {
         updateSession(.init(), remakePolicy: .clearAll)
     }
 }
 
-open class ServiceSessionMediator<ServiceSession> {
-    typealias Observer = (ServiceSession, ServiceSessionRemakePolicy, ServiceSessionMediatorPerformStep) -> Void
+open class ServiceSessionMediator<S: ServiceSession> {
+    typealias Observer = (S, ServiceSessionRemakePolicy, ServiceSessionMediatorPerformStep) -> Void
     
     private final class Token: ServiceSessionMediatorToken {
         let observer: Observer
@@ -50,7 +54,7 @@ open class ServiceSessionMediator<ServiceSession> {
 
     private let lock = NSLock()
     private var observers: [ObserverWrapper] = []
-    private var currentSession: ServiceSession
+    private var currentSession: S
 
     public var session: ServiceSession {
         lock.lock()
@@ -58,11 +62,11 @@ open class ServiceSessionMediator<ServiceSession> {
         return currentSession
     }
 
-    public init(session: ServiceSession) {
+    public init(session: S) {
         self.currentSession = session
     }
 
-    public func updateSession(_ session: ServiceSession, remakePolicy: ServiceSessionRemakePolicy = .none) {
+    public func updateSession(_ session: S, remakePolicy: ServiceSessionRemakePolicy = .none) {
         lock.lock()
         self.currentSession = session
         self.observers = self.observers.filter { $0.token != nil }

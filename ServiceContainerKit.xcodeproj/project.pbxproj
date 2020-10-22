@@ -49,6 +49,9 @@
 		50DA15D320C44AF700B756B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D120C44AF700B756B3 /* Main.storyboard */; };
 		50DA15D520C44AF800B756B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D420C44AF800B756B3 /* Assets.xcassets */; };
 		50DA15D820C44AF800B756B3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D620C44AF800B756B3 /* LaunchScreen.storyboard */; };
+		50F1C14C2540AA5E000A7BAA /* SessionMediatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F1C14B2540AA5E000A7BAA /* SessionMediatorTests.swift */; };
+		50F1C1502540AB57000A7BAA /* CommonStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F1C14F2540AB57000A7BAA /* CommonStubs.swift */; };
+		50F1C1562540D826000A7BAA /* MultipleMediatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F1C1552540D826000A7BAA /* MultipleMediatorTests.swift */; };
 		881B561A2461888400BB70A8 /* SessionMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881B56192461888400BB70A8 /* SessionMediator.swift */; };
 		881B561C2461C86600BB70A8 /* SessionServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881B561B2461C86600BB70A8 /* SessionServiceFactory.swift */; };
 		8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8888231322575AA800D0D132 /* ServiceProviderTests.swift */; };
@@ -143,6 +146,9 @@
 		50DA160C20C45D2A00B756B3 /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		50DA160E20C4D9B600B756B3 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		50DA160F20C4DB6700B756B3 /* ServiceContainerKit.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = ServiceContainerKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		50F1C14B2540AA5E000A7BAA /* SessionMediatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMediatorTests.swift; sourceTree = "<group>"; };
+		50F1C14F2540AB57000A7BAA /* CommonStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStubs.swift; sourceTree = "<group>"; };
+		50F1C1552540D826000A7BAA /* MultipleMediatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleMediatorTests.swift; sourceTree = "<group>"; };
 		881B56192461888400BB70A8 /* SessionMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMediator.swift; sourceTree = "<group>"; };
 		881B561B2461C86600BB70A8 /* SessionServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionServiceFactory.swift; sourceTree = "<group>"; };
 		8888231322575AA800D0D132 /* ServiceProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderTests.swift; sourceTree = "<group>"; };
@@ -253,7 +259,10 @@
 		5033D4442530F7A600977A99 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				50F1C14F2540AB57000A7BAA /* CommonStubs.swift */,
 				888823202257AB4F00D0D132 /* ServiceStubs.swift */,
+				50F1C14B2540AA5E000A7BAA /* SessionMediatorTests.swift */,
+				50F1C1552540D826000A7BAA /* MultipleMediatorTests.swift */,
 				8888231322575AA800D0D132 /* ServiceProviderTests.swift */,
 			);
 			path = Core;
@@ -532,7 +541,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50F1C14C2540AA5E000A7BAA /* SessionMediatorTests.swift in Sources */,
+				50F1C1562540D826000A7BAA /* MultipleMediatorTests.swift in Sources */,
 				8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */,
+				50F1C1502540AB57000A7BAA /* CommonStubs.swift in Sources */,
 				888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
