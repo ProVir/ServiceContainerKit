@@ -34,4 +34,9 @@ Pod::Spec.new do |s|
     ss.dependency 'ServiceContainerKit/Core'
   end
   
+  s.subspec 'Additionals' do |ss|
+    ss.source_files = 'Sources/Additionals/*.swift'
+    ss.dependency 'ServiceContainerKit/Core'
+  end
+  
 end

@@ -52,6 +52,9 @@
 		50F1C14C2540AA5E000A7BAA /* SessionMediatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F1C14B2540AA5E000A7BAA /* SessionMediatorTests.swift */; };
 		50F1C1502540AB57000A7BAA /* CommonStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F1C14F2540AB57000A7BAA /* CommonStubs.swift */; };
 		50F1C1562540D826000A7BAA /* MultipleMediatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F1C1552540D826000A7BAA /* MultipleMediatorTests.swift */; };
+		50F1C17025421C9C000A7BAA /* SimpleMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F1C16525421C82000A7BAA /* SimpleMediator.swift */; };
+		50F1C17525421CBA000A7BAA /* ObservableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F1C15925421867000A7BAA /* ObservableValue.swift */; };
+		50F1C17B25422CD4000A7BAA /* ObservableValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F1C17A25422CD4000A7BAA /* ObservableValueTests.swift */; };
 		881B561A2461888400BB70A8 /* SessionMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881B56192461888400BB70A8 /* SessionMediator.swift */; };
 		881B561C2461C86600BB70A8 /* SessionServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 881B561B2461C86600BB70A8 /* SessionServiceFactory.swift */; };
 		8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8888231322575AA800D0D132 /* ServiceProviderTests.swift */; };
@@ -149,6 +152,9 @@
 		50F1C14B2540AA5E000A7BAA /* SessionMediatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMediatorTests.swift; sourceTree = "<group>"; };
 		50F1C14F2540AB57000A7BAA /* CommonStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonStubs.swift; sourceTree = "<group>"; };
 		50F1C1552540D826000A7BAA /* MultipleMediatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleMediatorTests.swift; sourceTree = "<group>"; };
+		50F1C15925421867000A7BAA /* ObservableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableValue.swift; sourceTree = "<group>"; };
+		50F1C16525421C82000A7BAA /* SimpleMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleMediator.swift; sourceTree = "<group>"; };
+		50F1C17A25422CD4000A7BAA /* ObservableValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableValueTests.swift; sourceTree = "<group>"; };
 		881B56192461888400BB70A8 /* SessionMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMediator.swift; sourceTree = "<group>"; };
 		881B561B2461C86600BB70A8 /* SessionServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionServiceFactory.swift; sourceTree = "<group>"; };
 		8888231322575AA800D0D132 /* ServiceProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderTests.swift; sourceTree = "<group>"; };
@@ -264,6 +270,7 @@
 				50F1C14B2540AA5E000A7BAA /* SessionMediatorTests.swift */,
 				50F1C1552540D826000A7BAA /* MultipleMediatorTests.swift */,
 				8888231322575AA800D0D132 /* ServiceProviderTests.swift */,
+				50F1C17A25422CD4000A7BAA /* ObservableValueTests.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -275,6 +282,7 @@
 				506F9EFA20E3E3F100E44CBD /* Info.plist */,
 				5025E24D252796C300CDB01E /* Core */,
 				500F8BA82465E1B4005C1F5C /* Injects */,
+				50F1C16425421C5E000A7BAA /* Additionals */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -372,6 +380,15 @@
 				50DA160420C4501300B756B3 /* Foundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		50F1C16425421C5E000A7BAA /* Additionals */ = {
+			isa = PBXGroup;
+			children = (
+				50F1C16525421C82000A7BAA /* SimpleMediator.swift */,
+				50F1C15925421867000A7BAA /* ObservableValue.swift */,
+			);
+			path = Additionals;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -541,6 +558,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50F1C17B25422CD4000A7BAA /* ObservableValueTests.swift in Sources */,
 				50F1C14C2540AA5E000A7BAA /* SessionMediatorTests.swift in Sources */,
 				50F1C1562540D826000A7BAA /* MultipleMediatorTests.swift in Sources */,
 				8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */,
@@ -559,6 +577,7 @@
 				506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */,
 				500F8BB22470095A005C1F5C /* InjectState.swift in Sources */,
 				5025E1E32525073200CDB01E /* ServiceProviderInject.swift in Sources */,
+				50F1C17525421CBA000A7BAA /* ObservableValue.swift in Sources */,
 				5025E315252917C500CDB01E /* ProvidersLogger.swift in Sources */,
 				506F9F3120E3EA1100E44CBD /* BaseTypes.swift in Sources */,
 				5025E3112529066900CDB01E /* InjectsLogger.swift in Sources */,
@@ -566,6 +585,7 @@
 				500F8BAA2465E1CF005C1F5C /* ServiceInjectResolver.swift in Sources */,
 				500F8BAC2465F1F0005C1F5C /* MultipleMediator.swift in Sources */,
 				5025E27025279B0D00CDB01E /* EntityInjectResolver.swift in Sources */,
+				50F1C17025421C9C000A7BAA /* SimpleMediator.swift in Sources */,
 				500F8BA72465DA07005C1F5C /* ServiceInject.swift in Sources */,
 				5025E2A52528816500CDB01E /* EntityInject.swift in Sources */,
 				881B561A2461888400BB70A8 /* SessionMediator.swift in Sources */,
