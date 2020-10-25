@@ -33,9 +33,21 @@ class ServiceLazy: ServiceValue {
     var value: String = "DefaultLazy"
 }
 
+class ServiceWeak: ServiceValue {
+    required init() { }
+    var value: String = "DefaultWeak"
+}
+
 class ServiceMany: ServiceValue {
     required init() { }
     var value: String = "DefaultMany"
+}
+
+class ServiceNested {
+    let service: ServiceMany
+    init(service: ServiceMany) {
+        self.service = service
+    }
 }
 
 class ServiceParams: ServiceParamsValue {
@@ -112,6 +124,25 @@ class SpyServiceLazyFactory: ServiceContainerKit.ServiceFactory {
     }
 }
 
+class SpyServiceWeakFactory: ServiceContainerKit.ServiceFactory {
+    var error: Error?
+    var callCount: Int = 0
+
+    init(error: Error? = nil) {
+        self.error = error
+    }
+
+    let mode: ServiceFactoryMode = .weak
+    func makeService() throws -> ServiceWeak {
+        callCount += 1
+        if let error = error {
+            throw error
+        } else {
+            return ServiceWeak()
+        }
+    }
+}
+
 class SpyServiceManyFactory: ServiceContainerKit.ServiceFactory {
     var error: Error?
     var callCount: Int = 0
@@ -128,6 +159,21 @@ class SpyServiceManyFactory: ServiceContainerKit.ServiceFactory {
         } else {
             return ServiceMany()
         }
+    }
+}
+
+class SpyServiceNestedFactory: ServiceContainerKit.ServiceFactory {
+    let provider: ServiceProvider<ServiceMany>
+    var callCount: Int = 0
+
+    init(provider: ServiceProvider<ServiceMany>) {
+        self.provider = provider
+    }
+
+    let mode: ServiceFactoryMode = .many
+    func makeService() throws -> ServiceNested {
+        callCount += 1
+        return ServiceNested(service: try provider.getService())
     }
 }
 

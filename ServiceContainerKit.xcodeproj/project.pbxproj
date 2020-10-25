@@ -45,6 +45,7 @@
 		506F9F4520E3F92900E44CBD /* FirstServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */; };
 		506F9F4720E3F9C900E44CBD /* SecondServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */; };
 		508CD10D2545E52900927342 /* ServiceParamsProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CD10C2545E52900927342 /* ServiceParamsProviderTests.swift */; };
+		508CD1252546020000927342 /* ServiceProviderSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508CD1242546020000927342 /* ServiceProviderSessionTests.swift */; };
 		50AA75AD20C98643003ED4CC /* ObjCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AA75AC20C98643003ED4CC /* ObjCViewController.m */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D320C44AF700B756B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D120C44AF700B756B3 /* Main.storyboard */; };
@@ -130,6 +131,7 @@
 		506F9F4420E3F92900E44CBD /* FirstServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstServiceFactory.swift; sourceTree = "<group>"; };
 		506F9F4620E3F9C900E44CBD /* SecondServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondServiceFactory.swift; sourceTree = "<group>"; };
 		508CD10C2545E52900927342 /* ServiceParamsProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceParamsProviderTests.swift; sourceTree = "<group>"; };
+		508CD1242546020000927342 /* ServiceProviderSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderSessionTests.swift; sourceTree = "<group>"; };
 		50A1C6A722667188003A8554 /* ServiceSimpleLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceSimpleLocator.swift; sourceTree = "<group>"; };
 		50A1C6A9226BAD01003A8554 /* ServiceLocatorKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorKey.swift; sourceTree = "<group>"; };
 		50AA75A820C98169003ED4CC /* ServiceSimpleLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceSimpleLocatorObjC.swift; sourceTree = "<group>"; };
@@ -270,6 +272,7 @@
 				50F1C14B2540AA5E000A7BAA /* SessionMediatorTests.swift */,
 				50F1C1552540D826000A7BAA /* MultipleMediatorTests.swift */,
 				8888231322575AA800D0D132 /* ServiceProviderTests.swift */,
+				508CD1242546020000927342 /* ServiceProviderSessionTests.swift */,
 				508CD10C2545E52900927342 /* ServiceParamsProviderTests.swift */,
 			);
 			path = Core;
@@ -571,6 +574,7 @@
 				50F1C1562540D826000A7BAA /* MultipleMediatorTests.swift in Sources */,
 				8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */,
 				508CD10D2545E52900927342 /* ServiceParamsProviderTests.swift in Sources */,
+				508CD1252546020000927342 /* ServiceProviderSessionTests.swift in Sources */,
 				50F1C1502540AB57000A7BAA /* CommonStubs.swift in Sources */,
 				888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */,
 			);

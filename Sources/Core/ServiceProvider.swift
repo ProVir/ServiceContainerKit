@@ -279,8 +279,8 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     }
     
     /// ServiceProvider with many or lazy singleton instance service type, create service in closure.
-    public convenience init(lazySingleton: Bool = false, safeThread kind: ServiceSafeProviderKind = .lock, factory: @escaping () throws -> ServiceType) {
-        self.init(factory: ServiceClosureFactory(mode: lazySingleton ? .lazy : .many, factory: factory), safeThread: kind)
+    public convenience init(mode: ServiceFactoryMode, safeThread kind: ServiceSafeProviderKind = .lock, factory: @escaping () throws -> ServiceType) {
+        self.init(factory: ServiceClosureFactory(mode: mode, factory: factory), safeThread: kind)
     }
 
     /// Get Service with detail information throwed error.

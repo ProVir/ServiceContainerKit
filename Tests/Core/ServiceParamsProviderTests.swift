@@ -11,7 +11,7 @@ import XCTest
 
 class ServiceParamsProviderTests: XCTestCase {
     
-    func testServiceParams() {
+    func testServiceFromFactory() {
         let factory = SpyServiceParamsFactory()
         let provider = factory.serviceProvider()
 
@@ -36,8 +36,67 @@ class ServiceParamsProviderTests: XCTestCase {
         XCTAssertNotEqual(service1.value, "Test3")
         XCTAssert(service1 !== service2)
     }
+    
+    func testServiceFromClosure() {
+        var callCount: Int = 0
+        let provider = ServiceParamsProvider { (params: ServiceParams.Params) -> ServiceParams in
+            callCount += 1
+            if let error = params.error {
+                throw error
+            } else {
+                return ServiceParams(value: params.value)
+            }
+        }
 
-    func testServiceParamsFailure() {
+        XCTAssertEqual(callCount, 0, "Create service when needed")
+
+        guard let service1 = provider.getServiceAsOptional(params: .init(value: "Test1", error: nil)) else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssertEqual(callCount, 1, "Create service new")
+        XCTAssertEqual(service1.value, "Test1")
+
+        guard let service2 = provider.getServiceAsOptional(params: .init(value: "Test2", error: nil)) else {
+            XCTFail("Service not exist")
+            return
+        }
+
+        XCTAssertEqual(callCount, 2, "Create service new")
+        XCTAssertEqual(service2.value, "Test2")
+
+        service2.value = "Test3"
+        XCTAssertNotEqual(service1.value, "Test3")
+        XCTAssert(service1 !== service2)
+    }
+    
+    func testServiceSafe() {
+        let factory = SpyServiceParamsFactory()
+        let provider = factory.serviceSafeProvider()
+
+        XCTAssertEqual(factory.callCount, 0, "Create service when needed")
+
+        guard let service1 = provider.getServiceAsOptional(params: .init(value: "Test1", error: nil)) else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssertEqual(factory.callCount, 1, "Create service new")
+        XCTAssertEqual(service1.value, "Test1")
+
+        guard let service2 = provider.getServiceAsOptional(params: .init(value: "Test2", error: nil)) else {
+            XCTFail("Service not exist")
+            return
+        }
+
+        XCTAssertEqual(factory.callCount, 2, "Create service new")
+        XCTAssertEqual(service2.value, "Test2")
+
+        service2.value = "Test3"
+        XCTAssertNotEqual(service1.value, "Test3")
+        XCTAssert(service1 !== service2)
+    }
+
+    func testServiceFailure() {
         let factory = SpyServiceParamsFactory()
         let provider = factory.serviceProvider()
 
@@ -78,7 +137,7 @@ class ServiceParamsProviderTests: XCTestCase {
         XCTAssert(service1 !== service2)
     }
 
-    func testServiceParamsWithDefParams() {
+    func testServiceWithDefParams() {
         let factory = SpyServiceParamsFactory()
         let provider = factory.serviceProvider(params: .init(value: "TestDef", error: nil))
 
@@ -104,7 +163,7 @@ class ServiceParamsProviderTests: XCTestCase {
         XCTAssert(service1 !== service2)
     }
 
-    func testServiceParamsConvertDefParams() {
+    func testServiceConvertDefParams() {
         let factory = SpyServiceParamsFactory()
         let providerParams = factory.serviceProvider()
         let provider = providerParams.convert(params: .init(value: "TestDef", error: nil))
@@ -130,8 +189,35 @@ class ServiceParamsProviderTests: XCTestCase {
         XCTAssertNotEqual(service1.value, "Test2")
         XCTAssert(service1 !== service2)
     }
+    
+    func testServiceSafeConvertDefParams() {
+        let factory = SpyServiceParamsFactory()
+        let providerParams = factory.serviceSafeProvider()
+        let provider = providerParams.convert(params: .init(value: "TestDef", error: nil))
+        
+        XCTAssertEqual(factory.callCount, 0, "Create service when needed")
 
-    func testServiceParamsAsProtocol() {
+        guard let service1 = providerParams.getServiceAsOptional(params: .init(value: "Test1", error: nil)) else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssertEqual(factory.callCount, 1, "Create service new")
+        XCTAssertEqual(service1.value, "Test1")
+
+        guard let service2 = try? provider.getServiceAsResultNotSafe().get() else {
+            XCTFail("Service not exist")
+            return
+        }
+
+        XCTAssertEqual(factory.callCount, 2, "Create service new")
+        XCTAssertEqual(service2.value, "TestDef")
+
+        service2.value = "Test2"
+        XCTAssertNotEqual(service1.value, "Test2")
+        XCTAssert(service1 !== service2)
+    }
+
+    func testServiceAsProtocol() {
         let factory = SpyServiceParamsValueFactory()
         let provider = factory.serviceProvider()
 
@@ -158,7 +244,7 @@ class ServiceParamsProviderTests: XCTestCase {
     }
 
     // MARK: - ObjC
-    func testServiceParamsObjC() {
+    func testServiceObjC() {
         let factory = SpyServiceParamsObjCFactory()
         let provider = ServiceParamsProviderObjC(factory.serviceProvider())
 
@@ -194,7 +280,7 @@ class ServiceParamsProviderTests: XCTestCase {
         XCTAssert(service1 !== service2)
     }
 
-    func testServiceParamsObjCFailure() {
+    func testServiceObjCFailure() {
         let factory = SpyServiceParamsObjCFactory()
         let provider = ServiceParamsProviderObjC(factory.serviceProvider())
 
@@ -221,7 +307,7 @@ class ServiceParamsProviderTests: XCTestCase {
         XCTAssertEqual(factory.callCount, 2, "When params invalid type - no create new service")
     }
 
-    func testServiceParamsObjCAsProtocol() {
+    func testServiceObjCAsProtocol() {
         let factory = SpyServiceParamsValueObjCFactory()
         let provider = ServiceParamsProviderObjC(factory.serviceProvider())
 

@@ -60,6 +60,26 @@ class ServiceProviderTests: XCTestCase {
 
         XCTAssertEqual(factory.callCount, 1)
     }
+    
+    func testServiceSingletonFailureUseTryInit() {
+        let factory = SpyServiceSingletonFactory(error: ServiceCreateError.someError)
+        do {
+            _ = try ServiceProvider(tryFactory: factory)
+            XCTFail("Service need failure create")
+        } catch { }
+
+        XCTAssertEqual(factory.callCount, 1, "Real create service need when create provider")
+    }
+    
+    func testServiceSafeSingletonFailureUseTryInit() {
+        let factory = SpyServiceSingletonFactory(error: ServiceCreateError.someError)
+        do {
+            _ = try ServiceSafeProvider(tryFactory: factory, safeThread: .semaphore)
+            XCTFail("Service need failure create")
+        } catch { }
+
+        XCTAssertEqual(factory.callCount, 1, "Real create service need when create provider")
+    }
 
     func testServiceLazy() {
         let factory = SpyServiceLazyFactory()
@@ -128,10 +148,116 @@ class ServiceProviderTests: XCTestCase {
         XCTAssertEqual(service1.value, "Test2")
         XCTAssert(service1 === service2)
     }
+    
+    func testServiceWeak() {
+        let factory = SpyServiceWeakFactory()
+        let provider = factory.serviceProvider()
+
+        XCTAssertEqual(factory.callCount, 0, "Real create service when first needed")
+
+        var service1 = provider.getServiceAsOptional()
+        guard service1 != nil else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssertEqual(factory.callCount, 1, "Real create service when first needed")
+        service1?.value = "Test1"
+        
+        var service2 = provider.getServiceAsOptional()
+        guard service2 != nil else {
+            XCTFail("Service not exist")
+            return
+        }
+
+        XCTAssertEqual(factory.callCount, 1)
+        XCTAssertEqual(service2?.value, "Test1")
+
+        service2?.value = "Test2"
+        XCTAssertEqual(service1?.value, "Test2")
+        XCTAssert(service1 === service2)
+        
+        service1 = nil
+        service2 = nil
+        
+        guard let service3 = provider.getServiceAsOptional() else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssertEqual(factory.callCount, 2, "Real create service when first needed")
+        XCTAssertNotEqual(service3.value, "Test2")
+    }
+    
+    func testServiceWeakFailure() {
+        let factory = SpyServiceWeakFactory(error: ServiceCreateError.someError)
+        let provider = factory.serviceProvider()
+
+        XCTAssertEqual(factory.callCount, 0, "Real create service when first needed")
+
+        if provider.getServiceAsOptional() != nil {
+            XCTFail("Service need failure create")
+        }
+
+        XCTAssertEqual(factory.callCount, 1, "Real create service when first needed")
+
+        switch provider.getServiceAsResult() {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
+        }
+
+        XCTAssertEqual(factory.callCount, 2, "While the error repeats - try to re-create")
+
+        //Next without error
+        factory.error = nil
+        guard let service1 = provider.getServiceAsOptional() else {
+            XCTFail("Service not exist")
+            return
+        }
+
+        XCTAssertEqual(factory.callCount, 3, "While the error repeats - try to re-create")
+
+        service1.value = "Test1"
+        guard let service2 = provider.getServiceAsOptional() else {
+            XCTFail("Service not exist")
+            return
+        }
+
+        XCTAssertEqual(factory.callCount, 3)
+        XCTAssertEqual(service2.value, "Test1")
+
+        service2.value = "Test2"
+        XCTAssertEqual(service1.value, "Test2")
+        XCTAssert(service1 === service2)
+    }
 
     func testServiceMany() {
         let factory = SpyServiceManyFactory()
         let provider = factory.serviceProvider()
+
+        XCTAssertEqual(factory.callCount, 0, "Create service when needed")
+
+        guard let service1 = provider.getServiceAsOptional() else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssertEqual(factory.callCount, 1, "Create service new")
+        service1.value = "Test1"
+
+        guard let service2 = provider.getServiceAsOptional() else {
+            XCTFail("Service not exist")
+            return
+        }
+
+        XCTAssertEqual(factory.callCount, 2, "Create service new")
+        XCTAssertNotEqual(service2.value, "Test1")
+
+        service2.value = "Test2"
+        XCTAssertNotEqual(service1.value, "Test2")
+        XCTAssert(service1 !== service2)
+    }
+
+    func testServiceManySafe() {
+        let factory = SpyServiceManyFactory()
+        let provider = factory.serviceSafeProvider()
 
         XCTAssertEqual(factory.callCount, 0, "Create service when needed")
 
@@ -169,7 +295,12 @@ class ServiceProviderTests: XCTestCase {
 
         switch provider.getServiceAsResult() {
         case .success: XCTFail("Service need failure create")
-        case .failure(let error): XCTAssert(error.error is ServiceCreateError)
+        case .failure(let error):
+            XCTAssert(error.error is ServiceCreateError)
+            XCTAssertFalse(error.isNested)
+            XCTAssert(error.service == ServiceMany.self)
+            XCTAssertEqual(error.pathServices.count, 1)
+            XCTAssert(error.pathServices[0] == ServiceMany.self)
         }
 
         XCTAssertEqual(factory.callCount, 2, "Create service new with error")
@@ -195,6 +326,45 @@ class ServiceProviderTests: XCTestCase {
         service2.value = "Test2"
         XCTAssertNotEqual(service1.value, "Test2")
         XCTAssert(service1 !== service2)
+    }
+    
+    func testServiceNestedFailure() {
+        let factoryNested = SpyServiceManyFactory(error: ServiceCreateError.someError)
+        let providerNested = factoryNested.serviceProvider()
+        
+        let factory = SpyServiceNestedFactory(provider: providerNested)
+        let provider = factory.serviceProvider()
+
+        XCTAssertEqual(factoryNested.callCount, 0, "Real create service when needed")
+        XCTAssertEqual(factory.callCount, 0, "Real create service when needed")
+
+        if provider.getServiceAsOptional() != nil {
+            XCTFail("Service need failure create")
+        }
+
+        XCTAssertEqual(factory.callCount, 1, "Create service new with error")
+
+        switch provider.getServiceAsResult() {
+        case .success: XCTFail("Service need failure create")
+        case .failure(let error):
+            XCTAssert(error.error is ServiceCreateError)
+            XCTAssertTrue(error.isNested)
+            XCTAssert(error.service == ServiceMany.self)
+            XCTAssertEqual(error.pathServices.count, 2)
+            XCTAssert(error.pathServices[0] == ServiceNested.self)
+            XCTAssert(error.pathServices[1] == ServiceMany.self)
+        }
+
+        XCTAssertEqual(factory.callCount, 2, "Create service new with error")
+
+        //Next without error
+        factoryNested.error = nil
+        guard provider.getServiceAsOptional() != nil else {
+            XCTFail("Service not exist")
+            return
+        }
+
+        XCTAssertEqual(factory.callCount, 3, "Create service new")
     }
 
     func testServiceAsProtocol() {
