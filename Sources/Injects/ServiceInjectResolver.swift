@@ -28,7 +28,7 @@ public extension ServiceInjectResolver {
 
 
 // MARK: Internal
-public typealias ServiceInjectToken = MultipleMediatorToken
+public typealias ServiceInjectToken = MediatorToken
 
 extension ServiceInjectResolver {
     static func resolve<Container>(_ type: Container.Type) -> Container? {
@@ -75,7 +75,7 @@ public final class ServiceInjectResolver {
     }
     
     func observe<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
-        return mediator.observe(type, single: true, handler: handler)
+        return mediator.observe(type, once: true, handler: handler)
     }
     
     func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
@@ -83,7 +83,7 @@ public final class ServiceInjectResolver {
             handler()
             return nil
         } else {
-            return userMediator.observe(type, single: true) { _ in handler() }
+            return userMediator.observe(type, once: true) { _ in handler() }
         }
     }
 }

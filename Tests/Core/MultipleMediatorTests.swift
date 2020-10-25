@@ -18,7 +18,7 @@ class MultipleMediatorTests: XCTestCase {
         var isNotified = mediator.notify(model)
         XCTAssertFalse(isNotified)
         
-        let tester = ObserverTester<SimpleFirstModel>(mediator: mediator, single: false)
+        let tester = ObserverTester<SimpleFirstModel>(mediator: mediator)
         tester.validateNoCalled()
         
         model.value = "1"
@@ -33,14 +33,14 @@ class MultipleMediatorTests: XCTestCase {
         tester.validate(model: model)
     }
     
-    func testSingleObserver()  {
+    func testOnceObserver()  {
         let mediator = MultipleMediator()
         
         var model = SimpleFirstModel(value: "")
         var isNotified = mediator.notify(model)
         XCTAssertFalse(isNotified)
         
-        let tester = ObserverTester<SimpleFirstModel>(mediator: mediator, single: true)
+        let tester = ObserverTester<SimpleFirstModel>(mediator: mediator, once: true)
         tester.validateNoCalled()
         
         model.value = "1"
@@ -62,7 +62,7 @@ class MultipleMediatorTests: XCTestCase {
         var isNotified = mediator.notify(model)
         XCTAssertFalse(isNotified)
         
-        let tester = ObserverTester<SimpleFirstModel>(mediator: mediator, single: false)
+        let tester = ObserverTester<SimpleFirstModel>(mediator: mediator)
         tester.validateNoCalled()
         
         model.value = "1"
@@ -85,8 +85,8 @@ class MultipleMediatorTests: XCTestCase {
         var isNotified = mediator.notify(model)
         XCTAssertFalse(isNotified)
         
-        let testerOne = ObserverTester<SimpleFirstModel>(mediator: mediator, single: false)
-        let testerTwo = ObserverTester<SimpleFirstModel>(mediator: mediator, single: false)
+        let testerOne = ObserverTester<SimpleFirstModel>(mediator: mediator)
+        let testerTwo = ObserverTester<SimpleFirstModel>(mediator: mediator)
         testerOne.validateNoCalled()
         testerTwo.validateNoCalled()
         
@@ -113,8 +113,8 @@ class MultipleMediatorTests: XCTestCase {
         var isNotified = mediator.notify(modelFirst)
         XCTAssertFalse(isNotified)
         
-        let testerFirst = ObserverTester<SimpleFirstModel>(mediator: mediator, single: false)
-        let testerSecond = ObserverTester<SimpleSecondModel>(mediator: mediator, single: false)
+        let testerFirst = ObserverTester<SimpleFirstModel>(mediator: mediator)
+        let testerSecond = ObserverTester<SimpleSecondModel>(mediator: mediator)
         testerFirst.validateNoCalled()
         
         modelFirst.value = "1.1"
@@ -142,12 +142,12 @@ class MultipleMediatorTests: XCTestCase {
 
 private extension MultipleMediatorTests {
     class ObserverTester<T: Equatable> {
-        private var token: MultipleMediatorToken?
+        private var token: MediatorToken?
         private var isCalled = false
         private var calledModel: T?
         
-        init(mediator: MultipleMediator, single: Bool) {
-            token = mediator.observe(T.self, single: single) { [unowned self] model in
+        init(mediator: MultipleMediator, once: Bool = false) {
+            token = mediator.observe(T.self, once: once) { [unowned self] model in
                 XCTAssertFalse(self.isCalled)
                 self.isCalled = true
                 self.calledModel = model

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public typealias ObservableValueToken = MultipleMediatorToken
+public typealias ObservableValueToken = MediatorToken
 
 @propertyWrapper
 public struct ObservableValue<T> {
@@ -65,7 +65,7 @@ public final class ObservableValueManager<T> {
     }
     
     public func observe(initial: Bool = false, handler: @escaping (T) -> Void) -> ObservableValueToken {
-        let token = mediator.observe(T.self, single: false, handler: handler)
+        let token = mediator.observe(T.self, once: false, handler: handler)
         if initial {
             handler(value)
         }
@@ -73,7 +73,7 @@ public final class ObservableValueManager<T> {
     }
     
     public func observeOnce(handler: @escaping (T) -> Void) -> ObservableValueToken {
-        return mediator.observe(T.self, single: true, handler: handler)
+        return mediator.observe(T.self, once: true, handler: handler)
     }
     
     fileprivate func notify() {

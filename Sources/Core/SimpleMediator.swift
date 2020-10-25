@@ -1,5 +1,5 @@
 //
-//  MultipleMediator.swift
+//  SimpleMediator.swift
 //  ServiceContainerKit
 //
 //  Created by Короткий Виталий on 08.05.2020.
@@ -8,9 +8,26 @@
 
 import Foundation
 
-public protocol MultipleMediatorToken: class { }
+public protocol MediatorToken: class { }
 
-private protocol MultipleMediatorInternalToken: MultipleMediatorToken {
+// MARK: SimpleMediator
+public final class SimpleMediator<T> {
+    private let mediator = MultipleMediator()
+    
+    public init() { }
+    
+    @discardableResult
+    public func notify(_ entity: T) -> Bool {
+        return mediator.notify(entity)
+    }
+    
+    public func observe(once: Bool, handler: @escaping (T) -> Void) -> MediatorToken {
+        return mediator.observe(T.self, once: once, handler: handler)
+    }
+}
+
+// MARK: MultipleMediator
+private protocol MultipleMediatorInternalToken: MediatorToken {
     func notify(_ entity: Any) -> Bool
 }
 
@@ -47,9 +64,9 @@ public final class MultipleMediator {
         return isNotifiedResult
     }
     
-    public func observe<T>(_ type: T.Type, single: Bool, handler: @escaping (T) -> Void) -> MultipleMediatorToken {
+    public func observe<T>(_ type: T.Type, once: Bool, handler: @escaping (T) -> Void) -> MediatorToken {
         let token = Token(handler)
-        observers.append(.init(token, single: single))
+        observers.append(.init(token, once: once))
         return token
     }
     
@@ -71,12 +88,12 @@ public final class MultipleMediator {
     }
     
     private final class ObserverWrapper {
-        private let single: Bool
+        private let once: Bool
         private weak var token: MultipleMediatorInternalToken?
         
-        init(_ token: MultipleMediatorInternalToken, single: Bool) {
+        init(_ token: MultipleMediatorInternalToken, once: Bool) {
             self.token = token
-            self.single = single
+            self.once = once
         }
         
         var isValid: Bool { token != nil }
@@ -86,7 +103,7 @@ public final class MultipleMediator {
                 return false
             }
             let isNotified = token.notify(entity)
-            if single && isNotified {
+            if once && isNotified {
                 self.token = nil
             }
             return isNotified
