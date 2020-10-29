@@ -76,6 +76,7 @@ public class ServiceProvider<ServiceType> {
         var token: ServiceSessionMediatorToken?
         var currentSession: ServiceSession?
         
+        var atOneError: ServiceObtainError?
         var strongServices: [AnyHashable: ServiceType] = [:]
         var weakServices: [AnyHashable: ServiceWeakWrapper] = [:]
 
@@ -123,21 +124,24 @@ public class ServiceProvider<ServiceType> {
     }
 
     public convenience init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
-        self.init(factory: factory) { storage in
-            storage.setBeginSessionAndMake(mediator.session)
-            storage.token = mediator.addObserver { [weak storage] session, remakePolicy, step in
+        self.init(factory: factory) { helper, storage in
+            storage.setBeginSessionAndMake(helper: helper, session: mediator.session)
+            storage.token = mediator.addObserver { [weak storage, helper] session, remakePolicy, step in
                 switch step {
                 case .general: storage?.sessionChangedGeneralStep(session, remakePolicy: remakePolicy)
-                case .make: storage?.sessionChangedMakeStep(session)
+                case .make: storage?.sessionChangedMakeStep(helper: helper, session: session)
                 }
             }
         }
     }
 
-    fileprivate init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, storageConfigurator: (SessionStorage) -> Void) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
+    fileprivate init<FactoryType: ServiceSessionFactory, SessionType>(
+        factory: FactoryType,
+        storageConfigurator: (ServiceProviderHelper<ServiceType>, SessionStorage) -> Void
+    ) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
         let storage = SessionStorage(factory: factory, mode: factory.mode)
         self.storage = .session(storage)
-        storageConfigurator(storage)
+        storageConfigurator(helper, storage)
     }
 
     init(coreFactory: ServiceCoreFactory, params: Any) {
@@ -186,11 +190,7 @@ public class ServiceProvider<ServiceType> {
             }
 
         case let .session(storage):
-            let result = storage.getServiceAsResult(helper: helper)
-            if case let .failure(error) = result {
-                LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
-            }
-            return result
+            return storage.getServiceAsResult(helper: helper)
 
         case let .factory(factory, params):
             let result = helper.makeService(factory: factory, params: params)
@@ -254,13 +254,13 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     public init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
         let handler = ServiceSafeProviderHandler(kind: kind)
         self.handler = handler
-        super.init(factory: factory) { storage in
-            storage.setBeginSessionAndMake(mediator.session)
-            storage.token = mediator.addObserver { [weak storage, handler] session, remakePolicy, step in
+        super.init(factory: factory) { helper, storage in
+            storage.setBeginSessionAndMake(helper: helper, session: mediator.session)
+            storage.token = mediator.addObserver { [weak storage, handler, helper] session, remakePolicy, step in
                 handler.safelyHandling {
                     switch step {
                     case .general: storage?.sessionChangedGeneralStep(session, remakePolicy: remakePolicy)
-                    case .make: storage?.sessionChangedMakeStep(session)
+                    case .make: storage?.sessionChangedMakeStep(helper: helper, session: session)
                     }
                 }
             }
@@ -323,15 +323,15 @@ private extension ServiceProvider.SessionStorage {
         }
     }
     
-    func setBeginSessionAndMake(_ session: ServiceSession) {
+    func setBeginSessionAndMake(helper: ServiceProviderHelper<ServiceType>, session: ServiceSession) {
         currentSession = session
-        sessionChangedMakeStep(session)
+        sessionChangedMakeStep(helper: helper, session: session)
     }
     
     func sessionChangedGeneralStep(_ session: ServiceSession, remakePolicy: ServiceSessionRemakePolicy) {
         let newKey = session.key
         let currentKey = currentSession?.key
-        guard remakePolicy != .none || currentKey != newKey else { return }
+        guard remakePolicy != .none || currentKey != newKey || atOneError != nil else { return }
 
         //Deactivate old service
         if let currentSession = currentSession, let key = currentKey, let service = findService(key: key) {
@@ -350,36 +350,50 @@ private extension ServiceProvider.SessionStorage {
 
         //Activate service
         currentSession = session
+        atOneError = nil
         
         if remakePolicy != .force, let service = findService(key: newKey) {
             factory.coreActivateService(service, session: session)
         }
     }
     
-    func sessionChangedMakeStep(_ session: ServiceSession) {
+    func sessionChangedMakeStep(helper: ServiceProviderHelper<ServiceType>, session: ServiceSession) {
         guard mode == .atOne else { return }
         
         let key = session.key
-        if findService(key: key) == nil,
-            let serviceAny = try? factory.coreMakeService(session: session),
-            let service = serviceAny as? ServiceType {
+        guard findService(key: key) == nil else { return }
+        
+        let result = helper.makeSessionService(factory: factory, session: session)
+        switch result {
+        case let .success(service):
             setService(service, key: key)
+            
+        case let .failure(error):
+            self.atOneError = error
+            LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
         }
     }
 
     func getServiceAsResult(helper: ServiceProviderHelper<ServiceType>) -> Result<ServiceType, ServiceObtainError> {
         guard let session = currentSession else {
-            return helper.makeNoSessionFindResult()
+            let error = helper.makeNoSessionFindError()
+            LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
+            return .failure(error)
         }
 
         let currentKey = session.key
         if let service = findService(key: currentKey) {
             return .success(service)
+        } else if mode == .atOne, let error = atOneError {
+            return .failure(error)
         }
 
         let result = helper.makeSessionService(factory: factory, session: session)
-        if case let .success(service) = result {
+        switch result {
+        case .success(let service):
             setService(service, key: currentKey)
+        case .failure(let error):
+            LogRecorder.serviceProviderMakeFailure(type: ServiceType.self, error: error)
         }
         return result
     }

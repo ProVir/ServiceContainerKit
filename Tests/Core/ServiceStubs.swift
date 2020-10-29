@@ -10,9 +10,19 @@ import Foundation
 @testable import ServiceContainerKit
 
 // MARK: Services
+struct SimpleSession: ServiceSession {
+    let key: AnyHashable
+    var value: String = ""
+    
+    init(key: AnyHashable) {
+        self.key = key
+    }
+}
+
 protocol ServiceValue: class {
     init()
     var value: String { get set }
+    var isActive: Bool { get set }
 }
 
 protocol ServiceParamsValue: class {
@@ -26,21 +36,25 @@ protocol ServiceParamsValue: class {
 class ServiceSingleton: ServiceValue {
     required init() { }
     var value: String = "Default"
+    var isActive: Bool = true
 }
 
 class ServiceLazy: ServiceValue {
     required init() { }
     var value: String = "DefaultLazy"
+    var isActive: Bool = true
 }
 
 class ServiceWeak: ServiceValue {
     required init() { }
     var value: String = "DefaultWeak"
+    var isActive: Bool = true
 }
 
 class ServiceMany: ServiceValue {
     required init() { }
     var value: String = "DefaultMany"
+    var isActive: Bool = true
 }
 
 class ServiceNested {
@@ -236,6 +250,45 @@ class SpyServiceParamsValueFactory: ServiceContainerKit.ServiceParamsFactory {
     }
 }
 
+class SpyServiceSessionFactory<T: ServiceValue, S: ServiceSession>: ServiceContainerKit.ServiceSessionFactory {
+    var error: Error?
+    var canActivate: Bool = true
+    var callMakeCount: Int = 0
+    var callDeActiveCount: Int = 0
+    var callActiveCount: Int = 0
+    var lastSession: S?
+
+    init(mode: ServiceSessionFactoryMode, error: Error? = nil) {
+        self.mode = mode
+        self.error = error
+    }
+
+    let mode: ServiceSessionFactoryMode
+    func makeService(session: S) throws -> T {
+        callMakeCount += 1
+        lastSession = session
+        if let error = error {
+            throw error
+        } else {
+            return T()
+        }
+    }
+    
+    func deactivateService(_ service: T, session: S) -> Bool {
+        callDeActiveCount += 1
+        service.isActive = false
+        return canActivate
+    }
+    
+    func activateService(_ service: T, session: S) {
+        callActiveCount += 1
+        lastSession = session
+        service.isActive = true
+    }
+}
+
+
+// MARK: Objc Factory
 class SpyServiceSingletonObjCFactory: ServiceContainerKit.ServiceFactory {
     var error: Error?
     var callCount: Int = 0

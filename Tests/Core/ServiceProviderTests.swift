@@ -39,6 +39,46 @@ class ServiceProviderTests: XCTestCase {
         XCTAssertEqual(service1.value, "Test2")
         XCTAssert(service1 === service2)
     }
+    
+    func testServiceInstance() {
+        let service = ServiceSingleton()
+        let provider = ServiceProvider(service)
+
+        guard let service1 = provider.getServiceAsOptional() else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssert(service === service1)
+
+        let service2: ServiceSingleton
+        do {
+            service2 = try provider.getService()
+        } catch {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssert(service === service2)
+    }
+    
+    func testServiceInstanceSafe() {
+        let service = ServiceSingleton()
+        let provider = ServiceSafeProvider(service)
+
+        guard let service1 = provider.getServiceAsOptional() else {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssert(service === service1)
+
+        let service2: ServiceSingleton
+        do {
+            service2 = try provider.getService()
+        } catch {
+            XCTFail("Service not exist")
+            return
+        }
+        XCTAssert(service === service2)
+    }
 
     func testServiceSingletonFailure() {
         let factory = SpyServiceSingletonFactory(error: ServiceCreateError.someError)

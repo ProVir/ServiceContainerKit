@@ -33,8 +33,8 @@ struct ServiceProviderHelper<ServiceType> {
         }
     }
 
-    func makeNoSessionFindResult() -> Result<ServiceType, ServiceObtainError> {
-        return .failure(convertToObtainError(error: ServiceFactoryError.wrongSession))
+    func makeNoSessionFindError() -> ServiceObtainError {
+        return convertToObtainError(error: ServiceFactoryError.wrongSession)
     }
 
     private func convertToObtainError(error: Error) -> ServiceObtainError {
