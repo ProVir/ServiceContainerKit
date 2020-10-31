@@ -27,16 +27,16 @@ public extension EntityInjectResolver {
         shared.registerForFirstInjectSome(entities, autoRemoveDelay: autoRemoveDelay)
     }
     
-    static func remove<Entity>(entity: Entity) {
-        shared.remove(entity: entity)
-    }
-    
-    static func removeAll() {
-        shared.removeAll()
+    static func remove<Entity>(_ type: Entity.Type) {
+        shared.remove(type)
     }
 
     static func addReadyContainerHandler<Entity>(_ type: Entity.Type, handler: @escaping () -> Void) -> EntityInjectToken? {
         return shared.addReadyContainerHandler(type, handler: handler)
+    }
+    
+    static func contains<Entity>(_ type: Entity.Type) -> Bool {
+        return shared.contains(type)
     }
 }
 
@@ -46,13 +46,19 @@ extension EntityInjectResolver {
         return shared.resolve(type)
     }
     
-    static func observe<Entity>(_ type: Entity.Type, handler: @escaping (Entity) -> Void) -> EntityInjectToken {
-        return shared.observe(type, handler: handler)
+    static func observeOnce<Entity>(_ type: Entity.Type, handler: @escaping (Entity) -> Void) -> EntityInjectToken {
+        return shared.observeOnce(type, handler: handler)
+    }
+}
+
+extension EntityInjectResolver {
+    static func removeAllForTests() {
+        shared.removeAll()
     }
 }
 
 public final class EntityInjectResolver {
-    static let shared = EntityInjectResolver()
+    fileprivate static let shared = EntityInjectResolver()
     
     private let mediator = MultipleMediator()
     private let userMediator = MultipleMediator()
@@ -89,7 +95,7 @@ public final class EntityInjectResolver {
         }
     }
     
-    func remove<Entity>(entity: Entity) {
+    func remove<Entity>(_ type: Entity.Type) {
         list = list.filter {
             if $0.isValid, let token = $0.token {
                 return (token.entity is Entity) == false
@@ -114,7 +120,7 @@ public final class EntityInjectResolver {
         return nil
     }
     
-    func observe<Entity>(_ type: Entity.Type, handler: @escaping (Entity) -> Void) -> EntityInjectToken {
+    func observeOnce<Entity>(_ type: Entity.Type, handler: @escaping (Entity) -> Void) -> EntityInjectToken {
         return mediator.observe(type, once: true, handler: handler)
     }
     
@@ -125,6 +131,10 @@ public final class EntityInjectResolver {
         } else {
             return userMediator.observe(type, once: true) { _ in handler() }
         }
+    }
+    
+    func contains<Entity>(_ type: Entity.Type) -> Bool {
+        return list.contains(where: { $0.token?.entity is Entity })
     }
     
     // MARK: Private

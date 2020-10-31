@@ -96,7 +96,7 @@ public final class ServiceInject<Container, Service> {
             configurator(container)
         } else {
             self.lazyInit = configurator
-            self.lazyInitToken = ServiceInjectResolver.observe(Container.self) { [weak self] in
+            self.lazyInitToken = ServiceInjectResolver.observeOnce(Container.self) { [weak self] in
                 self?.resolved($0)
             }
         }

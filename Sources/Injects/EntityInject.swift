@@ -46,7 +46,7 @@ public final class EntityInject<Container, Entity> {
             configurator(container)
         } else {
             self.lazyInit = configurator
-            self.lazyInitToken = EntityInjectResolver.observe(Container.self) { [weak self] in
+            self.lazyInitToken = EntityInjectResolver.observeOnce(Container.self) { [weak self] in
                 self?.resolved($0)
             }
         }

@@ -8,40 +8,54 @@
 
 import Foundation
 
+public typealias ServiceInjectToken = MediatorToken
+
 public extension ServiceInjectResolver {
-    static func register<Container>(container: Container) {
-        shared.register(container)
+    static func register<Container>(_ container: Container, failureIfContains: Bool = true) {
+        shared.register(container, failureIfContains: failureIfContains)
     }
     
-    static func registerSome(containers: [Any]) {
-        shared.register(containers)
+    static func registerSome(_ containers: [Any], failureIfContains: Bool = true) {
+        shared.registerSome(containers, failureIfContains: failureIfContains)
     }
     
-    static func remove<Container>(container: Container) {
-        shared.remove(container: container)
+    static func remove<Container>(_ type: Container.Type, onlyLast: Bool = false) {
+        shared.remove(type, onlyLast: onlyLast)
     }
     
     static func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
         return shared.addReadyContainerHandler(type, handler: handler)
     }
+    
+    static func contains<Container>(_ type: Container.Type) -> Bool {
+        return shared.contains(type)
+    }
 }
 
 
 // MARK: Internal
-public typealias ServiceInjectToken = MediatorToken
-
 extension ServiceInjectResolver {
     static func resolve<Container>(_ type: Container.Type) -> Container? {
         return shared.resolve(type)
     }
     
-    static func observe<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
-        return shared.observe(type, handler: handler)
+    static func observeOnce<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
+        return shared.observeOnce(type, handler: handler)
+    }
+}
+
+extension ServiceInjectResolver {
+    static func removeAllForTests() {
+        shared.removeAll()
+    }
+    
+    static func containsSomeForTests(_ containers: [Any]) -> Bool {
+        return shared.containsSome(containers)
     }
 }
 
 public final class ServiceInjectResolver {
-    static let shared = ServiceInjectResolver()
+    fileprivate static let shared = ServiceInjectResolver()
     
     private let mediator = MultipleMediator()
     private let userMediator = MultipleMediator()
@@ -49,20 +63,38 @@ public final class ServiceInjectResolver {
     
     private init() { }
     
-    func register<Container>(_ container: Container) {
+    func register<Container>(_ container: Container, failureIfContains: Bool) {
+        if failureIfContains {
+            assert(contains(Container.self) == false, "Register container already exists")
+        }
+        
         list.append(container)
         mediator.notify(container)
         userMediator.notify(container)
     }
     
-    func registerSome(_ containers: [Any]) {
+    func registerSome(_ containers: [Any], failureIfContains: Bool) {
+        if failureIfContains {
+            assert(containsSome(containers) == false, "Register containers already exists")
+        }
+        
         list += containers
         mediator.notifySome(containers)
         userMediator.notifySome(containers)
     }
     
-    func remove<Container>(container: Container) {
-        list = list.filter { ($0 is Container) == false }
+    func remove<Container>(_ type: Container.Type, onlyLast: Bool) {
+        if onlyLast {
+            if let index = list.lastIndex(where: { $0 is Container }) {
+                list.remove(at: index)
+            }
+        } else {
+            list = list.filter { ($0 is Container) == false }
+        }
+    }
+    
+    func removeAll() {
+        list = []
     }
     
     func resolve<Container>(_ type: Container.Type) -> Container? {
@@ -74,7 +106,7 @@ public final class ServiceInjectResolver {
         return nil
     }
     
-    func observe<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
+    func observeOnce<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
         return mediator.observe(type, once: true, handler: handler)
     }
     
@@ -85,5 +117,20 @@ public final class ServiceInjectResolver {
         } else {
             return userMediator.observe(type, once: true) { _ in handler() }
         }
+    }
+    
+    func contains<Container>(_ type: Container.Type) -> Bool {
+        return list.contains(where: { $0 is Container })
+    }
+    
+    func containsSome(_ containers: [Any]) -> Bool {
+        let listTypes = list.map { type(of: $0) }
+        for entity in containers {
+            let typeEntity = type(of: entity)
+            if listTypes.contains(where: { $0 == typeEntity }) {
+                return true
+            }
+        }
+        return false
     }
 }
