@@ -1,5 +1,5 @@
 //
-//  SimpleMediator.swift
+//  MultipleMediator.swift
 //  ServiceContainerKit
 //
 //  Created by Короткий Виталий on 08.05.2020.
@@ -10,34 +10,16 @@ import Foundation
 
 public protocol MediatorToken: class { }
 
-// MARK: SimpleMediator
-public final class SimpleMediator<T> {
-    private let mediator = MultipleMediator()
-    
-    public init() { }
-    
-    @discardableResult
-    public func notify(_ entity: T) -> Bool {
-        return mediator.notify(entity)
-    }
-    
-    public func observe(once: Bool, handler: @escaping (T) -> Void) -> MediatorToken {
-        return mediator.observe(T.self, once: once, handler: handler)
-    }
-}
-
 // MARK: MultipleMediator
 private protocol MultipleMediatorInternalToken: MediatorToken {
     func notify(_ entity: Any) -> Bool
 }
 
-public final class MultipleMediator {
+final class MultipleMediator {
     private var observers: [ObserverWrapper] = []
     
-    public init() { }
-    
     @discardableResult
-    public func notify<T>(_ entity: T) -> Bool {
+    func notify<T>(_ entity: T) -> Bool {
         var isNotifiedResult = false
         observers = observers.filter {
             let isNotified = $0.handle(entity)
@@ -50,7 +32,7 @@ public final class MultipleMediator {
     }
     
     @discardableResult
-    public func notifySome(_ list: [Any]) -> Bool {
+    func notifySome(_ list: [Any]) -> Bool {
         var isNotifiedResult = false
         observers = observers.filter {
             for entity in list {
@@ -64,7 +46,7 @@ public final class MultipleMediator {
         return isNotifiedResult
     }
     
-    public func observe<T>(_ type: T.Type, once: Bool, handler: @escaping (T) -> Void) -> MediatorToken {
+    func observe<T>(_ type: T.Type, once: Bool, handler: @escaping (T) -> Void) -> MediatorToken {
         let token = Token(handler)
         observers.append(.init(token, once: once))
         return token

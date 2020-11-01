@@ -22,8 +22,6 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '10.0'
   s.watchos.deployment_target = '3.0'
   
-  s.default_subspec = 'Injects'
-  
   s.subspec 'Core' do |ss|
     ss.source_files = ['Sources/Core/*.swift', 'Sources/*.h']
     ss.public_header_files = 'Sources/*.h'
@@ -31,11 +29,6 @@ Pod::Spec.new do |s|
   
   s.subspec 'Injects' do |ss|
     ss.source_files = 'Sources/Injects/*.swift'
-    ss.dependency 'ServiceContainerKit/Core'
-  end
-  
-  s.subspec 'ObservableValue' do |ss|
-    ss.source_files = 'Sources/Additionals/ObservableValue.swift'
     ss.dependency 'ServiceContainerKit/Core'
   end
   
