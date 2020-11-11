@@ -10,7 +10,8 @@ import Foundation
 
 @propertyWrapper
 public final class ServiceProviderInject<Container, Provider> {
-    private var factory: (Container?) -> Provider
+    private var lazyInit: ((Container?) -> Void)?
+    private var lazyInitToken: ServiceInjectToken?
     private var state = InjectState<Provider>()
     
     public convenience init<Service>(_ keyPath: KeyPath<Container, Provider>, file: StaticString = #file, line: UInt = #line)
@@ -34,25 +35,42 @@ public final class ServiceProviderInject<Container, Provider> {
     }
     
     private init(baseInitFor keyPath: KeyPath<Container, Provider>, file: StaticString, line: UInt) {
-        self.factory = { container in
+        setup { [unowned self] container in
             guard let container = container else {
                 fatalError("Not found Container for Inject", file: file, line: line)
             }
             
-            return container[keyPath: keyPath]
+            let provider = container[keyPath: keyPath]
+            self.state.storage.setEntity(provider)
         }
     }
     
     public var wrappedValue: Provider {
+        lazyInit?(nil)
+        
         if let provider = self.state.storage.entity {
             return provider
         } else {
-            let container = ServiceInjectResolver.resolve(Container.self)
-            let provider = factory(container)
-            self.state.storage.setEntity(provider)
-            return provider
+            fatalError("Unknown error in Inject")
         }
     }
     
     public var projectedValue: InjectState<Provider> { return state }
+    
+    private func setup(_ configurator: @escaping (Container?) -> Void) {
+        if let container = ServiceInjectResolver.resolve(Container.self) {
+            configurator(container)
+        } else {
+            self.lazyInit = configurator
+            self.lazyInitToken = ServiceInjectResolver.observeOnce(Container.self) { [weak self] in
+                self?.resolved($0)
+            }
+        }
+    }
+    
+    private func resolved(_ container: Container) {
+        lazyInitToken = nil
+        lazyInit?(container)
+        lazyInit = nil
+    }
 }

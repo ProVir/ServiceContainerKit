@@ -29,6 +29,10 @@
 		5025E30D252904DE00CDB01E /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025E30C252904DE00CDB01E /* Logger.swift */; };
 		5025E3112529066900CDB01E /* InjectsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025E3102529066900CDB01E /* InjectsLogger.swift */; };
 		5025E315252917C500CDB01E /* ProvidersLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025E314252917C500CDB01E /* ProvidersLogger.swift */; };
+		506BDB4C25599417007152CD /* EntityInjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506BDB4B25599416007152CD /* EntityInjectTests.swift */; };
+		506BDBB2255B2961007152CD /* ServiceInjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506BDBB1255B2961007152CD /* ServiceInjectTests.swift */; };
+		506BDBB6255B3DB0007152CD /* ServiceParamsInjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506BDBB5255B3DB0007152CD /* ServiceParamsInjectTests.swift */; };
+		506BDBBA255C2E6E007152CD /* ServiceProviderInjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506BDBB9255C2E6E007152CD /* ServiceProviderInjectTests.swift */; };
 		506F9F2620E3E4B400E44CBD /* ServiceContainerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; };
 		506F9F2720E3E4B400E44CBD /* ServiceContainerKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		506F9F2B20E3E69500E44CBD /* ServiceContainerKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -115,6 +119,10 @@
 		5025E314252917C500CDB01E /* ProvidersLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvidersLogger.swift; sourceTree = "<group>"; };
 		5033D4452530F7E900977A99 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		504C7A91226BB86100762BC7 /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
+		506BDB4B25599416007152CD /* EntityInjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityInjectTests.swift; sourceTree = "<group>"; };
+		506BDBB1255B2961007152CD /* ServiceInjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceInjectTests.swift; sourceTree = "<group>"; };
+		506BDBB5255B3DB0007152CD /* ServiceParamsInjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceParamsInjectTests.swift; sourceTree = "<group>"; };
+		506BDBB9255C2E6E007152CD /* ServiceProviderInjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderInjectTests.swift; sourceTree = "<group>"; };
 		506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceContainerKit.h; sourceTree = "<group>"; };
 		506F9EFA20E3E3F100E44CBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		506F9EFF20E3E3F100E44CBD /* ServiceContainerKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ServiceContainerKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -341,7 +349,11 @@
 			children = (
 				50F1C1552540D826000A7BAA /* MultipleMediatorTests.swift */,
 				508CD12B254C853600927342 /* ServiceInjectResolverTests.swift */,
+				506BDBB1255B2961007152CD /* ServiceInjectTests.swift */,
+				506BDBB5255B3DB0007152CD /* ServiceParamsInjectTests.swift */,
+				506BDBB9255C2E6E007152CD /* ServiceProviderInjectTests.swift */,
 				508CD12F254CA0D200927342 /* EntityInjectResolverTests.swift */,
+				506BDB4B25599416007152CD /* EntityInjectTests.swift */,
 			);
 			path = Injects;
 			sourceTree = "<group>";
@@ -561,13 +573,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				506BDBBA255C2E6E007152CD /* ServiceProviderInjectTests.swift in Sources */,
 				50F1C14C2540AA5E000A7BAA /* SessionMediatorTests.swift in Sources */,
 				50F1C1562540D826000A7BAA /* MultipleMediatorTests.swift in Sources */,
 				8888231422575AA800D0D132 /* ServiceProviderTests.swift in Sources */,
 				508CD12C254C853600927342 /* ServiceInjectResolverTests.swift in Sources */,
 				508CD10D2545E52900927342 /* ServiceParamsProviderTests.swift in Sources */,
+				506BDB4C25599417007152CD /* EntityInjectTests.swift in Sources */,
+				506BDBB6255B3DB0007152CD /* ServiceParamsInjectTests.swift in Sources */,
 				508CD1252546020000927342 /* ServiceProviderSessionTests.swift in Sources */,
 				508CD130254CA0D200927342 /* EntityInjectResolverTests.swift in Sources */,
+				506BDBB2255B2961007152CD /* ServiceInjectTests.swift in Sources */,
 				50F1C1502540AB57000A7BAA /* CommonStubs.swift in Sources */,
 				888823212257AB4F00D0D132 /* ServiceStubs.swift in Sources */,
 			);

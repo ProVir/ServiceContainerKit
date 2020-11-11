@@ -26,6 +26,7 @@ protocol BaseContainer {
     var lazyService: ServiceProvider<ServiceLazy> { get }
     var weakService: ServiceProvider<ServiceWeak> { get }
     var manyService: ServiceProvider<ServiceMany> { get }
+    var paramsService: ServiceParamsProvider<ServiceParams, ServiceParams.Params> { get }
 }
 
 struct SimpleContainer: BaseContainer {
@@ -33,13 +34,15 @@ struct SimpleContainer: BaseContainer {
     let lazyService: ServiceProvider<ServiceLazy>
     let weakService: ServiceProvider<ServiceWeak>
     let manyService: ServiceProvider<ServiceMany>
+    let paramsService: ServiceParamsProvider<ServiceParams, ServiceParams.Params>
     
     static func make() -> SimpleContainer {
         return .init(
             singletonService: SpyServiceSingletonFactory().serviceProvider(),
             lazyService: SpyServiceLazyFactory().serviceProvider(),
             weakService: SpyServiceWeakFactory().serviceProvider(),
-            manyService: SpyServiceManyFactory().serviceProvider()
+            manyService: SpyServiceManyFactory().serviceProvider(),
+            paramsService: SpyServiceParamsFactory().serviceProvider()
         )
     }
     
@@ -53,11 +56,37 @@ class ObjContainer: BaseContainer {
     let lazyService: ServiceProvider<ServiceLazy>
     let weakService: ServiceProvider<ServiceWeak>
     let manyService: ServiceProvider<ServiceMany>
+    let paramsService: ServiceParamsProvider<ServiceParams, ServiceParams.Params>
     
     init() {
         singletonService = SpyServiceSingletonFactory().serviceProvider()
         lazyService = SpyServiceLazyFactory().serviceProvider()
         weakService = SpyServiceWeakFactory().serviceProvider()
         manyService = SpyServiceManyFactory().serviceProvider()
+        paramsService = SpyServiceParamsFactory().serviceProvider()
     }
+}
+
+struct OptionalContainer {
+    let manyService: ServiceProvider<ServiceMany>?
+    let paramsService: ServiceParamsProvider<ServiceParams, ServiceParams.Params>?
+    
+    static func make() -> OptionalContainer {
+        return .init(
+            manyService: SpyServiceManyFactory().serviceProvider(),
+            paramsService: SpyServiceParamsFactory().serviceProvider()
+        )
+    }
+    
+    static func makeNil() -> OptionalContainer {
+        return .init(manyService: nil, paramsService: nil)
+    }
+}
+
+struct ManyContainer {
+    let manyService: ServiceProvider<ServiceMany>
+}
+
+struct ParamsContainer {
+    let paramsService: ServiceParamsProvider<ServiceParams, ServiceParams.Params>
 }

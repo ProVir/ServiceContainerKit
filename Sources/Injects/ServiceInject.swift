@@ -15,13 +15,13 @@ public final class ServiceInject<Container, Service> {
     private var factory: (() -> Service)?
     private var state = InjectState<Service>()
     
-    public init(_ keyPath: KeyPath<Container, ServiceProvider<Service>>, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
+    public init(_ keyPath: KeyPath<Container, ServiceProvider<Service>>, lazyInject: Bool = false, file: StaticString = #file, line: UInt = #line) {
         setup { [unowned self] container in
             guard let container = container else {
                 fatalError("Not found Container for Inject", file: file, line: line)
             }
             
-            if lazy {
+            if lazyInject {
                 self.factory = { container[keyPath: keyPath].getServiceOrFatal(file: file, line: line) }
             } else {
                 let service = container[keyPath: keyPath].getServiceOrFatal(file: file, line: line)
@@ -30,46 +30,16 @@ public final class ServiceInject<Container, Service> {
         }
     }
     
-    public init<T>(_ keyPath: KeyPath<Container, ServiceProvider<T>?>, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Service == T? {
+    public init<T>(_ keyPath: KeyPath<Container, ServiceProvider<T>?>, lazyInject: Bool = false, file: StaticString = #file, line: UInt = #line) where Service == T? {
         setup { [unowned self] container in
             guard let container = container else {
                 fatalError("Not found Container for Inject", file: file, line: line)
             }
             
-            if lazy {
+            if lazyInject {
                 self.factory = { container[keyPath: keyPath]?.getServiceOrFatal(file: file, line: line) }
             } else {
                 let service = container[keyPath: keyPath]?.getServiceOrFatal(file: file, line: line)
-                self.state.storage.setEntity(service)
-            }
-        }
-    }
-    
-    public init<Params>(_ keyPath: KeyPath<Container, ServiceParamsProvider<Service, Params>>, params: Params, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) {
-        setup { [unowned self] container in
-            guard let container = container else {
-                fatalError("Not found Container for Inject", file: file, line: line)
-            }
-            
-            if lazy {
-                self.factory = { container[keyPath: keyPath].getServiceOrFatal(params: params, file: file, line: line) }
-            } else {
-                let service = container[keyPath: keyPath].getServiceOrFatal(params: params, file: file, line: line)
-                self.state.storage.setEntity(service)
-            }
-        }
-    }
-    
-    public init<T, Params>(_ keyPath: KeyPath<Container, ServiceParamsProvider<T, Params>?>, params: Params, lazy: Bool = false, file: StaticString = #file, line: UInt = #line) where Service == T? {
-        setup { [unowned self] container in
-            guard let container = container else {
-                fatalError("Not found Container for Inject", file: file, line: line)
-            }
-            
-            if lazy {
-                self.factory = { container[keyPath: keyPath]?.getServiceOrFatal(params: params, file: file, line: line) }
-            } else {
-                let service = container[keyPath: keyPath]?.getServiceOrFatal(params: params, file: file, line: line)
                 self.state.storage.setEntity(service)
             }
         }

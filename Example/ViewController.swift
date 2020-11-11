@@ -27,7 +27,7 @@ struct SimpleKeyModel {
 struct SimpleModel {
     @SLSimpleInject(FirstService.self, lazy: true) var firstService
     @ServiceInject(\ServiceContainer.firstServiceProvider) var firstService2
-    @ServiceInject(
+    @ServiceParamsInject(
         \ServiceContainer.second.secondServiceProvider,
         params: .init(number: 9)
     ) var secondService

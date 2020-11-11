@@ -43,11 +43,11 @@ public struct InjectParamsState<Entity, Params>: InjectProjectedValue {
         storage.setReadyHandler(handler)
     }
     
-    public func setParameters(_ params: Params, file: StaticString = #file, line: UInt = #line) {
+    public func setParameters(_ params: Params, lazyInject: Bool = false, file: StaticString = #file, line: UInt = #line) {
         guard storage.isReady == false else {
             fatalError("Failed to set parameters: the service has already been made", file: file, line: line)
         }
-        self.params.setValue(params)
+        self.params.setValue(params, lazyInject: lazyInject)
     }
 }
 
@@ -74,16 +74,23 @@ final class InjectStorage<Entity> {
 
 final class InjectParamsStorage<Params> {
     private(set) var value: Params?
+    private(set) var lazyInject: Bool = false
+    private(set) var readyToInjectHandler: ((Params) -> Void)?
     
-    init(_ value: Params? = nil) {
-        self.value = value
+    func setReadyToInjectHandler(_ handler: @escaping (Params) -> Void) {
+        self.readyToInjectHandler = handler
     }
     
-    func setValue(_ value: Params) {
+    func setValue(_ value: Params, lazyInject: Bool) {
         self.value = value
+        self.lazyInject = lazyInject
+        if lazyInject == false {
+            readyToInjectHandler?(value)
+        }
     }
     
     func clear() {
         self.value = nil
+        self.readyToInjectHandler = nil
     }
 }
