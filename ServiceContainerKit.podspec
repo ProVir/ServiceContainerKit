@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "ServiceContainerKit"
-  s.version      = "3.0.0-beta3"
+  s.version      = "3.0.0-beta4"
   s.summary      = "Kit to create your own IoC Container or ServiceLocator."
   s.description  = <<-DESC
 			Written in Swift.
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.author       = { "ViR (Vitaliy Korotkiy)" => "admin@provir.ru" }
   s.source       = { :git => "https://github.com/ProVir/ServiceContainerKit.git", :tag => "#{s.version}" }
 
-  s.swift_versions = ['5.1', '5.2', '5.3']
+  s.swift_versions = ['5.2', '5.3']
 
   s.ios.deployment_target = '10.0'
   s.osx.deployment_target = '10.12'
