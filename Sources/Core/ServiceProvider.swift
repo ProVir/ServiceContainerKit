@@ -1,6 +1,6 @@
 //
 //  ServiceProvider.swift
-//  ServiceContainerKit/ServiceProvider 2.0.0
+//  ServiceContainerKit/Core 3.0.0
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -8,84 +8,8 @@
 
 import Foundation
 
-public extension ServiceFactory {
-    /// Wrap the factory in ServiceProvider
-    func serviceProvider() -> ServiceProvider<ServiceType> {
-        return .init(factory: self)
-    }
-
-    /// Wrap the factory in ServiceSafeProvider
-    func serviceSafeProvider(safeThread kind: ServiceSafeProviderKind = .lock) -> ServiceSafeProvider<ServiceType> {
-        return .init(factory: self, safeThread: kind)
-    }
-}
-
-public extension ServiceSessionFactory {
-    /// Wrap the factory in ServiceProvider
-    func serviceProvider(mediator: ServiceSessionMediator<SessionType>) -> ServiceProvider<ServiceType> {
-        return .init(factory: self, mediator: mediator)
-    }
-
-    /// Wrap the factory in ServiceSafeProvider
-    func serviceSafeProvider(mediator: ServiceSessionMediator<SessionType>, safeThread kind: ServiceSafeProviderKind = .lock) -> ServiceSafeProvider<ServiceType> {
-        return .init(factory: self, mediator: mediator, safeThread: kind)
-    }
-}
-
 /// ServiceProvider with information for make service (singleton or many instances)
 public class ServiceProvider<ServiceType> {
-    private enum Storage {
-        case instance(ServiceType)
-        case atOneError(ServiceObtainError)
-        case lazy(ServiceCoreFactory)
-        case weak(ServiceCoreFactory, ServiceWeakWrapper)
-        case session(SessionStorage)
-        case factory(ServiceCoreFactory, params: Any)
-
-        func validateError() throws {
-            switch self {
-            case .atOneError(let error): throw error
-            default: return
-            }
-        }
-    }
-    
-    fileprivate final class ServiceWeakWrapper {
-        private weak var instance: AnyObject?
-        
-        init() { }
-        init(service: ServiceType) {
-            instance = service as AnyObject
-        }
-        
-        var service: ServiceType? {
-            get { instance as? ServiceType }
-            set {
-                if let service = newValue {
-                    instance = service as AnyObject
-                } else {
-                    instance = nil
-                }
-            }
-        }
-    }
-
-    fileprivate final class SessionStorage {
-        let factory: ServiceSessionCoreFactory
-        let mode: ServiceSessionFactoryMode
-        var token: ServiceSessionMediatorToken?
-        var currentSession: ServiceSession?
-        
-        var atOneError: ServiceObtainError?
-        var strongServices: [AnyHashable: ServiceType] = [:]
-        var weakServices: [AnyHashable: ServiceWeakWrapper] = [:]
-
-        init(factory: ServiceSessionCoreFactory, mode: ServiceSessionFactoryMode) {
-            self.factory = factory
-            self.mode = mode
-        }
-    }
-
     private let helper = ServiceProviderHelper<ServiceType>()
     private var storage: Storage
     
@@ -94,7 +18,7 @@ public class ServiceProvider<ServiceType> {
         self.storage = .instance(service)
     }
     
-    /// ServiceProvider with factory.
+    /// ServiceProvider with simple factory.
     public init<FactoryType: ServiceFactory>(factory: FactoryType) where FactoryType.ServiceType == ServiceType {
         switch factory.mode {
         case .atOne:
@@ -123,6 +47,7 @@ public class ServiceProvider<ServiceType> {
         self.storage = .factory(factory, params: params)
     }
 
+    /// ServiceProvider with factory and support service sessions. Use mediator for re-making service in provider.
     public convenience init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
         self.init(factory: factory) { helper, storage in
             storage.setBeginSessionAndMake(helper: helper, session: mediator.session)
@@ -135,6 +60,7 @@ public class ServiceProvider<ServiceType> {
         }
     }
 
+    /// Internal constructor for session factory, used also in safe provider.
     fileprivate init<FactoryType: ServiceSessionFactory, SessionType>(
         factory: FactoryType,
         storageConfigurator: (ServiceProviderHelper<ServiceType>, SessionStorage) -> Void
@@ -144,23 +70,29 @@ public class ServiceProvider<ServiceType> {
         storageConfigurator(helper, storage)
     }
 
-    init(coreFactory: ServiceCoreFactory, params: Any) {
-        self.storage = .factory(coreFactory, params: params)
-    }
-
     /// ServiceProvider with factory. If service factoryType == .atOne and throw error when make - throw this error from constructor.
     public convenience init<FactoryType: ServiceFactory>(tryFactory factory: FactoryType) throws where FactoryType.ServiceType == ServiceType {
         self.init(factory: factory)
-        try validateError()
+        try validateAtOneError()
     }
     
-    /// ServiceProvider with many or lazy singleton instance service type, create service in closure.
+    /// ServiceProvider with make service in closure.
     public convenience init(mode: ServiceFactoryMode, factory: @escaping () throws -> ServiceType) {
         self.init(factory: ServiceClosureFactory(mode: mode, factory: factory))
     }
+    
+    /// Internal constructor for convert providers.
+    init(coreFactory: ServiceCoreFactory, params: Any) {
+        self.storage = .factory(coreFactory, params: params)
+    }
+    
+    /// If service factoryType == .atOne and throw error when make - throw this error.
+    public func validateAtOneError() throws {
+        try storage.validateAtOneError()
+    }
 
     // swiftlint:disable cyclomatic_complexity
-    /// Get Service with detail information throwed error.
+    /// Get Service with detail information throwed error used `Result`.
     public func getServiceAsResult() -> Result<ServiceType, ServiceObtainError> {
         switch storage {
         case let .instance(service):
@@ -212,7 +144,7 @@ public class ServiceProvider<ServiceType> {
         return try? getServiceAsResult().get()
     }
     
-    /// Get Service if there are no errors or fatal when failure obtain.
+    /// Get Service if there are no errors or fatal with debug details when failure obtain.
     public func getServiceOrFatal(file: StaticString = #file, line: UInt = #line) -> ServiceType {
         let result = getServiceAsResult()
         switch result {
@@ -220,13 +152,9 @@ public class ServiceProvider<ServiceType> {
         case .failure(let error): fatalError(error.fatalMessage, file: file, line: line)
         }
     }
-
-    func validateError() throws {
-        try storage.validateError()
-    }
 }
 
-// MARK: - Safe thread
+// MARK: Safe thread
 public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     private let handler: ServiceSafeProviderHandler
 
@@ -237,7 +165,7 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     }
 
     /// ServiceProvider with factory.
-    public init<FactoryType: ServiceFactory>(factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType {
+    public init<FactoryType: ServiceFactory>(factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .default) where FactoryType.ServiceType == ServiceType {
         switch factory.mode {
         case .atOne: self.handler = .init(kind: nil)
         case .lazy, .weak, .many: self.handler = .init(kind: kind)
@@ -246,12 +174,13 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
     }
 
     /// ServiceProvider with factory, use specific params.
-    public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, params: FactoryType.ParamsType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType {
+    public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, params: FactoryType.ParamsType, safeThread kind: ServiceSafeProviderKind = .default) where FactoryType.ServiceType == ServiceType {
         self.handler = .init(kind: kind)
         super.init(factory: factory, params: params)
     }
 
-    public init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
+    /// ServiceProvider with factory and support service sessions. Use mediator for re-making service in provider.
+    public init<FactoryType: ServiceSessionFactory, SessionType>(factory: FactoryType, mediator: ServiceSessionMediator<SessionType>, safeThread kind: ServiceSafeProviderKind = .default) where FactoryType.ServiceType == ServiceType, FactoryType.SessionType == SessionType {
         let handler = ServiceSafeProviderHandler(kind: kind)
         self.handler = handler
         super.init(factory: factory) { helper, storage in
@@ -267,33 +196,97 @@ public class ServiceSafeProvider<ServiceType>: ServiceProvider<ServiceType> {
         }
     }
 
+    /// ServiceProvider with factory. If service factoryType == .atOne and throw error when make - throw this error from constructor.
+    public convenience init<FactoryType: ServiceFactory>(tryFactory factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .default) throws where FactoryType.ServiceType == ServiceType {
+        self.init(factory: factory, safeThread: kind)
+        try validateAtOneError()
+    }
+    
+    /// ServiceProvider with many or lazy singleton instance service type, create service in closure.
+    public convenience init(mode: ServiceFactoryMode, safeThread kind: ServiceSafeProviderKind = .default, factory: @escaping () throws -> ServiceType) {
+        self.init(factory: ServiceClosureFactory(mode: mode, factory: factory), safeThread: kind)
+    }
+    
+    /// Internal constructor for convert providers.
     init(coreFactory: ServiceCoreFactory, params: Any, handler: ServiceSafeProviderHandler) {
         self.handler = handler
         super.init(coreFactory: coreFactory, params: params)
     }
 
-    /// ServiceProvider with factory. If service factoryType == .atOne and throw error when make - throw this error from constructor.
-    public convenience init<FactoryType: ServiceFactory>(tryFactory factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .lock) throws where FactoryType.ServiceType == ServiceType {
-        self.init(factory: factory, safeThread: kind)
-        try validateError()
-    }
-    
-    /// ServiceProvider with many or lazy singleton instance service type, create service in closure.
-    public convenience init(mode: ServiceFactoryMode, safeThread kind: ServiceSafeProviderKind = .lock, factory: @escaping () throws -> ServiceType) {
-        self.init(factory: ServiceClosureFactory(mode: mode, factory: factory), safeThread: kind)
-    }
-
-    /// Get Service with detail information throwed error.
+    /// Get Service in safe thread mode with detail information throwed error.
     public override func getServiceAsResult() -> Result<ServiceType, ServiceObtainError> {
         return handler.safelyHandling { super.getServiceAsResult() }
     }
 
+    /// Get Service in unsafe thread mode with detail information throwed error.
     public func getServiceAsResultNotSafe() -> Result<ServiceType, ServiceObtainError> {
         return super.getServiceAsResult()
     }
 }
 
-// MARK: - Sessions
+// MARK: - Private
+private extension ServiceProvider {
+    enum Storage {
+        case instance(ServiceType)
+        case atOneError(ServiceObtainError)
+        case lazy(ServiceCoreFactory)
+        case weak(ServiceCoreFactory, ServiceWeakWrapper)
+        case session(SessionStorage)
+        case factory(ServiceCoreFactory, params: Any)
+
+        func validateAtOneError() throws {
+            switch self {
+            case .atOneError(let error): throw error
+            case .session(let storage): try storage.validateAtOneError()
+            default: return
+            }
+        }
+    }
+    
+    final class ServiceWeakWrapper {
+        private weak var instance: AnyObject?
+        
+        init() { }
+        init(service: ServiceType) {
+            instance = service as AnyObject
+        }
+        
+        var service: ServiceType? {
+            get { instance as? ServiceType }
+            set {
+                if let service = newValue {
+                    instance = service as AnyObject
+                } else {
+                    instance = nil
+                }
+            }
+        }
+    }
+
+    final class SessionStorage {
+        let factory: ServiceSessionCoreFactory
+        let mode: ServiceSessionFactoryMode
+        var token: ServiceSessionMediatorToken?
+        var currentSession: ServiceSession?
+        
+        var atOneError: ServiceObtainError?
+        var strongServices: [AnyHashable: ServiceType] = [:]
+        var weakServices: [AnyHashable: ServiceWeakWrapper] = [:]
+
+        init(factory: ServiceSessionCoreFactory, mode: ServiceSessionFactoryMode) {
+            self.factory = factory
+            self.mode = mode
+        }
+        
+        func validateAtOneError() throws {
+            if let error = atOneError {
+                throw error
+            }
+        }
+    }
+}
+
+// MARK: Sessions
 private extension ServiceProvider.SessionStorage {
     func findService(key: AnyHashable) -> ServiceType? {
         return mode == .weak ? weakServices[key]?.service : strongServices[key]

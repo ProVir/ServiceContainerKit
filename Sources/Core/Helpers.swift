@@ -1,6 +1,6 @@
 //
 //  Helpers.swift
-//  ServiceContainerKit/ServiceProvider 2.0.0
+//  ServiceContainerKit/Core 3.0.0
 //
 //  Created by Vitalii Korotkii on 07/02/2020.
 //  Copyright © 2020 ProVir. All rights reserved.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct ServiceProviderHelper<ServiceType> {
+final class ServiceProviderHelper<ServiceType> {
     func makeService(factory: ServiceCoreFactory, params: Any) -> Result<ServiceType, ServiceObtainError> {
         do {
             if let service = try factory.coreMakeService(params: params) as? ServiceType {

@@ -1,6 +1,6 @@
 //
 //  ServiceParamsProvider.swift
-//  ServiceContainerKit
+//  ServiceContainerKit/Core 3.0.0
 //
 //  Created by Vitalii Korotkii on 07/02/2020.
 //  Copyright © 2020 ProVir. All rights reserved.
@@ -8,29 +8,7 @@
 
 import Foundation
 
-public extension ServiceParamsFactory {
-    /// Wrap the factory in ServiceParamsProvider
-    func serviceProvider() -> ServiceParamsProvider<ServiceType, ParamsType> {
-        return .init(factory: self)
-    }
-
-    /// Wrap the factory in ServiceProvider with specific params.
-    func serviceProvider(params: ParamsType) -> ServiceProvider<ServiceType> {
-        return .init(factory: self, params: params)
-    }
-
-    /// Wrap the factory in ServiceParamsSafeProvider
-    func serviceSafeProvider(safeThread kind: ServiceSafeProviderKind = .lock) -> ServiceParamsSafeProvider<ServiceType, ParamsType> {
-        return .init(factory: self, safeThread: kind)
-    }
-
-    /// Wrap the factory in ServiceSafeProvider with specific params.
-    func serviceSafeProvider(params: ParamsType, safeThread kind: ServiceSafeProviderKind = .lock) -> ServiceSafeProvider<ServiceType> {
-        return .init(factory: self, params: params, safeThread: kind)
-    }
-}
-
-/// ServiceProvider with information for create service (static or factory)
+/// ServiceProvider with information for make service
 public class ServiceParamsProvider<ServiceType, ParamsType> {
     private let helper = ServiceProviderHelper<ServiceType>()
     fileprivate let factory: ServiceCoreFactory
@@ -40,12 +18,12 @@ public class ServiceParamsProvider<ServiceType, ParamsType> {
         self.factory = factory
     }
     
-    /// ServiceProvider with create service in closure.
+    /// ServiceProvider with make service in closure.
     public convenience init(factory: @escaping (ParamsType) throws -> ServiceType) {
         self.init(factory: ServiceParamsClosureFactory(factory: factory))
     }
 
-    /// Get Service with detail information throwed error.
+    /// Get Service with detail information throwed error used `Result`.
     public func getServiceAsResult(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
         let result = helper.makeService(factory: factory, params: params)
         if case let .failure(error) = result {
@@ -64,7 +42,7 @@ public class ServiceParamsProvider<ServiceType, ParamsType> {
         return try? getServiceAsResult(params: params).get()
     }
 
-    /// Get Service if there are no errors or fatal when failure obtain.
+    /// Get Service if there are no errors or fatal with debug details when failure obtain.
     public func getServiceOrFatal(params: ParamsType, file: StaticString = #file, line: UInt = #line) -> ServiceType {
         let result = getServiceAsResult(params: params)
         switch result {
@@ -79,31 +57,33 @@ public class ServiceParamsProvider<ServiceType, ParamsType> {
     }
 }
 
-// MARK: - Safe thread
+// MARK: Safe thread
+/// Thread safe ServiceProvider with information for make service
 public class ServiceParamsSafeProvider<ServiceType, ParamsType>: ServiceParamsProvider<ServiceType, ParamsType> {
     private let handler: ServiceSafeProviderHandler
 
     /// ServiceProvider with factory.
-    public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .lock) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
+    public init<FactoryType: ServiceParamsFactory>(factory: FactoryType, safeThread kind: ServiceSafeProviderKind = .default) where FactoryType.ServiceType == ServiceType, FactoryType.ParamsType == ParamsType {
         self.handler = .init(kind: kind)
         super.init(factory: factory)
     }
     
-    /// ServiceProvider with create service in closure.
-    public convenience init(safeThread kind: ServiceSafeProviderKind = .lock, factory: @escaping (ParamsType) throws -> ServiceType) {
+    /// ServiceProvider with make service in closure.
+    public convenience init(safeThread kind: ServiceSafeProviderKind = .default, factory: @escaping (ParamsType) throws -> ServiceType) {
         self.init(factory: ServiceParamsClosureFactory(factory: factory), safeThread: kind)
     }
 
-    /// Get Service with detail information throwed error.
+    /// Get Service in safe thread mode with detail information throwed error.
     public override func getServiceAsResult(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
         return handler.safelyHandling { super.getServiceAsResult(params: params) }
     }
 
+    /// Get Service in unsafe thread mode with detail information throwed error.
     public func getServiceAsResultNotSafe(params: ParamsType) -> Result<ServiceType, ServiceObtainError> {
         return super.getServiceAsResult(params: params)
     }
 
-    /// Get ServiceProvider without params with specific params.
+    /// Get ServiceSafeProvider without params with specific params.
     public override func convert(params: ParamsType) -> ServiceSafeProvider<ServiceType> {
         return .init(coreFactory: factory, params: params, handler: handler)
     }

@@ -29,6 +29,7 @@
 		5025E30D252904DE00CDB01E /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025E30C252904DE00CDB01E /* Logger.swift */; };
 		5025E3112529066900CDB01E /* InjectsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025E3102529066900CDB01E /* InjectsLogger.swift */; };
 		5025E315252917C500CDB01E /* ProvidersLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025E314252917C500CDB01E /* ProvidersLogger.swift */; };
+		506B04AF25694260009C4AD6 /* ServiceFactoryToProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506B04AE25694260009C4AD6 /* ServiceFactoryToProvider.swift */; };
 		506BDB4C25599417007152CD /* EntityInjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506BDB4B25599416007152CD /* EntityInjectTests.swift */; };
 		506BDBB2255B2961007152CD /* ServiceInjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506BDBB1255B2961007152CD /* ServiceInjectTests.swift */; };
 		506BDBB6255B3DB0007152CD /* ServiceParamsInjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506BDBB5255B3DB0007152CD /* ServiceParamsInjectTests.swift */; };
@@ -119,6 +120,7 @@
 		5025E314252917C500CDB01E /* ProvidersLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvidersLogger.swift; sourceTree = "<group>"; };
 		5033D4452530F7E900977A99 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		504C7A91226BB86100762BC7 /* ServiceLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorObjC.swift; sourceTree = "<group>"; };
+		506B04AE25694260009C4AD6 /* ServiceFactoryToProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceFactoryToProvider.swift; sourceTree = "<group>"; };
 		506BDB4B25599416007152CD /* EntityInjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityInjectTests.swift; sourceTree = "<group>"; };
 		506BDBB1255B2961007152CD /* ServiceInjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceInjectTests.swift; sourceTree = "<group>"; };
 		506BDBB5255B3DB0007152CD /* ServiceParamsInjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceParamsInjectTests.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				881B56192461888400BB70A8 /* SessionMediator.swift */,
 				88DE96D523E6065800B369D7 /* Errors.swift */,
 				88A9C9B523EDD1CF002DB7CD /* Helpers.swift */,
+				506B04AE25694260009C4AD6 /* ServiceFactoryToProvider.swift */,
 				50DA160820C4509E00B756B3 /* ServiceProvider.swift */,
 				88A9C9B823EDD258002DB7CD /* ServiceParamsProvider.swift */,
 				50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */,
@@ -598,6 +601,7 @@
 				88DE96D123E4780B00B369D7 /* ServiceProviderObjC.swift in Sources */,
 				506F9F3020E3EA0E00E44CBD /* ServiceProvider.swift in Sources */,
 				500F8BB22470095A005C1F5C /* InjectState.swift in Sources */,
+				506B04AF25694260009C4AD6 /* ServiceFactoryToProvider.swift in Sources */,
 				5025E1E32525073200CDB01E /* ServiceProviderInject.swift in Sources */,
 				5025E315252917C500CDB01E /* ProvidersLogger.swift in Sources */,
 				506F9F3120E3EA1100E44CBD /* BaseTypes.swift in Sources */,

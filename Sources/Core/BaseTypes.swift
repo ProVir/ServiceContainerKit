@@ -1,6 +1,6 @@
 //
 //  BaseTypes.swift
-//  ServiceContainerKit/ServiceProvider 2.0.0
+//  ServiceContainerKit/Core 3.0.0
 //
 //  Created by Короткий Виталий (ViR) on 04.06.2018.
 //  Copyright © 2018 ProVir. All rights reserved.
@@ -23,9 +23,8 @@ public enum ServiceFactoryMode {
     case many
 }
 
-/// Factory mode to make. Used only when added to provider.
+/// Factory mode to re-making singleton service. Used only when added to provider.
 public enum ServiceSessionFactoryMode {
-    
     /// Create service at one when added to provider and after change session.
     case atOne
     
@@ -36,11 +35,13 @@ public enum ServiceSessionFactoryMode {
     case weak
 }
 
+/// Session item for re-making singleton services
 public protocol ServiceSession {
+    /// Unique session key
     var key: AnyHashable { get }
 }
 
-///Factory services for ServiceProvider or ServiceLocator.
+/// Factory services for ServiceProvider.
 public protocol ServiceFactory: ServiceCoreFactory {
     associatedtype ServiceType
     
@@ -51,7 +52,7 @@ public protocol ServiceFactory: ServiceCoreFactory {
     func makeService() throws -> ServiceType
 }
 
-///Factory services with params for ServiceProvider or ServiceLocator. Always factoryType = .many
+/// Factory services with params for ServiceParamsProvider or ServiceProvider. Always mode = .many
 public protocol ServiceParamsFactory: ServiceCoreFactory {
     associatedtype ServiceType
     associatedtype ParamsType
@@ -60,36 +61,30 @@ public protocol ServiceParamsFactory: ServiceCoreFactory {
     func makeService(params: ParamsType) throws -> ServiceType
 }
 
+/// Factory re-making singleton services for ServiceProvider.
 public protocol ServiceSessionFactory: ServiceSessionCoreFactory {
     associatedtype ServiceType
     associatedtype SessionType: ServiceSession
 
     /// Factory mode to make. Used only when added to provider. Recommendation use as constant (let).
     var mode: ServiceSessionFactoryMode { get }
+    
+    /// Make new instance service in active state.
+    func makeService(session: SessionType) throws -> ServiceType
 
-    /// Deactivate current service after change. Return true if can activate after, false - delete service.
+    /// Deactivate current service after change. Return true if can activate after, false - delete service now.
     func deactivateService(_ service: ServiceType, session: SessionType) -> Bool
 
-    /// Activate instance for new session
+    /// Activate instance for new session.
     func activateService(_ service: ServiceType, session: SessionType)
-
-    /// Make new instance service.
-    func makeService(session: SessionType) throws -> ServiceType
 }
 
-///Factory for ServiceProvider or ServiceLocator with generate service in closure.
-///Also can used for lazy create singleton instance services.
+/// Factory for ServiceProvider with make service in closure.
+/// Also can used for lazy create singleton instance services.
 public class ServiceClosureFactory<T>: ServiceFactory {
     public let factory: () throws -> T
     public let mode: ServiceFactoryMode
     
-    /**
-     Constructor for ServiceFactory used closure for make service
-     
-     - Parameters:
-        - mode: Mode factory - atOne, lazy or many
-        - factory: Closure with logic create service.
-     */
     public init(mode: ServiceFactoryMode, factory: @escaping () throws -> T) {
         self.factory = factory
         self.mode = mode
@@ -100,12 +95,10 @@ public class ServiceClosureFactory<T>: ServiceFactory {
     }
 }
 
-///Factory for ServiceProvider or ServiceLocator with generate service in closure.
-///Also can used for lazy create singleton instance services.
+/// Factory for ServiceProvider with make service in closure.
 public class ServiceParamsClosureFactory<T, P>: ServiceParamsFactory {
     public let factory: (P) throws -> T
     
-    /// Constructor for ServiceParamsFactory used closure for make service
     public init(factory: @escaping (P) throws -> T) {
         self.factory = factory
     }
@@ -116,7 +109,10 @@ public class ServiceParamsClosureFactory<T, P>: ServiceParamsFactory {
 }
 
 // MARK: Safe thread
+/// Method type for blocking thread of safe obtain of the service. Default is `lock`.
 public enum ServiceSafeProviderKind {
+    public static let `default` = ServiceSafeProviderKind.lock
+    
     case lock
     case semaphore
     case queue(qos: DispatchQoS = .utility, label: String? = nil)
