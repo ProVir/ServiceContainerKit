@@ -1,46 +1,24 @@
 //
-//  MultipleMediatorTests.swift
+//  EntityReadyMediatorTests.swift
 //  ServiceContainerKitTests
 //
-//  Created by Короткий Виталий on 21.10.2020.
+//  Created by Короткий Виталий on 21.11.2020.
 //  Copyright © 2020 ProVir. All rights reserved.
 //
 
 import XCTest
 @testable import ServiceContainerKit
 
-class MultipleMediatorTests: XCTestCase {
+class EntityReadyMediatorTests: XCTestCase {
 
-    func testOneObserver()  {
-        let mediator = MultipleMediator()
+    func testOnceObserver()  {
+        let mediator = EntityReadyMediator()
         
         var model = SimpleFirstModel(value: "")
         var isNotified = mediator.notify(model)
         XCTAssertFalse(isNotified)
         
         let tester = ObserverTester<SimpleFirstModel>(mediator: mediator)
-        tester.validateNoCalled()
-        
-        model.value = "1"
-        isNotified = mediator.notify(model)
-        XCTAssertTrue(isNotified)
-        tester.validate(model: model)
-        tester.prepareCall()
-        
-        model.value = "2"
-        isNotified = mediator.notify(model)
-        XCTAssertTrue(isNotified)
-        tester.validate(model: model)
-    }
-    
-    func testOnceObserver()  {
-        let mediator = MultipleMediator()
-        
-        var model = SimpleFirstModel(value: "")
-        var isNotified = mediator.notify(model)
-        XCTAssertFalse(isNotified)
-        
-        let tester = ObserverTester<SimpleFirstModel>(mediator: mediator, once: true)
         tester.validateNoCalled()
         
         model.value = "1"
@@ -56,7 +34,7 @@ class MultipleMediatorTests: XCTestCase {
     }
     
     func testInvalidateObserver()  {
-        let mediator = MultipleMediator()
+        let mediator = EntityReadyMediator()
         
         var model = SimpleFirstModel(value: "")
         var isNotified = mediator.notify(model)
@@ -64,22 +42,16 @@ class MultipleMediatorTests: XCTestCase {
         
         let tester = ObserverTester<SimpleFirstModel>(mediator: mediator)
         tester.validateNoCalled()
-        
-        model.value = "1"
-        isNotified = mediator.notify(model)
-        XCTAssertTrue(isNotified)
-        tester.validate(model: model)
-        tester.prepareCall()
         tester.invalidate()
         
-        model.value = "2"
+        model.value = "1"
         isNotified = mediator.notify(model)
         XCTAssertFalse(isNotified)
         tester.validateNoCalled()
     }
 
     func testSeveralObservers()  {
-        let mediator = MultipleMediator()
+        let mediator = EntityReadyMediator()
         
         var model = SimpleFirstModel(value: "")
         var isNotified = mediator.notify(model)
@@ -100,16 +72,16 @@ class MultipleMediatorTests: XCTestCase {
         
         model.value = "2"
         isNotified = mediator.notify(model)
-        XCTAssertTrue(isNotified)
-        testerOne.validate(model: model)
-        testerTwo.validate(model: model)
+        XCTAssertFalse(isNotified)
+        testerOne.validateNoCalled()
+        testerTwo.validateNoCalled()
     }
     
     func testManyModels()  {
-        let mediator = MultipleMediator()
+        let mediator = EntityReadyMediator()
         
-        var modelFirst = SimpleFirstModel(value: "0.1")
-        var modelSecond = SimpleSecondModel(value: "0.2")
+        var modelFirst = SimpleFirstModel(value: "1")
+        var modelSecond = SimpleSecondModel(value: "2")
         var isNotified = mediator.notify(modelFirst)
         XCTAssertFalse(isNotified)
         
@@ -117,37 +89,72 @@ class MultipleMediatorTests: XCTestCase {
         let testerSecond = ObserverTester<SimpleSecondModel>(mediator: mediator)
         testerFirst.validateNoCalled()
         
-        modelFirst.value = "1.1"
+        modelFirst.value = "3"
         isNotified = mediator.notify(modelFirst)
         XCTAssertTrue(isNotified)
         testerFirst.validate(model: modelFirst)
         testerSecond.validateNoCalled()
         testerFirst.prepareCall()
         
-        modelSecond.value = "1.2"
+        modelSecond.value = "4"
         isNotified = mediator.notify(modelSecond)
         XCTAssertTrue(isNotified)
         testerSecond.validate(model: modelSecond)
         testerFirst.validateNoCalled()
         testerSecond.prepareCall()
+    }
+    
+    func testSomeModels()  {
+        let mediator = EntityReadyMediator()
         
-        modelFirst.value = "2.1"
-        modelSecond.value = "2.2"
+        var modelFirst = SimpleFirstModel(value: "1")
+        var modelSecond = SimpleSecondModel(value: "2")
+        var isNotified = mediator.notify(modelFirst)
+        XCTAssertFalse(isNotified)
+        
+        let testerFirst = ObserverTester<SimpleFirstModel>(mediator: mediator)
+        let testerSecond = ObserverTester<SimpleSecondModel>(mediator: mediator)
+        testerFirst.validateNoCalled()
+        
+        modelFirst.value = "3"
+        modelSecond.value = "4"
         isNotified = mediator.notifySome([modelFirst, modelSecond])
         XCTAssertTrue(isNotified)
         testerFirst.validate(model: modelFirst)
         testerSecond.validate(model: modelSecond)
+        testerFirst.prepareCall()
+        testerSecond.prepareCall()
+        
+        modelFirst.value = "5"
+        modelSecond.value = "6"
+        isNotified = mediator.notifySome([modelFirst, modelSecond])
+        XCTAssertFalse(isNotified)
+        testerFirst.validateNoCalled()
+        testerSecond.validateNoCalled()
+        testerFirst.prepareCall()
+        testerSecond.prepareCall()
+        
+        modelFirst.value = "7"
+        isNotified = mediator.notify(modelFirst)
+        XCTAssertFalse(isNotified)
+        
+        modelSecond.value = "8"
+        isNotified = mediator.notify(modelSecond)
+        XCTAssertFalse(isNotified)
+        
+        testerFirst.validateNoCalled()
+        testerSecond.validateNoCalled()
     }
 }
 
-private extension MultipleMediatorTests {
+private extension EntityReadyMediatorTests {
     class ObserverTester<T: Equatable> {
-        private var token: MediatorToken?
+        private var token: EntityReadyToken?
         private var isCalled = false
         private var calledModel: T?
         
-        init(mediator: MultipleMediator, once: Bool = false) {
-            token = mediator.observe(T.self, once: once) { [unowned self] model in
+        init(mediator: EntityReadyMediator) {
+            token = mediator.observeOnce(T.self) { [unowned self] model in
                 XCTAssertFalse(self.isCalled)
                 self.isCalled = true
                 self.calledModel = model

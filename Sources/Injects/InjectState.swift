@@ -20,7 +20,7 @@ public struct InjectState<Entity>: InjectProjectedValue {
     init(storage: InjectStorage<Entity> = .init()) {
         self.storage = storage
     }
-    
+
     public var isReady: Bool { return storage.isReady }
     
     public func setReadyHandler(_ handler: @escaping (Entity) -> Void) {
@@ -51,9 +51,10 @@ public struct InjectParamsState<Entity, Params>: InjectProjectedValue {
     }
 }
 
+// MARK: - Internal
 final class InjectStorage<Entity> {
     private(set) var entity: Entity?
-    private(set) var readyHandler: ((Entity) -> Void)?
+    private var readyHandler: ((Entity) -> Void)?
     
     var isReady: Bool { entity != nil }
     
@@ -75,7 +76,7 @@ final class InjectStorage<Entity> {
 final class InjectParamsStorage<Params> {
     private(set) var value: Params?
     private(set) var lazyInject: Bool = false
-    private(set) var readyToInjectHandler: ((Params) -> Void)?
+    private var readyToInjectHandler: ((Params) -> Void)?
     
     func setReadyToInjectHandler(_ handler: @escaping (Params) -> Void) {
         self.readyToInjectHandler = handler

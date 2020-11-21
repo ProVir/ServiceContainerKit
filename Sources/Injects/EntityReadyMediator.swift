@@ -1,21 +1,16 @@
 //
-//  MultipleMediator.swift
-//  ServiceContainerKit
+//  EntityReadyMediator.swift
+//  ServiceContainerKit/Injects 3.0.0
 //
-//  Created by Короткий Виталий on 08.05.2020.
+//  Created by Короткий Виталий on 21.11.2020.
 //  Copyright © 2020 ProVir. All rights reserved.
 //
 
 import Foundation
 
-public protocol MediatorToken: class { }
+public protocol EntityReadyToken: class { }
 
-// MARK: MultipleMediator
-private protocol MultipleMediatorInternalToken: MediatorToken {
-    func notify(_ entity: Any) -> Bool
-}
-
-final class MultipleMediator {
+final class EntityReadyMediator {
     private var observers: [ObserverWrapper] = []
     
     @discardableResult
@@ -46,13 +41,14 @@ final class MultipleMediator {
         return isNotifiedResult
     }
     
-    func observe<T>(_ type: T.Type, once: Bool, handler: @escaping (T) -> Void) -> MediatorToken {
+    func observeOnce<T>(_ type: T.Type, handler: @escaping (T) -> Void) -> EntityReadyToken {
         let token = Token(handler)
-        observers.append(.init(token, once: once))
+        observers.append(.init(token))
         return token
     }
     
-    private final class Token<T>: MultipleMediatorInternalToken {
+    // MARK: - Private
+    private final class Token<T>: EntityReadyInternalToken {
         private let handler: (T) -> Void
         
         init(_ handler: @escaping (T) -> Void) {
@@ -70,12 +66,10 @@ final class MultipleMediator {
     }
     
     private final class ObserverWrapper {
-        private let once: Bool
-        private weak var token: MultipleMediatorInternalToken?
+        private weak var token: EntityReadyInternalToken?
         
-        init(_ token: MultipleMediatorInternalToken, once: Bool) {
+        init(_ token: EntityReadyInternalToken) {
             self.token = token
-            self.once = once
         }
         
         var isValid: Bool { token != nil }
@@ -85,10 +79,14 @@ final class MultipleMediator {
                 return false
             }
             let isNotified = token.notify(entity)
-            if once && isNotified {
+            if isNotified {
                 self.token = nil
             }
             return isNotified
         }
     }
+}
+
+private protocol EntityReadyInternalToken: EntityReadyToken {
+    func notify(_ entity: Any) -> Bool
 }

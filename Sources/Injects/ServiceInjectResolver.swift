@@ -8,7 +8,7 @@
 
 import Foundation
 
-public typealias ServiceInjectToken = MediatorToken
+public typealias ServiceInjectToken = EntityReadyToken
 
 public extension ServiceInjectResolver {
     static func register<Container>(_ container: Container, failureIfContains: Bool = true) {
@@ -57,8 +57,8 @@ extension ServiceInjectResolver {
 public final class ServiceInjectResolver {
     fileprivate static let shared = ServiceInjectResolver()
     
-    private let mediator = MultipleMediator()
-    private let userMediator = MultipleMediator()
+    private let mediator = EntityReadyMediator()
+    private let userMediator = EntityReadyMediator()
     private var list: [Any] = []
     
     private init() { }
@@ -107,7 +107,7 @@ public final class ServiceInjectResolver {
     }
     
     func observeOnce<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
-        return mediator.observe(type, once: true, handler: handler)
+        return mediator.observeOnce(type, handler: handler)
     }
     
     func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
@@ -115,7 +115,7 @@ public final class ServiceInjectResolver {
             handler()
             return nil
         } else {
-            return userMediator.observe(type, once: true) { _ in handler() }
+            return userMediator.observeOnce(type) { _ in handler() }
         }
     }
     
