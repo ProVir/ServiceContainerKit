@@ -8,13 +8,15 @@
 
 import Foundation
 
+/// Injects services from shared containers (registered in `ServiceInjectResolver`) with `ServiceProvider`s.
 @propertyWrapper
 public final class ServiceInject<Container, Service> {
     private var lazyInit: ((Container?) -> Void)?
-    private var lazyInitToken: ServiceInjectToken?
+    private var lazyInitToken: ServiceInjectReadyToken?
     private var factory: (() -> Service)?
     private var state = InjectState<Service>()
     
+    /// `keyPath` - key in container with value type `ServiceProvider`. If `lazyInject` is true - get service from provider only for first use.
     public init(_ keyPath: KeyPath<Container, ServiceProvider<Service>>, lazyInject: Bool = false, file: StaticString = #file, line: UInt = #line) {
         setup { [unowned self] container in
             guard let container = container else {
@@ -30,6 +32,7 @@ public final class ServiceInject<Container, Service> {
         }
     }
     
+    /// `keyPath` - key in container with optional value type `ServiceProvider?`. If `lazyInject` is true - get service from provider only for first use.
     public init<T>(_ keyPath: KeyPath<Container, ServiceProvider<T>?>, lazyInject: Bool = false, file: StaticString = #file, line: UInt = #line) where Service == T? {
         setup { [unowned self] container in
             guard let container = container else {

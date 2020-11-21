@@ -8,16 +8,19 @@
 
 import Foundation
 
+/// Injects entities from shared (registered in `EntityInjectResolver`).
 @propertyWrapper
 public final class EntityInject<Container, Entity> {
     private var lazyInit: ((Container?) -> Void)?
-    private var lazyInitToken: EntityInjectToken?
+    private var lazyInitToken: EntityInjectReadyToken?
     private var state = InjectState<Entity>()
     
+    /// Inject source entity from EntityInjectResolver.
     public convenience init(_ type: Entity.Type, file: StaticString = #file, line: UInt = #line) where Container == Entity {
         self.init(\Container.self, file: file, line: line)
     }
     
+    /// Inject value from entity, registered in EntityInjectResolver.
     public init(_ keyPath: KeyPath<Container, Entity>, file: StaticString = #file, line: UInt = #line) {
         setup { [unowned self] container in
             guard let container = container else {

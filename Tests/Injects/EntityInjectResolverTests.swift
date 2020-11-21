@@ -286,7 +286,7 @@ class EntityInjectResolverTests: XCTestCase {
     }
     
     func testReadyContainerInvalidate() {
-        var token: EntityInjectToken? = EntityInjectResolver.addReadyContainerHandler(BaseContainer.self) {
+        var token: EntityInjectReadyToken? = EntityInjectResolver.addReadyContainerHandler(BaseContainer.self) {
             XCTFail("Needed not call after remove token")
         }
         token = nil
@@ -325,7 +325,7 @@ class EntityInjectResolverTests: XCTestCase {
     }
     
     func testObserveOnceInvalidate() {
-        var token: EntityInjectToken? = EntityInjectResolver.observeOnce(BaseContainer.self) { _ in
+        var token: EntityInjectReadyToken? = EntityInjectResolver.observeOnce(BaseContainer.self) { _ in
             XCTFail("Needed not call after remove token")
         }
         token = nil

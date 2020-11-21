@@ -10,9 +10,11 @@ import Foundation
 
 public protocol EntityReadyToken: class { }
 
+/// Mediator for wait to ready Container with services or Entity
 final class EntityReadyMediator {
     private var observers: [ObserverWrapper] = []
     
+    /// Notify to ready entity
     @discardableResult
     func notify<T>(_ entity: T) -> Bool {
         var isNotifiedResult = false
@@ -26,6 +28,7 @@ final class EntityReadyMediator {
         return isNotifiedResult
     }
     
+    /// Notify to ready some entities
     @discardableResult
     func notifySome(_ list: [Any]) -> Bool {
         var isNotifiedResult = false
@@ -41,6 +44,7 @@ final class EntityReadyMediator {
         return isNotifiedResult
     }
     
+    /// Subscribe to wait ready entity
     func observeOnce<T>(_ type: T.Type, handler: @escaping (T) -> Void) -> EntityReadyToken {
         let token = Token(handler)
         observers.append(.init(token))

@@ -8,27 +8,32 @@
 
 import Foundation
 
+/// Injects ServiceProviders from shared containers (registered in `ServiceInjectResolver`).
 @propertyWrapper
 public final class ServiceProviderInject<Container, Provider> {
     private var lazyInit: ((Container?) -> Void)?
-    private var lazyInitToken: ServiceInjectToken?
+    private var lazyInitToken: ServiceInjectReadyToken?
     private var state = InjectState<Provider>()
     
+    /// `keyPath` - key in container with value type `ServiceProvider`.
     public convenience init<Service>(_ keyPath: KeyPath<Container, Provider>, file: StaticString = #file, line: UInt = #line)
         where Provider == ServiceProvider<Service> {
         self.init(baseInitFor: keyPath, file: file, line: line)
     }
     
+    /// `keyPath` - key in container with optional value type `ServiceProvider?`.
     public convenience init<Service>(_ keyPath: KeyPath<Container, Provider>, file: StaticString = #file, line: UInt = #line)
         where Provider == ServiceProvider<Service>? {
         self.init(baseInitFor: keyPath, file: file, line: line)
     }
     
+    /// `keyPath` - key in container with value type `ServiceParamsProvider`.
     public convenience init<Service, Params>(_ keyPath: KeyPath<Container, Provider>, file: StaticString = #file, line: UInt = #line)
         where Provider == ServiceParamsProvider<Service, Params> {
         self.init(baseInitFor: keyPath, file: file, line: line)
     }
     
+    /// `keyPath` - key in container with optional value type `ServiceParamsProvider?`.
     public convenience init<Service, Params>(_ keyPath: KeyPath<Container, Provider>, file: StaticString = #file, line: UInt = #line)
         where Provider == ServiceParamsProvider<Service, Params>? {
         self.init(baseInitFor: keyPath, file: file, line: line)

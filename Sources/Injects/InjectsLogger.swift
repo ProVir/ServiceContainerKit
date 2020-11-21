@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Logger for injects
 public protocol InjectsLogger: Logger {
     func entityInjectResolverDidAutoRemove(entityType: Any.Type, delay: TimeInterval)
 }

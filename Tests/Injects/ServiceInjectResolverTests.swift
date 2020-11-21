@@ -202,7 +202,7 @@ class ServiceInjectResolverTests: XCTestCase {
     }
     
     func testReadyContainerInvalidate() {
-        var token: ServiceInjectToken? = ServiceInjectResolver.addReadyContainerHandler(BaseContainer.self) {
+        var token: ServiceInjectReadyToken? = ServiceInjectResolver.addReadyContainerHandler(BaseContainer.self) {
             XCTFail("Needed not call after remove token")
         }
         token = nil
@@ -240,7 +240,7 @@ class ServiceInjectResolverTests: XCTestCase {
     }
     
     func testObserveOnceInvalidate() {
-        var token: ServiceInjectToken? = ServiceInjectResolver.observeOnce(BaseContainer.self) { _ in
+        var token: ServiceInjectReadyToken? = ServiceInjectResolver.observeOnce(BaseContainer.self) { _ in
             XCTFail("Needed not call after remove token")
         }
         token = nil

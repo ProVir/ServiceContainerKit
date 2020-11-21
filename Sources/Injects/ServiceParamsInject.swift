@@ -8,18 +8,21 @@
 
 import Foundation
 
+/// Injects services from shared containers (registered in `ServiceInjectResolver`) with `ServiceParamsProvider`s.
 @propertyWrapper
 public final class ServiceParamsInject<Container, Service, Params> {
     private var lazyInit: ((Container?) -> Void)?
-    private var lazyInitToken: ServiceInjectToken?
+    private var lazyInitToken: ServiceInjectReadyToken?
     private var factory: ((Params?) -> Service)?
     private var state = InjectParamsState<Service, Params>()
     
+    /// `keyPath` - key in container with value type `ServiceParamsProvider`. If `lazyInject` is true - get service from provider only for first use.
     public convenience init(_ keyPath: KeyPath<Container, ServiceParamsProvider<Service, Params>>, params: Params, lazyInject: Bool = false, file: StaticString = #file, line: UInt = #line) {
         self.init(keyPath, file: file, line: line)
         self.state.params.setValue(params, lazyInject: lazyInject)
     }
     
+    /// `keyPath` - key in container with value type `ServiceParamsProvider`.
     public init(_ keyPath: KeyPath<Container, ServiceParamsProvider<Service, Params>>, file: StaticString = #file, line: UInt = #line) {
         setup { [unowned self] container in
             guard let container = container else {
@@ -43,11 +46,13 @@ public final class ServiceParamsInject<Container, Service, Params> {
         setupReadyParams()
     }
     
+    /// `keyPath` - key in container with optional value type `ServiceParamsProvider?`. If `lazyInject` is true - get service from provider only for first use.
     public convenience init<T>(_ keyPath: KeyPath<Container, ServiceParamsProvider<T, Params>?>, params: Params, lazyInject: Bool = false, file: StaticString = #file, line: UInt = #line) where Service == T? {
         self.init(keyPath, file: file, line: line)
         self.state.params.setValue(params, lazyInject: lazyInject)
     }
     
+    /// `keyPath` - key in container with optional value type `ServiceParamsProvider?`.
     public init<T>(_ keyPath: KeyPath<Container, ServiceParamsProvider<T, Params>?>, file: StaticString = #file, line: UInt = #line) where Service == T? {
         setup { [unowned self] container in
             guard let container = container else {

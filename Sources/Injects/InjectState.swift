@@ -8,13 +8,19 @@
 
 import Foundation
 
-public protocol InjectProjectedValue {
+/// Base protocol for public state and observe to state. Used as projected value.
+public protocol InjectBaseState {
     associatedtype Entity
+    
+    /// Container or Entity is ready to use.
     var isReady: Bool { get }
+    
+    /// Subscribe to wait ready Container or Entity. Celled now if ready, replaced previous ready handler.
     func setReadyHandler(_ handler: @escaping (Entity) -> Void)
 }
 
-public struct InjectState<Entity>: InjectProjectedValue {
+/// State for ServiceInject and EntityInject. Used as projected value.
+public struct InjectState<Entity>: InjectBaseState {
     let storage: InjectStorage<Entity>
     
     init(storage: InjectStorage<Entity> = .init()) {
@@ -28,7 +34,8 @@ public struct InjectState<Entity>: InjectProjectedValue {
     }
 }
 
-public struct InjectParamsState<Entity, Params>: InjectProjectedValue {
+/// State for ServiceParamsInject. Used as projected value.
+public struct InjectParamsState<Entity, Params>: InjectBaseState {
     let storage: InjectStorage<Entity>
     let params: InjectParamsStorage<Params>
     
@@ -43,6 +50,7 @@ public struct InjectParamsState<Entity, Params>: InjectProjectedValue {
         storage.setReadyHandler(handler)
     }
     
+    /// Set parameters for make service. If `lazyInject` is true - get service from provider only for first use.
     public func setParameters(_ params: Params, lazyInject: Bool = false, file: StaticString = #file, line: UInt = #line) {
         guard storage.isReady == false else {
             fatalError("Failed to set parameters: the service has already been made", file: file, line: line)

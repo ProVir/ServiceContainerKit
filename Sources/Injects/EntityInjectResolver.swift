@@ -8,33 +8,45 @@
 
 import Foundation
 
-public typealias EntityInjectToken = EntityReadyToken
+/// Token for register entity
+public protocol EntityInjectToken: class { }
+
+/// Token for subscribe ready entity
+public typealias EntityInjectReadyToken = EntityReadyToken
 
 public extension EntityInjectResolver {
+    /// Register entity as shared and notify for ready to injects. Removed when token if lost.
     static func register<Entity>(_ entity: Entity) -> EntityInjectToken {
         return shared.register(entity)
     }
-    
+    /// Register entity as shared and notify for ready to injects. Removed after first use, but real removed in next loop in main thread.
+    /// If `autoRemoveDelay != nil` - auto removed after delay if not used.
     static func registerForFirstInject<Entity>(_ entity: Entity, autoRemoveDelay: TimeInterval? = nil) {
         shared.registerForFirstInject(entity, autoRemoveDelay: autoRemoveDelay)
     }
     
+    /// Register some entities as shared and notify for ready to injects. Removed when tokens if lost.
     static func registerSome(_ entities: [Any]) -> [EntityInjectToken] {
         return shared.registerSome(entities)
     }
     
+    /// Register some entities as shared and notify for ready to injects. Removed after first use, but real removed in next loop in main thread.
+    /// If `autoRemoveDelay != nil` - auto removed after delay if not used.
     static func registerForFirstInjectSome(_ entities: [Any], autoRemoveDelay: TimeInterval? = nil) {
         shared.registerForFirstInjectSome(entities, autoRemoveDelay: autoRemoveDelay)
     }
     
+    /// Remove (unregister) entity.
     static func remove<Entity>(_ type: Entity.Type) {
         shared.remove(type)
     }
 
-    static func addReadyContainerHandler<Entity>(_ type: Entity.Type, handler: @escaping () -> Void) -> EntityInjectToken? {
+    /// Subscribe ready entity for use, called now and return nil token if ready.
+    static func addReadyContainerHandler<Entity>(_ type: Entity.Type, handler: @escaping () -> Void) -> EntityInjectReadyToken? {
         return shared.addReadyContainerHandler(type, handler: handler)
     }
     
+    /// If registered entity, returned true.
     static func contains<Entity>(_ type: Entity.Type) -> Bool {
         return shared.contains(type)
     }
@@ -46,7 +58,7 @@ extension EntityInjectResolver {
         return shared.resolve(type)
     }
     
-    static func observeOnce<Entity>(_ type: Entity.Type, handler: @escaping (Entity) -> Void) -> EntityInjectToken {
+    static func observeOnce<Entity>(_ type: Entity.Type, handler: @escaping (Entity) -> Void) -> EntityInjectReadyToken {
         return shared.observeOnce(type, handler: handler)
     }
 }
@@ -57,6 +69,7 @@ extension EntityInjectResolver {
     }
 }
 
+/// Resolver entities for `EntityInject`. Used for register entities.
 public final class EntityInjectResolver {
     fileprivate static let shared = EntityInjectResolver()
     
@@ -120,11 +133,11 @@ public final class EntityInjectResolver {
         return nil
     }
     
-    func observeOnce<Entity>(_ type: Entity.Type, handler: @escaping (Entity) -> Void) -> EntityInjectToken {
+    func observeOnce<Entity>(_ type: Entity.Type, handler: @escaping (Entity) -> Void) -> EntityInjectReadyToken {
         return mediator.observeOnce(type, handler: handler)
     }
     
-    func addReadyContainerHandler<Entity>(_ type: Entity.Type, handler: @escaping () -> Void) -> EntityInjectToken? {
+    func addReadyContainerHandler<Entity>(_ type: Entity.Type, handler: @escaping () -> Void) -> EntityInjectReadyToken? {
         if resolve(type) != nil {
             handler()
             return nil
@@ -163,6 +176,11 @@ public final class EntityInjectResolver {
         list = list.filter { $0.isValid }
     }
     
+    private final class Token: EntityInjectToken {
+        let entity: Any
+        init(_ entity: Any) { self.entity = entity }
+    }
+    
     private final class EntityWrapper {
         private(set) weak var token: Token?
         
@@ -192,10 +210,5 @@ public final class EntityInjectResolver {
             }
             return true
         }
-    }
-    
-    private final class Token: EntityInjectToken {
-        let entity: Any
-        init(_ entity: Any) { self.entity = entity }
     }
 }

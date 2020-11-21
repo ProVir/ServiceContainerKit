@@ -50,7 +50,7 @@ class ViewController: UIViewController {
     @SLSimpleInject(FirstService.self, lazy: false) var firstService2
     @ServiceInject(\ServiceContainer.singletonServiceProvider) var singletonService
     
-    var token: ServiceInjectToken?
+    var token: ServiceInjectReadyToken?
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)

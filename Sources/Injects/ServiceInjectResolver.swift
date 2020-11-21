@@ -8,30 +8,35 @@
 
 import Foundation
 
-public typealias ServiceInjectToken = EntityReadyToken
+/// Token for subscribe ready container
+public typealias ServiceInjectReadyToken = EntityReadyToken
 
 public extension ServiceInjectResolver {
+    /// Register container with services as shared and notify for ready to injects.
     static func register<Container>(_ container: Container, failureIfContains: Bool = true) {
         shared.register(container, failureIfContains: failureIfContains)
     }
     
+    /// Register some containers with services as shared and notify for ready to injects.
     static func registerSome(_ containers: [Any], failureIfContains: Bool = true) {
         shared.registerSome(containers, failureIfContains: failureIfContains)
     }
     
+    /// Remove (unregister) container.
     static func remove<Container>(_ type: Container.Type, onlyLast: Bool = false) {
         shared.remove(type, onlyLast: onlyLast)
     }
     
-    static func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
+    /// Subscribe ready container for use, called now and return nil token if ready.
+    static func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectReadyToken? {
         return shared.addReadyContainerHandler(type, handler: handler)
     }
     
+    /// If registered container, returned true.
     static func contains<Container>(_ type: Container.Type) -> Bool {
         return shared.contains(type)
     }
 }
-
 
 // MARK: Internal
 extension ServiceInjectResolver {
@@ -39,7 +44,7 @@ extension ServiceInjectResolver {
         return shared.resolve(type)
     }
     
-    static func observeOnce<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
+    static func observeOnce<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectReadyToken {
         return shared.observeOnce(type, handler: handler)
     }
 }
@@ -54,6 +59,7 @@ extension ServiceInjectResolver {
     }
 }
 
+/// Resolver containers for `ServiceInject` and `ServiceParamsInject`. Used for register containers with services.
 public final class ServiceInjectResolver {
     fileprivate static let shared = ServiceInjectResolver()
     
@@ -106,11 +112,11 @@ public final class ServiceInjectResolver {
         return nil
     }
     
-    func observeOnce<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectToken {
+    func observeOnce<Container>(_ type: Container.Type, handler: @escaping (Container) -> Void) -> ServiceInjectReadyToken {
         return mediator.observeOnce(type, handler: handler)
     }
     
-    func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectToken? {
+    func addReadyContainerHandler<Container>(_ type: Container.Type, handler: @escaping () -> Void) -> ServiceInjectReadyToken? {
         if resolve(type) != nil {
             handler()
             return nil
