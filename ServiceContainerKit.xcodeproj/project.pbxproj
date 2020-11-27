@@ -147,11 +147,11 @@
 		50A1C6A722667188003A8554 /* ServiceSimpleLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceSimpleLocator.swift; sourceTree = "<group>"; };
 		50A1C6A9226BAD01003A8554 /* ServiceLocatorKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorKey.swift; sourceTree = "<group>"; };
 		50AA75A820C98169003ED4CC /* ServiceSimpleLocatorObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceSimpleLocatorObjC.swift; sourceTree = "<group>"; };
-		50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
+		50AA75AA20C98642003ED4CC /* Tester-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tester-Bridging-Header.h"; sourceTree = "<group>"; };
 		50AA75AB20C98643003ED4CC /* ObjCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCViewController.h; sourceTree = "<group>"; };
 		50AA75AC20C98643003ED4CC /* ObjCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCViewController.m; sourceTree = "<group>"; };
 		50B2CCB220C908660027E832 /* ServiceProviderObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProviderObjC.swift; sourceTree = "<group>"; };
-		50DA15CA20C44AF700B756B3 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		50DA15CA20C44AF700B756B3 /* Tester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50DA15CD20C44AF700B756B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50DA15CF20C44AF700B756B3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		50DA15D220C44AF700B756B3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -342,7 +342,7 @@
 				50DA15D420C44AF800B756B3 /* Assets.xcassets */,
 				50DA15D620C44AF800B756B3 /* LaunchScreen.storyboard */,
 				50DA15D920C44AF800B756B3 /* Info.plist */,
-				50AA75AA20C98642003ED4CC /* Example-Bridging-Header.h */,
+				50AA75AA20C98642003ED4CC /* Tester-Bridging-Header.h */,
 			);
 			name = "Support Files";
 			sourceTree = "<group>";
@@ -367,7 +367,7 @@
 				50DA160E20C4D9B600B756B3 /* README.md */,
 				50DA160F20C4DB6700B756B3 /* ServiceContainerKit.podspec */,
 				5033D4452530F7E900977A99 /* Package.swift */,
-				50DA15CC20C44AF700B756B3 /* Example */,
+				50DA15CC20C44AF700B756B3 /* Tester */,
 				506F9EF820E3E3F100E44CBD /* Sources */,
 				506F9F0520E3E3F100E44CBD /* Tests */,
 				50DA15CB20C44AF700B756B3 /* Products */,
@@ -378,14 +378,14 @@
 		50DA15CB20C44AF700B756B3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				50DA15CA20C44AF700B756B3 /* Example.app */,
+				50DA15CA20C44AF700B756B3 /* Tester.app */,
 				506F9EFF20E3E3F100E44CBD /* ServiceContainerKitTests.xctest */,
 				506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		50DA15CC20C44AF700B756B3 /* Example */ = {
+		50DA15CC20C44AF700B756B3 /* Tester */ = {
 			isa = PBXGroup;
 			children = (
 				50DA15CD20C44AF700B756B3 /* AppDelegate.swift */,
@@ -398,7 +398,7 @@
 				5025E1022523B3E800CDB01E /* ServiceLocator */,
 				506F9F4820E3FEE400E44CBD /* Support Files */,
 			);
-			path = Example;
+			path = Tester;
 			sourceTree = "<group>";
 		};
 		50DA160220C4500100B756B3 /* Frameworks */ = {
@@ -459,9 +459,9 @@
 			productReference = 506F9F1F20E3E4B400E44CBD /* ServiceContainerKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		50DA15C920C44AF700B756B3 /* Example */ = {
+		50DA15C920C44AF700B756B3 /* Tester */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 50DA15DC20C44AF800B756B3 /* Build configuration list for PBXNativeTarget "Example" */;
+			buildConfigurationList = 50DA15DC20C44AF800B756B3 /* Build configuration list for PBXNativeTarget "Tester" */;
 			buildPhases = (
 				504C7B31227E463200762BC7 /* SwiftLint */,
 				50DA15C620C44AF700B756B3 /* Sources */,
@@ -474,9 +474,9 @@
 			dependencies = (
 				506F9F2520E3E4B400E44CBD /* PBXTargetDependency */,
 			);
-			name = Example;
+			name = Tester;
 			productName = ServiceProviderExample;
-			productReference = 50DA15CA20C44AF700B756B3 /* Example.app */;
+			productReference = 50DA15CA20C44AF700B756B3 /* Tester.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -516,7 +516,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				50DA15C920C44AF700B756B3 /* Example */,
+				50DA15C920C44AF700B756B3 /* Tester */,
 				506F9F1E20E3E4B400E44CBD /* ServiceContainerKit */,
 				506F9EFE20E3E3F100E44CBD /* ServiceContainerKitTests */,
 			);
@@ -654,7 +654,7 @@
 /* Begin PBXTargetDependency section */
 		506F9F0420E3E3F100E44CBD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 50DA15C920C44AF700B756B3 /* Example */;
+			target = 50DA15C920C44AF700B756B3 /* Tester */;
 			targetProxy = 506F9F0320E3E3F100E44CBD /* PBXContainerItemProxy */;
 		};
 		506F9F2520E3E4B400E44CBD /* PBXTargetDependency */ = {
@@ -908,16 +908,16 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				IBSC_WARNINGS = NO;
-				INFOPLIST_FILE = "$(SRCROOT)/Example/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Tester/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKitExample;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKit.Tester;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Example/Example-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tester/Tester-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -934,15 +934,15 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				IBSC_WARNINGS = NO;
-				INFOPLIST_FILE = "$(SRCROOT)/Example/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Tester/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKitExample;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.provir.ServiceContainerKit.Tester;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "Example/Example-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tester/Tester-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -978,7 +978,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		50DA15DC20C44AF800B756B3 /* Build configuration list for PBXNativeTarget "Example" */ = {
+		50DA15DC20C44AF800B756B3 /* Build configuration list for PBXNativeTarget "Tester" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				50DA15DD20C44AF800B756B3 /* Debug */,

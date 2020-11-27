@@ -8,7 +8,7 @@
 
 #import "ObjCViewController.h"
 @import ServiceContainerKit;
-#import "Example-Swift.h"
+#import "Tester-Swift.h"
 
 
 @interface ObjCViewController ()
