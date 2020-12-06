@@ -13,8 +13,18 @@ import ServiceContainerKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    private var appServices: AppDelegateServices?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        let (services, appServices) = ServicesFactory.makeDefault()
+        self.appServices = appServices
+        ServiceInjectResolver.register(services)
+        
+        // AutoLogin
+        appServices.userService.auth(login: "User") { result in
+            print("AutoLogin result: \(result)")
+        }
         
         return true
     }
