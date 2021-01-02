@@ -12,7 +12,7 @@ import Combine
 protocol NoteRecordsManager: class {
     var folder: NoteFolder { get }
     var notes: [NoteRecord] { get }
-    var notesPublisher: Published<[NoteRecord]>.Publisher { get }
+    var notesPublisher: AnyPublisher<[NoteRecord], Never> { get }
     
     func reloadIfNeeded()
     func reload(completion: ((Result<[NoteRecord], Error>) -> Void)?)

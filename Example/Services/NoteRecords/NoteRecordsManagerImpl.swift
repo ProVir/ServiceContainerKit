@@ -15,9 +15,9 @@ final class NoteRecordsManagerImpl: NoteRecordsManager {
     
     let folder: NoteFolder
     
-    @Published
+    @Observable
     private(set) var notes: [NoteRecord] = []
-    var notesPublisher: Published<[NoteRecord]>.Publisher { $notes }
+    var notesPublisher: AnyPublisher<[NoteRecord], Never> { $notes }
     
     init(folder: NoteFolder, apiClient: APIClient) {
         self.folder = folder

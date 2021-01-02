@@ -15,9 +15,9 @@ final class NoteRecordEditServiceImpl: NoteRecordEditService {
     
     let folder: NoteFolder
     
-    @Published
+    @Observable
     private(set) var record: NoteRecord?
-    var recordPublisher: Published<NoteRecord?>.Publisher { $record }
+    var recordPublisher: AnyPublisher<NoteRecord?, Never> { $record }
     
     init(folder: NoteFolder, record: NoteRecord?, apiClient: APIClient, notifyRecordsChanged: @escaping () -> Void) {
         self.folder = folder

@@ -11,7 +11,7 @@ import Combine
 
 protocol NoteFoldersManager: class {
     var folders: [NoteFolder] { get }
-    var foldersPublisher: Published<[NoteFolder]>.Publisher { get }
+    var foldersPublisher: AnyPublisher<[NoteFolder], Never> { get }
     
     func reloadIfNeeded()
     func reload(completion: ((Result<[NoteFolder], Error>) -> Void)?)

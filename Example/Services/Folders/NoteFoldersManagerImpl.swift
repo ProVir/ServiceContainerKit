@@ -15,9 +15,9 @@ final class NoteFoldersManagerImpl: NoteFoldersManager {
     
     private var cancellableStorage: Set<AnyCancellable> = []
     
-    @Published
+    @Observable
     private(set) var folders: [NoteFolder] = []
-    var foldersPublisher: Published<[NoteFolder]>.Publisher { $folders }
+    var foldersPublisher: AnyPublisher<[NoteFolder], Never> { $folders }
     
     init(apiClient: APIClient, userService: UserService) {
         self.apiClient = apiClient

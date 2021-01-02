@@ -11,7 +11,7 @@ import Combine
 
 protocol UserService: class {
     var user: User? { get }
-    var userPublisher: Published<User?>.Publisher { get }
+    var userPublisher: AnyPublisher<User?, Never> { get }
     
     func auth(login: String, completion: @escaping (Result<User, Error>) -> Void)
     func logout()

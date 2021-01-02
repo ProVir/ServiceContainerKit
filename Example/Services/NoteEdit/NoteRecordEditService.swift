@@ -12,7 +12,7 @@ import Combine
 protocol NoteRecordEditService: class {
     var folder: NoteFolder { get }
     var record: NoteRecord? { get }
-    var recordPublisher: Published<NoteRecord?>.Publisher { get }
+    var recordPublisher: AnyPublisher<NoteRecord?, Never> { get }
     
     func apply(content: NoteRecord.Content, completion: @escaping (Result<NoteRecord, Error>) -> Void)
     func remove(completion: @escaping (Result<Void, Error>) -> Void)

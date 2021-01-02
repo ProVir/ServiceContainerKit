@@ -12,9 +12,9 @@ import Combine
 final class UserServiceImpl: UserService {
     private let apiClient: APIClient
     
-    @Published
+    @Observable
     private(set) var user: User?
-    var userPublisher: Published<User?>.Publisher { $user }
+    var userPublisher: AnyPublisher<User?, Never> { $user }
     
     init(apiClient: APIClient) {
         self.apiClient = apiClient

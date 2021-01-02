@@ -26,6 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("AutoLogin result: \(result)")
         }
         
+        // Prepare for UI
+        MainViewController.prepareForMake()
+        
         return true
     }
 
