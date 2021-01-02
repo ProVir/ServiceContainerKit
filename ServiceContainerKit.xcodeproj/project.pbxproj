@@ -88,6 +88,11 @@
 		50BE0D9225A0B02F006410CC /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BE0D9125A0B02F006410CC /* MainViewController.swift */; };
 		50BE0D9625A0B3CC006410CC /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BE0D9525A0B3CC006410CC /* MainPresenter.swift */; };
 		50BE0D9D25A0E639006410CC /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BE0D9C25A0E639006410CC /* Observable.swift */; };
+		50BE0DA425A0F691006410CC /* NotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BE0DA325A0F691006410CC /* NotesViewController.swift */; };
+		50BE0DAA25A0F9BB006410CC /* NotesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BE0DA925A0F9BB006410CC /* NotesPresenter.swift */; };
+		50BE0DAF25A11248006410CC /* NoteEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BE0DAE25A11248006410CC /* NoteEditViewController.swift */; };
+		50BE0DB525A112BD006410CC /* NoteEditPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BE0DB425A112BD006410CC /* NoteEditPresenter.swift */; };
+		50BE0DB925A1133D006410CC /* NoteEditViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BE0DB825A1133D006410CC /* NoteEditViewControllerFactory.swift */; };
 		50DA15CE20C44AF700B756B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50DA15CD20C44AF700B756B3 /* AppDelegate.swift */; };
 		50DA15D320C44AF700B756B3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D120C44AF700B756B3 /* Main.storyboard */; };
 		50DA15D520C44AF800B756B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50DA15D420C44AF800B756B3 /* Assets.xcassets */; };
@@ -237,6 +242,11 @@
 		50BE0D9125A0B02F006410CC /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		50BE0D9525A0B3CC006410CC /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		50BE0D9C25A0E639006410CC /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		50BE0DA325A0F691006410CC /* NotesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesViewController.swift; sourceTree = "<group>"; };
+		50BE0DA925A0F9BB006410CC /* NotesPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesPresenter.swift; sourceTree = "<group>"; };
+		50BE0DAE25A11248006410CC /* NoteEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditViewController.swift; sourceTree = "<group>"; };
+		50BE0DB425A112BD006410CC /* NoteEditPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditPresenter.swift; sourceTree = "<group>"; };
+		50BE0DB825A1133D006410CC /* NoteEditViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditViewControllerFactory.swift; sourceTree = "<group>"; };
 		50DA15CA20C44AF700B756B3 /* Tester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50DA15CD20C44AF700B756B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50DA15CF20C44AF700B756B3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -421,6 +431,8 @@
 			children = (
 				50BE0D8325A0A0F0006410CC /* TableAdapter */,
 				50BE0D9025A0AFCE006410CC /* Main */,
+				50BE0DA225A0F662006410CC /* Notes */,
+				50BE0DAD25A1120C006410CC /* NoteEdit */,
 				506B062C25718AA2009C4AD6 /* Main.storyboard */,
 			);
 			path = Presentation;
@@ -589,6 +601,25 @@
 				50BE0D9C25A0E639006410CC /* Observable.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		50BE0DA225A0F662006410CC /* Notes */ = {
+			isa = PBXGroup;
+			children = (
+				50BE0DA325A0F691006410CC /* NotesViewController.swift */,
+				50BE0DA925A0F9BB006410CC /* NotesPresenter.swift */,
+			);
+			path = Notes;
+			sourceTree = "<group>";
+		};
+		50BE0DAD25A1120C006410CC /* NoteEdit */ = {
+			isa = PBXGroup;
+			children = (
+				50BE0DB825A1133D006410CC /* NoteEditViewControllerFactory.swift */,
+				50BE0DAE25A11248006410CC /* NoteEditViewController.swift */,
+				50BE0DB425A112BD006410CC /* NoteEditPresenter.swift */,
+			);
+			path = NoteEdit;
 			sourceTree = "<group>";
 		};
 		50DA15C120C44AF700B756B3 = {
@@ -845,6 +876,7 @@
 				506B06A325743EA5009C4AD6 /* UserService.swift in Sources */,
 				50BE0D8925A0A1C9006410CC /* SimpleCellViewModel.swift in Sources */,
 				506B06A9257442E1009C4AD6 /* UserServiceImpl.swift in Sources */,
+				50BE0DAA25A0F9BB006410CC /* NotesPresenter.swift in Sources */,
 				500FE29A257C24AD00293CEF /* ServicesUser.swift in Sources */,
 				506B069425743D40009C4AD6 /* APIMockClient.swift in Sources */,
 				50BE0D9225A0B02F006410CC /* MainViewController.swift in Sources */,
@@ -855,18 +887,22 @@
 				506B06DC25753000009C4AD6 /* NoteRecordEditServiceFactory.swift in Sources */,
 				506B06B425744531009C4AD6 /* NoteFoldersManager.swift in Sources */,
 				500FE28D257C13E200293CEF /* NoteRecordsManagerImpl.swift in Sources */,
+				50BE0DB925A1133D006410CC /* NoteEditViewControllerFactory.swift in Sources */,
 				506B062725718AA2009C4AD6 /* AppDelegate.swift in Sources */,
 				506B06612571944C009C4AD6 /* Types.swift in Sources */,
 				500FE295257C21FC00293CEF /* Services.swift in Sources */,
+				50BE0DAF25A11248006410CC /* NoteEditViewController.swift in Sources */,
 				500FE2A6257CDC7400293CEF /* ServicesCore.swift in Sources */,
 				506B069C25743E24009C4AD6 /* APIClientFactory.swift in Sources */,
 				500FE291257C1CDA00293CEF /* NoteRecordEditServiceImpl.swift in Sources */,
+				50BE0DB525A112BD006410CC /* NoteEditPresenter.swift in Sources */,
 				506B06BC25744C92009C4AD6 /* NoteFoldersManagerFactory.swift in Sources */,
 				506B06E72575339B009C4AD6 /* NoteRecordEditService.swift in Sources */,
 				500FE2AA257CDFD700293CEF /* ServicesFactory.swift in Sources */,
 				500FE29E257C24D100293CEF /* ServicesFolders.swift in Sources */,
 				50BE0D9D25A0E639006410CC /* Observable.swift in Sources */,
 				50BE0D8D25A0A7A8006410CC /* SimpleTableViewController.swift in Sources */,
+				50BE0DA425A0F691006410CC /* NotesViewController.swift in Sources */,
 				50BE0D9625A0B3CC006410CC /* MainPresenter.swift in Sources */,
 				506B06AD257443E9009C4AD6 /* UserServiceFactory.swift in Sources */,
 				500FE2A2257C24EC00293CEF /* ServicesNotes.swift in Sources */,

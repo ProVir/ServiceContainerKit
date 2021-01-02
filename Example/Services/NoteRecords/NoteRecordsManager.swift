@@ -16,4 +16,6 @@ protocol NoteRecordsManager: class {
     
     func reloadIfNeeded()
     func reload(completion: ((Result<[NoteRecord], Error>) -> Void)?)
+    
+    func remove(recordId: NoteRecord.Id, completion: @escaping (Result<Void, Error>) -> Void)
 }

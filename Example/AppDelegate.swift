@@ -11,6 +11,8 @@ import ServiceContainerKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    private let enableFillMockData = true
 
     var window: UIWindow?
     private var appServices: AppDelegateServices?
@@ -22,14 +24,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ServiceInjectResolver.register(services)
         
         // AutoLogin
-        appServices.userService.auth(login: "User") { result in
+        appServices.userService.auth(login: "User") { [weak self] result in
             print("AutoLogin result: \(result)")
+            
+            if let self = self, self.enableFillMockData {
+                self.fillMockData(services: services)
+            }
         }
         
         // Prepare for UI
         MainViewController.prepareForMake()
         
         return true
+    }
+    
+    private func fillMockData(services: Services) {
+        let foldersManager = services.folders.manager.getServiceOrFatal()
+        
+        ["Fast notes", "Events", "Common"].forEach { name in
+            foldersManager.add(content: .init(name: name)) { [weak self] result in
+                switch result {
+                case .success(let folder): self?.fillMockNotes(services: services, folder: folder)
+                case .failure: break
+                }
+            }
+        }
+    }
+    
+    private func fillMockNotes(services: Services, folder: NoteFolder) {
+        let contents: [NoteRecord.Content] = [
+            .init(title: "First", content: "First example note"),
+            .init(title: "Second", content: "Second\nNote with details")
+        ]
+        
+        contents.forEach { content in
+            let editService = services.notes.editService.getServiceOrFatal(
+                params: .init(folder: folder, record: nil)
+            )
+            editService.apply(content: content) { _ in
+                _ = editService
+            }
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

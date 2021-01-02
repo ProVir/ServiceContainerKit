@@ -15,6 +15,8 @@ final class SimpleTableAdapter: NSObject, UITableViewDataSource, UITableViewDele
     
     private var models: [SimpleCellViewModel] = []
     
+    var autoDeselect = true
+    
     func bind(tableView: UITableView, cellIdentifier: String, bindToAdapter: Bool = true) {
         self.tableView = tableView
         self.cellIdentifier = cellIdentifier
@@ -54,7 +56,7 @@ final class SimpleTableAdapter: NSObject, UITableViewDataSource, UITableViewDele
         let model = models[indexPath.row]
         model.onSelected()
         
-        if tableView.delegate === self {
+        if autoDeselect {
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }

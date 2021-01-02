@@ -62,11 +62,10 @@ final class MainPresenterImpl: MainPresenter {
         self.showAlert = showAlertHandler
         self.routeToFolder = routeToFolderHandler
         
-        foldersManager.foldersPublisher.map { [weak self] in
-            guard let self = self else { return [] }
-            return $0.map { self.buildCell(folder: $0) }
-        }.assign(to: \Self.models, on: self)
-        .store(in: &cancellableSet)
+        foldersManager.foldersPublisher.sink { [weak self] in
+            guard let self = self else { return }
+            self.models = $0.map { self.buildCell(folder: $0) }
+        }.store(in: &cancellableSet)
     }
     
     func login(user: String) {
@@ -106,7 +105,7 @@ final class MainPresenterImpl: MainPresenter {
         showAlert(title, message)
     }
     
-    private func deleteFolder(folder: NoteFolder) {
+    private func deleteFolder(_ folder: NoteFolder) {
         foldersManager.remove(folderId: folder.id) { [weak self] result in
             switch result {
             case .success: break
@@ -123,7 +122,7 @@ final class MainPresenterImpl: MainPresenter {
             text: folder.content.name,
             detail: nil,
             onSelected: { [weak self] in self?.routeToFolder(folder) },
-            onDeleted: { [weak self] in self?.deleteFolder(folder: folder) }
+            onDeleted: { [weak self] in self?.deleteFolder(folder) }
         )
     }
 }

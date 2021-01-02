@@ -18,12 +18,15 @@ extension MainViewController {
 }
 
 class MainViewController: SimpleTableViewController {
-    @EntityInject(MainPresenter.self) var presenter
+    @EntityInject(MainPresenter.self)
+    private var presenter
     
-    var cancellableSet: Set<AnyCancellable> = []
+    private var cancellableSet: Set<AnyCancellable> = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        adapter.autoDeselect = false
         
         presenter.configure(
             showAlertHandler: { [weak self] title, message in
@@ -31,8 +34,8 @@ class MainViewController: SimpleTableViewController {
                 alert.addAction(.init(title: "OK", style: .default, handler: nil))
                 self?.present(alert, animated: true, completion: nil)
             },
-            routeToFolderHandler: { folder in
-                print("Routed to \(folder.id)")
+            routeToFolderHandler: { [weak self] folder in
+                self?.routeTo(folder: folder)
             }
         )
         presenter.titlePublisher.sink { [weak self] in
@@ -96,14 +99,14 @@ class MainViewController: SimpleTableViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    /*
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private enum SegueIdentifier: String {
+        case notes
     }
-    */
+    
+    private func routeTo(folder: NoteFolder) {
+        NotesViewController.prepareForMake(folder: folder)
+        performSegue(withIdentifier: SegueIdentifier.notes.rawValue, sender: nil)
+    }
 
 }

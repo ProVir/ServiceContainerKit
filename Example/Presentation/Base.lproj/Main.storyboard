@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -48,12 +49,13 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Folders" id="xV0-JN-ufi">
+                        <barButtonItem key="backBarButtonItem" title="Folders" id="Fsq-BL-4sn"/>
                         <barButtonItem key="leftBarButtonItem" image="person.circle" catalog="system" id="lYO-hn-aKN">
                             <connections>
                                 <action selector="manageUser" destination="uQv-5d-hd3" id="FQK-KE-BTn"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Item" systemItem="add" id="cDS-TO-5Ne">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="cDS-TO-5Ne">
                             <connections>
                                 <action selector="addFolder" destination="uQv-5d-hd3" id="0n7-PC-Kh1"/>
                             </connections>
@@ -65,10 +67,106 @@
                             <action selector="refresh" destination="uQv-5d-hd3" eventType="valueChanged" id="DoN-M1-d2c"/>
                         </connections>
                     </refreshControl>
+                    <connections>
+                        <segue destination="WR2-fQ-bPg" kind="show" identifier="notes" id="eyk-fT-w4F"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JuM-GR-pYU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="394" y="730"/>
+        </scene>
+        <!--Notes-->
+        <scene sceneID="sL4-9e-j8H">
+            <objects>
+                <tableViewController id="WR2-fQ-bPg" customClass="NotesViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="Kjb-mn-huE">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="cell" textLabel="sGB-av-7p4" detailTextLabel="AJH-O5-nrQ" style="IBUITableViewCellStyleSubtitle" id="UUE-tV-Yp7">
+                                <rect key="frame" x="0.0" y="28" width="414" height="55.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="UUE-tV-Yp7" id="o2m-QP-PlT">
+                                    <rect key="frame" x="0.0" y="0.0" width="383" height="55.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="sGB-av-7p4">
+                                            <rect key="frame" x="20" y="10" width="33" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AJH-O5-nrQ">
+                                            <rect key="frame" x="20" y="31.5" width="44" height="14.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="WR2-fQ-bPg" id="41G-gK-Pt3"/>
+                            <outlet property="delegate" destination="WR2-fQ-bPg" id="BME-G7-BgJ"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Notes" largeTitleDisplayMode="never" id="yci-Td-pN4">
+                        <barButtonItem key="backBarButtonItem" title="Notes" id="XMY-yp-ucX"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="DWq-Xn-yT6">
+                            <connections>
+                                <segue destination="7Zx-7n-AfI" kind="presentation" identifier="add" id="TcI-y7-fhw"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="B0w-RP-N7Z">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <action selector="refresh" destination="WR2-fQ-bPg" eventType="valueChanged" id="ZRw-nw-kC6"/>
+                        </connections>
+                    </refreshControl>
+                    <connections>
+                        <segue destination="7Zx-7n-AfI" kind="presentation" identifier="edit" id="DtS-ot-qGZ"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cUr-yh-hzx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1346" y="730"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="r3j-sO-9t7">
+            <objects>
+                <navigationController id="7Zx-7n-AfI" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="uVq-EC-qQx">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="wbC-kD-tpp" kind="relationship" relationship="rootViewController" id="WGR-af-W1R"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Pcw-Ac-oTZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2368" y="730"/>
+        </scene>
+        <!--Note-->
+        <scene sceneID="fck-ns-gca">
+            <objects>
+                <viewController id="wbC-kD-tpp" customClass="NoteEditViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Dqy-OV-IFM">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="PAV-oK-u9U"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Note" id="Zja-3p-t35"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0HS-2z-SOG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3325" y="730"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="atc-EO-pgX">
@@ -87,6 +185,9 @@
             <point key="canvasLocation" x="-499" y="730"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="TcI-y7-fhw"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="person.circle" catalog="system" width="128" height="121"/>
         <systemColor name="systemBackgroundColor">

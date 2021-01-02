@@ -42,4 +42,15 @@ final class NoteRecordsManagerImpl: NoteRecordsManager {
             completion?(result.mapError({ $0 }))
         }
     }
+    
+    func remove(recordId: NoteRecord.Id, completion: @escaping (Result<Void, Error>) -> Void) {
+        apiClient.removeNote(folderId: folder.id, recordId: recordId) { [weak self] result in
+            guard let self = self else { return }
+            completion(result.mapError({ $0 }))
+            if case .success = result {
+                self.lastReloadSuccess = false
+                self.reload(completion: nil)
+            }
+        }
+    }
 }
