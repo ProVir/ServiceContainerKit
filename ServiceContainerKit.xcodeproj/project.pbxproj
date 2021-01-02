@@ -354,7 +354,7 @@
 			path = Injects;
 			sourceTree = "<group>";
 		};
-		5025E24D252796C300CDB01E /* Core */ = {
+		5025E24D252796C300CDB01E /* Provider */ = {
 			isa = PBXGroup;
 			children = (
 				50DA160620C4507D00B756B3 /* BaseTypes.swift */,
@@ -368,7 +368,7 @@
 				5025E30C252904DE00CDB01E /* Logger.swift */,
 				5025E314252917C500CDB01E /* ProvidersLogger.swift */,
 			);
-			path = Core;
+			path = Provider;
 			sourceTree = "<group>";
 		};
 		5033D4442530F7A600977A99 /* Core */ = {
@@ -484,7 +484,7 @@
 			children = (
 				506F9EF920E3E3F100E44CBD /* ServiceContainerKit.h */,
 				506F9EFA20E3E3F100E44CBD /* Info.plist */,
-				5025E24D252796C300CDB01E /* Core */,
+				5025E24D252796C300CDB01E /* Provider */,
 				500F8BA82465E1B4005C1F5C /* Injects */,
 			);
 			path = Sources;

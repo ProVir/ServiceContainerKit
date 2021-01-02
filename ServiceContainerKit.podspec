@@ -22,14 +22,16 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '10.0'
   s.watchos.deployment_target = '3.0'
   
-  s.subspec 'Core' do |ss|
-    ss.source_files = ['Sources/Core/*.swift', 'Sources/*.h']
+  s.default_subspec = 'Provider'
+  
+  s.subspec 'Provider' do |ss|
+    ss.source_files = ['Sources/Provider/*.swift', 'Sources/*.h']
     ss.public_header_files = 'Sources/*.h'
   end
   
   s.subspec 'Injects' do |ss|
     ss.source_files = 'Sources/Injects/*.swift'
-    ss.dependency 'ServiceContainerKit/Core'
+    ss.dependency 'ServiceContainerKit/Provider'
   end
   
 end
