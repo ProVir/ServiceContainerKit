@@ -159,10 +159,42 @@
                     <view key="view" contentMode="scaleToFill" id="Dqy-OV-IFM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="UY9-Bt-nvR">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="PAV-oK-u9U"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="UY9-Bt-nvR" secondAttribute="bottom" id="7pR-o7-w5Q"/>
+                            <constraint firstItem="UY9-Bt-nvR" firstAttribute="leading" secondItem="Dqy-OV-IFM" secondAttribute="leading" id="Unm-1k-oef"/>
+                            <constraint firstAttribute="trailing" secondItem="UY9-Bt-nvR" secondAttribute="trailing" id="Zy6-yf-aUN"/>
+                            <constraint firstItem="UY9-Bt-nvR" firstAttribute="top" secondItem="Dqy-OV-IFM" secondAttribute="top" id="jb6-52-Fqr"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Note" id="Zja-3p-t35"/>
+                    <navigationItem key="navigationItem" title="Note" id="Zja-3p-t35">
+                        <barButtonItem key="leftBarButtonItem" title="Close" id="W3n-ck-6Dh">
+                            <connections>
+                                <action selector="close" destination="wbC-kD-tpp" id="Phe-Bd-ugT"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Save" id="wRH-lz-G3w">
+                            <connections>
+                                <action selector="save" destination="wbC-kD-tpp" id="Ff8-PS-Rco"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="closeBarItem" destination="W3n-ck-6Dh" id="PCj-e7-VyE"/>
+                        <outlet property="saveBarItem" destination="wRH-lz-G3w" id="4w9-2o-gfe"/>
+                        <outlet property="textView" destination="UY9-Bt-nvR" id="aAU-1N-KTn"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0HS-2z-SOG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -190,6 +222,9 @@
     </inferredMetricsTieBreakers>
     <resources>
         <image name="person.circle" catalog="system" width="128" height="121"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
