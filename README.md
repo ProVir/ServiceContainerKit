@@ -5,7 +5,7 @@
 [![Platform](https://cocoapod-badges.herokuapp.com/p/ServiceContainerKit/badge.png)](http://cocoapods.org/pods/ServiceContainerKit)
 [![License](https://cocoapod-badges.herokuapp.com/l/ServiceContainerKit/badge.png)](https://github.com/ProVir/ServiceContainerKit/blob/master/LICENSE)
 
-  Kit to create your own IoC Container or ServiceLocator. Also includes a ServiceInjects as an option. Support Objective-C in readOnly regime. 
+  Kit to create your own ServiceContainer or ServiceLocator (dynamic list services). Also includes a ServiceInjects as an option. Support Objective-C in readOnly regime. 
   
   High percentage of unit test coverage **(~ 90%)**.
   
@@ -39,7 +39,7 @@
 - [Migration from 2.0 to 3.0](#migration-from-20-to-30)
 - [Installation](#installation)
 - [Usage ServiceFactory (English / Русский)](#usage-servicefactory)
-- [Usage IoC Container and ServiceProvider (English / Русский)](#usage-ioc-container-and-serviceprovider)
+- [Usage ServiceProvider (English / Русский)](#usage-serviceprovider)
 - [Author](#author)
 - [License](#license)
 
@@ -165,10 +165,11 @@ The project has a less abstract example of using the library, which can be downl
 
 ## Usage ServiceFactory
 
-  To use `ServiceProvider` or` ServiceParamsProvider` it is recommended for each service to use a factory (struct or class) implementing the protocol `ServiceFactory` or` ServiceParamsFactory`. 
-  A factory without parameters (`ServiceFactory`) can provide a service of three types (`factoryType`):
+  To use `ServiceProvider` or` ServiceParamsProvider` it is recommended for each service to use a factory (struct or class) implementing the protocol `ServiceFactory`, `ServiceSessionFactory` or` ServiceParamsFactory`. 
+  A factory without parameters (`ServiceFactory`) can provide a service of four types (`factoryType`):
   - `atOne`: service in a single instance is created immediately during the creation of the ServiceProvider instance, the factory itself is no longer needed;
-  - `lazy`: service in a single copy is not created immediately, but only at the first get service. The factory exists only until the instant of creation of the service instance and is deleted after its creation;
+  - `lazy`: service in a single instance is not created immediately, but only at the first get service. The factory exists only until the instant of creation of the service instance and is deleted after its creation;
+  - `weak`: service is not created immediately, but only at the first get service. The service exists in a single instance as long as it is used somewhere, then it is deleted and a new one will be created again when a new get request. This type is a cross between `lazy` and `many` and is usually used for performance reasons;
   - `many`: the service is created each time a new one for each get service to receive it. It can also be used to implement its lazy initialization logic or some other - not necessarily every get service should return a new instance.
   
   A factory with parameters (`ServiceParamsFactory`) works only as a service of the` many` type. To implement `atOne` or` lazy` types, you need to use internal variables (the factory itself is a class) and provide them based on input parameters.
@@ -177,36 +178,39 @@ The project has a less abstract example of using the library, which can be downl
 
 #
 
-  Для использования `ServiceProvider` или `ServiceParamsProvider` рекомендуется для каждого сервиса использовать фабрику (struct или class) реализующую протокол `ServiceFactory` или `ServiceParamsFactory`. 
-  Фабрика без параметров (`ServiceFactory`) может предоставлять сервис трех типов (`factoryType`):
+  Для использования `ServiceProvider` или `ServiceParamsProvider` рекомендуется для каждого сервиса использовать фабрику (struct или class) реализующую протокол `ServiceFactory`, `ServiceSessionFactory` или `ServiceParamsFactory`. 
+  Фабрика без параметров (`ServiceFactory`) может предоставлять сервис четырех типов (`factoryType`):
   - `atOne`: сервис в единственном экземпляре создается сразу во время создания экземпляра ServiceProvider, сама фабрика больше не нужна;
   - `lazy`: сервис в единственном экземпляре создается не сразу, а только при первом требовании. Фабрика существует только до момента создания экземпляра сервиса и удалется после его создания;
+  - `weak`: сервис создается не сразу, а только при первом требовании. Сервис в единственном экземпляре существует пока где-либо используется, после - удаляется и при новом запросе будет создан заново новый. Этот тип среднее между `lazy` и  `many` и обычно используется ради повышения производительности;
   - `many`: сервис создается каждый раз новый при каждом запросе на его получение. Также может использоваться для реализации своей логики lazy инициализации или какой-либо другой - не обязательно каждый запрос должен возвращать новый экземпляр.
 
   Фабрика с параметрами (`ServiceParamsFactory`) работает только как сервис типа `many`. Для реализации типов `atOne` или `lazy` вам потребуется использовать внутренние переменные (сама фабрика при этом является классом) и предоставлять их на основе входных параметров. 
+  
+  Фабрика с возможностью пересоздавать сервисы в единственном экземпляре (`ServiceSessionFactory`) работает на идеи сессий - при сменне текущей сессии на другую все зависимые сервисы пересоздаются. Вместо пересоздавания они могут деактивироваться и активироваться когда сессия станет снова активна.
+  Такой тип фабрики не поддерживает работу с `many` типом сервисов - могут быть только синглетоны. Для всех типов сервисов фабрика никогда не удаляется, для типа `atOne` сервис создается или активируется сразу при каждой смене сессии.
 
   Функция создания сервиса может вернуть ошибку, которая предотвратит создание сервиса. Во время получения сервиса можно обработать эту ошибку. Если ошибка была возвращена для фабрики типа `atOne` - то провайдер всегда будет возвращать эту ошибку при попытки получить сервис. Если ошибка была возвращена для фабрики типа `lazy` - провайдер будет производить попытки создать сервис каждый раз при его запросе заново пока сервис не будет создан. 
 
-#### An examples service factorys:
+#### An examples service factories:
 ```swift
 struct SingletonServiceFactory: ServiceFactory {
-    let factoryType: ServiceFactoryType = .atOne
-
-    func createService() throws -> SingletonService {
-        return SingletonService()
+    let mode: ServiceFactoryMode = .atOne
+    func makeService() throws -> SingletonService {
+        return SingletonServiceImpl()
     }
 }
 ```
 
 ```swift
 struct LazyServiceFactory: ServiceFactory {
-    let factoryType: ServiceFactoryType = .lazy
-
-    func createService() throws -> LazyService {
-        return LazyService()
+    let mode: ServiceFactoryMode = .lazy
+    func makeService() throws -> LazyService {
+        return LazyServiceImpl()
     }
 }
 ```
+
 ```swift
 class FirstServiceFactory: ServiceFactory {
     let singletonServiceProvider: ServiceProvider<SingletonService>
@@ -217,83 +221,115 @@ class FirstServiceFactory: ServiceFactory {
         self.count = 0
     }
 
-    let factoryType: ServiceFactoryType = .many
-    func createService() throws -> FirstService {
+    let mode: ServiceFactoryMode = .many
+    func makeService() throws -> FirstService {
         count += 1
         defer {
             print("Service created number: \(count)")
         }
-        
-        return FirstService(singletonService: try singletonServiceProvider.tryService())
+        return FirstServiceImpl(singletonService: try singletonServiceProvider.getService())
     }
 }
 ```
+
 ```swift
 struct SecondServiceFactory: ServiceParamsFactory {
     let lazyServiceProvider: ServiceProvider<LazyService>
     let firstServiceProvider: ServiceProvider<FirstService>
 
-    func createService(params: SecondServiceParams?) throws -> SecondService {
-        let instance = SecondService(lazyService: try lazyServiceProvider.tryService(),
-                                     firstService: try firstServiceProvider.tryService())
+    func makeService(params: SecondServiceParams?) throws -> SecondService {
+        let instance = SecondService(
+            lazyService: try lazyServiceProvider.getService(),
+            firstService: try firstServiceProvider.getService()
+        )
         instance.number = params?.number ?? -1
         return instance
     }
 }
 ```
 
-## Usage IoC Container and ServiceProvider
+## Usage ServiceProvider
 
-### IoC Container
+### Service Container
 
- It is assumed that the IoC Container contains service providers (`ServiceProvider` and` ServiceParamsProvider`). Also the container can contain important singleton services without the provider, if they are an important system component of the application (for example UserService - work with the user and his authorization status in the application, because the authorization status is the same for the entire application session at a time). 
+ It is assumed that the Container contains service providers (`ServiceProvider` and` ServiceParamsProvider`).
+ Also the container can contain important singleton services without the provider, if they are used at the start - for example, in Application Delegate or other system component. As a rule, for such services, it is better to allocate a separate container for use in these cases. An example can be found in `Example/AppDelegate.swift` and `AppDelegateServices`.
 
-  Предполагается что IoC Container содержит провайдеры сервисов (`ServiceProvider` и `ServiceParamsProvider`). Также контейнер может содержать важные сервисы синглетоны без провайдера, если они являются важным системным компонентом приложения (к примеру UserService - работа с пользователем и его статусом авторизации в приложении, т.к. статус авторизации един для всей сессии приложения в один момент времени). 
+  Предполагается что контейнер содержит провайдеры сервисов (`ServiceProvider` и `ServiceParamsProvider`). 
+  Также контейнер может содержать важные сервисы синглетоны без провайдера, если они используются на старте - к примеру в Application Delegate или другим системном компоненте. Как правило для таких сервисов лучше выделить отдельный контейнер для использования именно в этих случаях. Пример можно посмотреть в `Example/AppDelegate.swift` и `AppDelegateServices`.
 
-#### An example IoC Container:
+#### An example Container:
 ```swift
-struct ServiceContainer {
-    let userService: UserService
-
-    let singletonServiceProvider: ServiceProvider<SingletonService>
-    let lazyServiceProvider: ServiceProvider<LazyService>
-
-    let firstServiceProvider: ServiceProvider<FirstService>
-    let secondServiceProvider: ServiceParamsProvider<SecondService, SecondServiceParams?>
-
-    let sharedFirstService: FirstService
-    let secondServiceNumber0Provider: ServiceProvider<SecondService>
+struct Services {
+    struct User {
+        let userService: ServiceProvider<UserService>
+    }
+    
+    struct Folders {
+        let manager: ServiceProvider<NoteFoldersManager>
+    }
+    
+    struct Notes {
+        let manager: ServiceParamsProvider<NoteRecordsManager, NoteRecordsManagerParams>
+        let editService: ServiceParamsProvider<NoteRecordEditService, NoteRecordEditServiceParams>
+    }
+    
+    let user: User
+    let folders: Folders
+    let notes: Notes
 }
 
-//MARK: Setup
-extension ServiceContainer {
-    static func createDefault() -> ServiceContainer {
-        let userService = UserServiceFactory().createService()
-    
-        let singletonServiceProvider = SingletonServiceFactory().serviceProvider()
-        let lazyServiceProvider = ServiceProvider(factory: LazyServiceFactory())
+struct AppDelegateServices {
+    let userService: UserService
+    let pushService: PushService
+}
 
-        let firstServiceProvider = FirstServiceFactory(singletonServiceProvider: singletonServiceProvider).serviceProvider()
-        let secondServiceProvider = SecondServiceFactory(lazyServiceProvider: lazyServiceProvider,
-                                                         firstServiceProvider: firstServiceProvider).serviceProvider()
-
-        let sharedFirstService: FirstService = firstServiceProvider.getService()!
-        let secondServiceNumber0Provider = secondServiceProvider.convert(params: .init(number: 0))
-
-        return ServiceContainer(userService: userService,
-                                singletonServiceProvider: singletonServiceProvider,
-                                lazyServiceProvider: lazyServiceProvider,
-                                firstServiceProvider: firstServiceProvider,
-                                secondServiceProvider: secondServiceProvider,
-                                sharedFirstService: sharedFirstService,
-                                secondServiceNumber0Provider: secondServiceNumber0Provider)
+// MARK: Setup
+enum ServicesFactory {
+    static func makeDefault() -> (Services, AppDelegateServices) {
+        let core = ServicesCore.makeDefault()
+        
+        let user = Services.User.makeDefault(core: core)
+        let folders = Services.Folders.makeDefault(core: core, user: user)
+        let notes = Services.Notes.makeDefault(core: core, user: user, folders: folders)
+        
+        let services = Services(
+            user: user,
+            folders: folders,
+            notes: notes
+        )
+        
+        let pushService = PushServiceFactory().makeService()
+        let appDelegateService = AppDelegateServices(
+            userService: user.userService.getServiceOrFatal(),
+            pushService: pushService
+        )
+        return (services, appDelegateService)
     }
 }
+
+extension Services.Notes {
+    static func makeDefault(core: ServicesCore, user: Services.User, folders: Services.Folders) -> Self {
+        let manager = NoteRecordsManagerFactory(
+            apiClient: core.apiClient,
+            userService: user.userService
+        ).serviceProvider()
+        
+        let editService = NoteRecordEditServiceFactory(
+            apiClient: core.apiClient,
+            recordsManager: manager
+        ).serviceProvider()
+        
+        return .init(manager: manager, editService: editService)
+    }
+}
+
+....
 ```
 
 In order not to depend on the library in the whole project, you can make the providers private and provide a public interface for making the service.
 
-Для того чтобы не зависить от библиотеки во всем проекте, можно сделать провайдеры приватными и предоставить публичный интерфейс для получения самого сервиса.
+Для того чтобы не зависеть от библиотеки во всем проекте, можно сделать провайдеры приватными и предоставить публичный интерфейс для получения самого сервиса.
 
 #### An example private ServiceProviders:
 ```swift
@@ -301,14 +337,18 @@ struct ServiceContainer {
     private let firstServiceProvider: ServiceProvider<FirstService>
     private let secondServiceProvider: ServiceParamsProvider<SecondService, SecondServiceParams?>
 
-    let userService: UserService
+    private let userService: UserService
 
-    func makeFirstService() throws -> FirstService {
-        return try firstServiceProvider.tryService()
+    func getFirstService() -> FirstService {
+        return firstServiceProvider.getServiceOrFatal()
     }
 
-    func makeSecondService(params: SecondServiceParams?) throws -> SecondService {
-        return try secondServiceProvider.tryService(params: params)
+    func getSecondService(params: SecondServiceParams?) throws -> SecondService {
+        return try secondServiceProvider.getService(params: params)
+    }
+    
+    func getUserService() -> UserService {
+        return userService
     }
 }
 ```
@@ -318,42 +358,47 @@ struct ServiceContainer {
 You can create `ServiceProvider` in several ways:
 - using a regular factory: by calling function `ServiceFactory().serviceProvider()` (recommended) or through constructors `ServiceProvider(factory:)` and `ServiceProvider(tryFactory:)`;
 - using factory with parameters: by calling function `ServiceFactory().serviceProvider(params:)` (recommended) or through constructor `ServiceProvider(factory:params:)`;
+- sing a factory with re-maked singletons linked to sessions: by calling function `ServiceFactory().serviceProvider(mediator:)` (recommended) or through constructor `ServiceProvider(factory:mediator:)`.
 - using provider with parameters: `ServiceParamsProvider.convert(params:)`;
 - using an already created service, passing it to the constructor: `ServiceProvider()`, factory equivalent of `atOne` type;
-- using closures in lazy mode or generating a new instance each time: `ServiceProvider(lazy: { })` и `ServiceProvider(manyFactory: { })`, factory equivalent of  `lazy` and `many` types.
+- using closure with mode setting: `ServiceProvider(mode:) { }`.
 
-You can create `ServiceParamsProvider` only by using a factory with parameters (`ServiceParamsFactory`): `ServiceParamsProvider(factory:)`.
 
-Examples of creating `Service[Params]Provider` are shown in the example above with the IoC Container.
 
-To get the service it is enough to call the function `Service[Params]Provider.getService()` which returns the service as an option, `nil` will be returned in case of a service error. You can also use `Service[Params]Provider.tryService()` - then the service is returned not as an option and can generate an error why the service was not getted (unlike `getService()`, which simply returns `nil`).
+You can create `ServiceParamsProvider` by using a factory with parameters (`ServiceParamsFactory`): `ServiceParamsProvider(factory:)` or using closure `ServiceParamsProvider { params in }`.
+
+To get the service it is enough to call the function `try Service[Params]Provider.getService()` which returns the service or error. 
+You can also use `Service[Params]Provider.getServiceAsOptional()` - then the service is returned as an option (nil in case of an error) or `Service[Params]Provider.getServiceOrFatal()` - in case of an error, there will be a crash with detailed information about the error.
+Use `getServiceOrFatal()` instead of  `try! getService()` or `getServiceAsOptional()!`, so that the cause of the crash is not lost and is easily determined.
 
 #
 
 Создать `ServiceProvider` можно несколькими способами:
 - используя обычную фабрику: через вызов `ServiceFactory().serviceProvider()` (рекомендуется) или через конструкторы `ServiceProvider(factory:)` и `ServiceProvider(tryFactory:)`;
-- используя фабрику с параметрами: через вызов `ServiceFactory().serviceProvider(params:)` (рекомендуется) или через конструктор `ServiceProvider(factory:,params:)`;
+- используя фабрику с параметрами: через вызов `ServiceFactory().serviceProvider(params:)` (рекомендуется) или через конструктор `ServiceProvider(factory:params:)`;
+- используя фабрику с пересоздаваемыми сервисами синглетонами, привязанными к сессиям: через вызов `ServiceFactory().serviceProvider(mediator:)` (рекомендуется) или через конструктор `ServiceProvider(factory:mediator:)`.
 - используя провайдер с параметрами: `ServiceParamsProvider.convert(params:)`;
 - используя уже созданный сервис, передав его в конструктор: `ServiceProvider()`, эквивалент фабрики типа `atOne`;
-- используя кложуры в lazy режиме или генерируя каждый раз новый экземпляр: `ServiceProvider(lazy: { })` и `ServiceProvider(manyFactory: { })`, эквиваленты фабрик типов `lazy` и `many`.
+- используя кложур с указанием режима: `ServiceProvider(mode:) { }`.
 
-Создать `ServiceParamsProvider` можно только используя фабрику с параметрами (`ServiceParamsFactory`): `ServiceParamsProvider(factory:)`.
+Создать `ServiceParamsProvider` можно используя фабрику с параметрами (`ServiceParamsFactory`) `ServiceParamsProvider(factory:)` или используя кложур  `ServiceParamsProvider { params in }`.
 
-Примеры создания `Service[Params]Provider` приведены в примере выше с IoC Container.
-
-
-Для получения сервиса достаточно вызвать функцию `Service[Params]Provider.getService()` которая возвращает сервис как опционал, `nil` будет возвращен в случае ошибки получения сервиса. Также можно использовать `Service[Params]Provider.tryService()` - тогда сервис возвращается не как опционал и может генерировать ошибку почему сервис не был получен (в отличие от `getService()`, который просто вернет `nil`). 
+Для получения сервиса достаточно вызвать функцию `try Service[Params]Provider.getService()` которая возвращает сервис или ошибку. 
+Также можно использовать `Service[Params]Provider.getServiceAsOptional()` - тогда сервис возвращается как опционал (nil в случае ошибки) или `Service[Params]Provider.getServiceOrFatal()` - в случае ошибки будет краш с подробной информацией об ошибке. 
+Используйте `getServiceOrFatal()` вместо `try! getService()` или `getServiceAsOptional()!`, чтобы причина краша не потерялась и была легко определима.
 
 
 #### An example use ServiceProvider:
 ```swift
-let firstService = serviceContainer.firstServiceProvider.getService()!
+let firstService = serviceContainer.firstService.getServiceOrFatal()
 
 let secondService: SecondService
 do {
-    secondService = serviceContainer.firstServiceProvider.tryService()
+    secondService = try serviceContainer.firstService.getService()
+} catch let error as ServiceObtainError {
+    fatalError(error.fatalMessage)
 } catch {
-    fatalError("Error get secondService: \(error)")
+    fatalError("Error get firstService: \(error)")
 }
 ```
 
@@ -368,12 +413,12 @@ You can get the service through selectors `[ServiceProvider getService]` and `[S
 
 #### An example use ServiceProvider:
 ```objc
-FirstService* firstService = [self.serviceContainer.firstServiceProvider getService];
+FirstService* firstService = [serviceContainer.firstService getService];
 
 NSError* error = nil;
-SecondService* secondService = [self.serviceContainer.secondServiceProvider getServiceAndReturnError:&error];
+SecondService* secondService = [serviceContainer.secondService getServiceAndReturnError:&error];
 
-ThirdService* thirdService = [self.serviceContainer.thirdServiceProvider getServiceWithParams:@"test"];
+ThirdService* thirdService = [serviceContainer.thirdService getServiceWithParams:@"test"];
 ```
 
 
