@@ -368,7 +368,7 @@ You can create `ServiceProvider` in several ways:
 You can create `ServiceParamsProvider` by using a factory with parameters (`ServiceParamsFactory`): `ServiceParamsProvider(factory:)` or using closure `ServiceParamsProvider { params in }`.
 
 To get the service it is enough to call the function `try Service[Params]Provider.getService()` which returns the service or error. 
-You can also use `Service[Params]Provider.getServiceAsOptional()` - then the service is returned as an option (nil in case of an error) or `Service[Params]Provider.getServiceOrFatal()` - in case of an error, there will be a crash with detailed information about the error.
+You can also use `Service[Params]Provider.getServiceAsResult()`,  `Service[Params]Provider.getServiceAsOptional()` - then the service is returned as an option (nil in case of an error) or `Service[Params]Provider.getServiceOrFatal()` - in case of an error, there will be a crash with detailed information about the error.
 Use `getServiceOrFatal()` instead of  `try! getService()` or `getServiceAsOptional()!`, so that the cause of the crash is not lost and is easily determined.
 
 #
@@ -384,7 +384,7 @@ Use `getServiceOrFatal()` instead of  `try! getService()` or `getServiceAsOption
 Создать `ServiceParamsProvider` можно используя фабрику с параметрами (`ServiceParamsFactory`) `ServiceParamsProvider(factory:)` или используя кложур  `ServiceParamsProvider { params in }`.
 
 Для получения сервиса достаточно вызвать функцию `try Service[Params]Provider.getService()` которая возвращает сервис или ошибку. 
-Также можно использовать `Service[Params]Provider.getServiceAsOptional()` - тогда сервис возвращается как опционал (nil в случае ошибки) или `Service[Params]Provider.getServiceOrFatal()` - в случае ошибки будет краш с подробной информацией об ошибке. 
+Также можно использовать `Service[Params]Provider.getServiceAsResult()`,  `Service[Params]Provider.getServiceAsOptional()` - тогда сервис возвращается как опционал (nil в случае ошибки) или `Service[Params]Provider.getServiceOrFatal()` - в случае ошибки будет краш с подробной информацией об ошибке. 
 Используйте `getServiceOrFatal()` вместо `try! getService()` или `getServiceAsOptional()!`, чтобы причина краша не потерялась и была легко определима.
 
 
@@ -401,6 +401,46 @@ do {
     fatalError("Error get firstService: \(error)")
 }
 ```
+
+### Service[Params]SafeProvider
+
+In some cases, you may need to get services from different threads. To support multithreading, you can use special thread-safe providers. Their task is to make each service receipt thread-safe by blocking or using synchronously a separate queue for each access to the provider and the factory.
+This is usually not required, because the configuration of services at the start of the application and their receipt in the presentation layer occurs in the main thread. But if there are cases when the service is requested not from the main thread - you should use a secure provider. Getting the service from such a provider may be slower than usual.
+
+To create a secure provider, use the `serviceSafeProvider()` or constructor methods.
+The default is `NSLock`, but you can choose `DispatchSemaphore` or a separate queue `DispatchQueue`.
+
+`Service[Params]SafeProvider` is a inheritance of regular providers, so the entire standard set of methods is available and you can store and pass such a provider as a regular one. But in addition, there is one method - `getServiceAsResultNotSafe()`, which will ignore any locks and perform the usual non-secure getting of the service.
+
+#
+
+В некоторых случаях может потребоваться получать сервисы из разных потоков. Чтобы поддержать мультипоточность можно использовать специальные потоко-безопасные провайдеры. Их задача - каждое получение сервиса сделать потоко-безопасным, блокируя или используя синхронно отдельную очередь при каждом обращении к првайдеру и фабрике.
+Обычно это не требуется, т.к. настройка сервисов при старте приложения и их получения в слое презентации происходит в главном потоке. Но если есть случаи когда сервис запрашивается не из главного потока - следует использовать безопасный провайдер. Получение сервиса у такого провайдера может быть медленнее обычного.
+
+Для создания безпасного провайдера используются методы `serviceSafeProvider()` или конструктор. 
+По умолчанию используется `NSLock`, но вы можете выбрать `DispatchSemaphore` или отдельную очередь `DispatchQueue`.
+
+`Service[Params]SafeProvider` является наследником обычных провайдеров, поэтому доступен весь стандартный набор методов и можно хранить и передавать такой провайдер как обычный. Но в дополнение есть один метод - `getServiceAsResultNotSafe()`, который проигнорирует любые блокировки и выполнит обычное не безопасное получение сервиса.
+
+
+```swift
+struct ServiceContainer {
+    let firstService: ServiceProvider<FirstService>
+}
+
+extension ServiceContainer {
+    static func makeDefault() -> ServiceContainer {
+        let firstService: ServiceSafeProvider<FirstService> = FirstServiceFactory().serviceSafeProvider(safeThread: .lock)
+        
+        return .init(
+            firstService: firstService
+        )
+    }
+}
+
+let service = container.firstService.getServiceAsOptional()
+```
+
 
 ### Support Objective-C
 
