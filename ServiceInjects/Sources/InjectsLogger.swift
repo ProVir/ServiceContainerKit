@@ -7,15 +7,16 @@
 //
 
 import Foundation
+import ServiceContainerKit
 
 /// Logger for injects
-public protocol InjectsLogger: Logger {
+public protocol ServiceInjectLogger: Logger {
     func entityInjectResolverDidAutoRemove(entityType: Any.Type, delay: TimeInterval)
 }
 
 extension LogRecorder {
-    private static func send(_ handler: @escaping (InjectsLogger) -> Void) {
-        guard let logger = shared as? InjectsLogger else { return }
+    private static func send(_ handler: @escaping (ServiceInjectLogger) -> Void) {
+        guard let logger = shared as? ServiceInjectLogger else { return }
         logger.queue.async { handler(logger) }
     }
     

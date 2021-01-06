@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import ServiceContainerKit
+import ServiceInjects
 
 extension NoteEditViewController {
     private struct Dependencies {

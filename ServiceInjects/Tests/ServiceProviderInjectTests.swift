@@ -7,7 +7,8 @@
 //
 
 import XCTest
-@testable import ServiceContainerKit
+import ServiceContainerKit
+@testable import ServiceInjects
 
 class ServiceProviderInjectTests: XCTestCase {
 
@@ -20,7 +21,7 @@ class ServiceProviderInjectTests: XCTestCase {
             @ServiceProviderInject(\ManyContainer.manyService) var provider
         }
         
-        let serviceProvider = SpyServiceManyFactory().serviceProvider()
+        let serviceProvider = ServiceProvider(mode: .many) { ServiceMany() }
         ServiceInjectResolver.register(ManyContainer(manyService: serviceProvider))
         
         let container = Container()
@@ -46,7 +47,7 @@ class ServiceProviderInjectTests: XCTestCase {
             @ServiceProviderInject(\ManyContainer.manyService) var provider
         }
         
-        let serviceProvider = SpyServiceManyFactory().serviceProvider()
+        let serviceProvider = ServiceProvider(mode: .many) { ServiceMany() }
         let container = Container()
         XCTAssertFalse(container.$provider.isReady)
 
@@ -74,7 +75,7 @@ class ServiceProviderInjectTests: XCTestCase {
             @ServiceProviderInject(\OptionalContainer.manyService) var provider
         }
         
-        let serviceProvider = SpyServiceManyFactory().serviceProvider()
+        let serviceProvider = ServiceProvider(mode: .many) { ServiceMany() }
         ServiceInjectResolver.register(OptionalContainer(manyService: serviceProvider, paramsService: nil))
         
         let container = Container()
@@ -121,7 +122,7 @@ class ServiceProviderInjectTests: XCTestCase {
             @ServiceProviderInject(\ParamsContainer.paramsService) var provider
         }
         
-        let serviceProvider = SpyServiceParamsFactory().serviceProvider()
+        let serviceProvider = ServiceParamsProvider<ServiceParams, ServiceParams.Params> { params in .init(value: params.value) }
         ServiceInjectResolver.register(ParamsContainer(paramsService: serviceProvider))
         
         let container = Container()
@@ -147,7 +148,7 @@ class ServiceProviderInjectTests: XCTestCase {
             @ServiceProviderInject(\ParamsContainer.paramsService) var provider
         }
         
-        let serviceProvider = SpyServiceParamsFactory().serviceProvider()
+        let serviceProvider = ServiceParamsProvider<ServiceParams, ServiceParams.Params> { params in .init(value: params.value) }
         let container = Container()
         XCTAssertFalse(container.$provider.isReady)
 
@@ -175,7 +176,7 @@ class ServiceProviderInjectTests: XCTestCase {
             @ServiceProviderInject(\OptionalContainer.paramsService) var provider
         }
         
-        let serviceProvider = SpyServiceParamsFactory().serviceProvider()
+        let serviceProvider = ServiceParamsProvider<ServiceParams, ServiceParams.Params> { params in .init(value: params.value) }
         ServiceInjectResolver.register(OptionalContainer(manyService: nil, paramsService: serviceProvider))
         
         let container = Container()

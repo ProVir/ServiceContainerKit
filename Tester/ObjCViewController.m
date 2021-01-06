@@ -8,6 +8,7 @@
 
 #import "ObjCViewController.h"
 @import ServiceContainerKit;
+@import ExampleServiceLocators;
 #import "Tester-Swift.h"
 
 

@@ -8,7 +8,7 @@
 
 import UIKit
 import Combine
-import ServiceContainerKit
+import ServiceInjects
 
 extension MainViewController {
     static func prepareForMake() {

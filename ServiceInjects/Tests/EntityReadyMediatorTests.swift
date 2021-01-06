@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import ServiceContainerKit
+@testable import ServiceInjects
 
 class EntityReadyMediatorTests: XCTestCase {
 

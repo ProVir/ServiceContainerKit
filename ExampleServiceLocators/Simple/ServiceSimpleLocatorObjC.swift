@@ -11,7 +11,7 @@ import Foundation
 /// Wrapper ServiceSimpleLocator for ObjC
 @objc(ServiceSimpleLocator)
 open class ServiceSimpleLocatorObjC: NSObject {
-    @objc static var shared: ServiceSimpleLocatorObjC? {
+    @objc public static var shared: ServiceSimpleLocatorObjC? {
         return ServiceSimpleLocator.shared.map { .init($0) }
     }
     

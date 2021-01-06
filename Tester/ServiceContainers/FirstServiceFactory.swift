@@ -8,6 +8,7 @@
 
 import Foundation
 import ServiceContainerKit
+import ExampleServiceLocators
 
 extension FirstServiceFactory {
     static var defaultKey: FirstServiceLocatorKey { return .init(isShared: false) }

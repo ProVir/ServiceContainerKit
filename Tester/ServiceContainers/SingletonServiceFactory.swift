@@ -8,6 +8,7 @@
 
 import Foundation
 import ServiceContainerKit
+import ExampleServiceLocators
 
 /// Variant key 2 - used typealias
 typealias SingletonServiceLocatorKey = ServiceLocatorSimpleKey<SingletonService>

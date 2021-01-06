@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-import ServiceContainerKit
+import ServiceInjects
 
 protocol MainPresenter: class {
     func configure(

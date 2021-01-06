@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import ServiceContainerKit
+@testable import ServiceInjects
 
 class ServiceParamsInjectTests: XCTestCase {
 
@@ -20,7 +20,7 @@ class ServiceParamsInjectTests: XCTestCase {
         struct Container {
             @ServiceParamsInject(
                 \BaseContainer.paramsService,
-                params: ServiceParams.Params(value: "test", error: nil)
+                params: ServiceParams.Params(value: "test")
             ) var service
         }
         
@@ -50,7 +50,7 @@ class ServiceParamsInjectTests: XCTestCase {
         struct Container {
             @ServiceParamsInject(
                 \BaseContainer.paramsService,
-                params: ServiceParams.Params(value: "test", error: nil)
+                params: ServiceParams.Params(value: "test")
             ) var service
         }
         
@@ -82,7 +82,7 @@ class ServiceParamsInjectTests: XCTestCase {
         struct Container {
             @ServiceParamsInject(
                 \BaseContainer.paramsService,
-                params: ServiceParams.Params(value: "test", error: nil),
+                params: ServiceParams.Params(value: "test"),
                 lazyInject: true
             ) var service
         }
@@ -125,7 +125,7 @@ class ServiceParamsInjectTests: XCTestCase {
         XCTAssertFalse(container.$service.isReady)
         XCTAssertNil(container.$service.storage.entity)
         
-        container.$service.setParameters(.init(value: "test", error: nil))
+        container.$service.setParameters(.init(value: "test"))
         XCTAssertTrue(container.$service.isReady)
 
         var isCall = false
@@ -153,7 +153,7 @@ class ServiceParamsInjectTests: XCTestCase {
         let container = Container()
         XCTAssertFalse(container.$service.isReady)
         
-        container.$service.setParameters(.init(value: "test", error: nil))
+        container.$service.setParameters(.init(value: "test"))
         XCTAssertFalse(container.$service.isReady)
 
         var isCall = false
@@ -198,7 +198,7 @@ class ServiceParamsInjectTests: XCTestCase {
         XCTAssertFalse(container.$service.isReady)
         XCTAssertFalse(isCall)
         
-        container.$service.setParameters(.init(value: "test", error: nil))
+        container.$service.setParameters(.init(value: "test"))
         XCTAssertTrue(isCall)
         XCTAssertTrue(container.$service.isReady)
         XCTAssertNotNil(service1)
@@ -221,7 +221,7 @@ class ServiceParamsInjectTests: XCTestCase {
         XCTAssertFalse(container.$service.isReady)
         XCTAssertNil(container.$service.storage.entity)
         
-        container.$service.setParameters(.init(value: "test", error: nil), lazyInject: true)
+        container.$service.setParameters(.init(value: "test"), lazyInject: true)
         XCTAssertFalse(container.$service.isReady)
         XCTAssertNil(container.$service.storage.entity)
         
@@ -250,7 +250,7 @@ class ServiceParamsInjectTests: XCTestCase {
         struct Container {
             @ServiceParamsInject(
                 \OptionalContainer.paramsService,
-                params: ServiceParams.Params(value: "test", error: nil)
+                params: ServiceParams.Params(value: "test")
             ) var service
         }
         
@@ -277,7 +277,7 @@ class ServiceParamsInjectTests: XCTestCase {
         struct Container {
             @ServiceParamsInject(
                 \OptionalContainer.paramsService,
-                params: ServiceParams.Params(value: "test", error: nil)
+                params: ServiceParams.Params(value: "test")
             ) var service
         }
         
@@ -300,7 +300,7 @@ class ServiceParamsInjectTests: XCTestCase {
         struct Container {
             @ServiceParamsInject(
                 \OptionalContainer.paramsService,
-                params: ServiceParams.Params(value: "test", error: nil),
+                params: ServiceParams.Params(value: "test"),
                 lazyInject: true
             ) var service
         }
@@ -342,7 +342,7 @@ class ServiceParamsInjectTests: XCTestCase {
         XCTAssertFalse(container.$service.isReady)
         XCTAssertNil(container.$service.storage.entity.flatMap { $0 })
         
-        container.$service.setParameters(.init(value: "test", error: nil))
+        container.$service.setParameters(.init(value: "test"))
         XCTAssertTrue(container.$service.isReady)
 
         var isCall = false

@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "506F9F1E20E3E4B400E44CBD"
-               BuildableName = "ServiceContainerKit.framework"
-               BlueprintName = "ServiceContainerKit"
+               BlueprintIdentifier = "50BE0DCA25A62879006410CC"
+               BuildableName = "ServiceInjects.framework"
+               BlueprintName = "ServiceInjects"
                ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <CodeCoverageTargets>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "506F9F1E20E3E4B400E44CBD"
-            BuildableName = "ServiceContainerKit.framework"
-            BlueprintName = "ServiceContainerKit"
+            BlueprintIdentifier = "50BE0DCA25A62879006410CC"
+            BuildableName = "ServiceInjects.framework"
+            BlueprintName = "ServiceInjects"
             ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
          </BuildableReference>
       </CodeCoverageTargets>
@@ -43,9 +43,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "506F9EFE20E3E3F100E44CBD"
-               BuildableName = "ServiceContainerKitTests.xctest"
-               BlueprintName = "ServiceContainerKitTests"
+               BlueprintIdentifier = "50BE0DD225A62879006410CC"
+               BuildableName = "ServiceInjectsTests.xctest"
+               BlueprintName = "ServiceInjectsTests"
                ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -61,15 +61,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "506F9F1E20E3E4B400E44CBD"
-            BuildableName = "ServiceContainerKit.framework"
-            BlueprintName = "ServiceContainerKit"
-            ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -80,9 +71,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "506F9F1E20E3E4B400E44CBD"
-            BuildableName = "ServiceContainerKit.framework"
-            BlueprintName = "ServiceContainerKit"
+            BlueprintIdentifier = "50BE0DCA25A62879006410CC"
+            BuildableName = "ServiceInjects.framework"
+            BlueprintName = "ServiceInjects"
             ReferencedContainer = "container:ServiceContainerKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

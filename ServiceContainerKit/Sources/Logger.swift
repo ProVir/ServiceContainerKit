@@ -24,7 +24,7 @@ public extension Logger {
     }
 }
 
-enum LogRecorder {
-    fileprivate(set)
+public enum LogRecorder {
+    public fileprivate(set)
     static var shared: Logger?
 }

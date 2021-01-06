@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import ServiceContainerKit
+import ServiceInjects
+import ExampleServiceLocators
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import ServiceContainerKit
 
 /// Injects ServiceProviders from shared containers (registered in `ServiceInjectResolver`).
 @propertyWrapper

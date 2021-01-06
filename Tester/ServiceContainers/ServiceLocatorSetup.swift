@@ -8,6 +8,7 @@
 
 import Foundation
 import ServiceContainerKit
+import ExampleServiceLocators
 
 @objc protocol FirstServiceShared: NSObjectProtocol { }
 extension FirstService: FirstServiceShared { }

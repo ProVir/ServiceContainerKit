@@ -1,101 +1,14 @@
 //
-//  ServiceStubs.swift
-//  ServiceContainerKitTests
+//  FactoryStubs.swift
+//  ServiceContainerKit
 //
-//  Created by Vitalii Korotkii on 05/04/2019.
-//  Copyright © 2019 ProVir. All rights reserved.
+//  Created by Виталий Короткий on 06.01.2021.
+//  Copyright © 2021 ProVir. All rights reserved.
 //
 
 import Foundation
-@testable import ServiceContainerKit
+import ServiceContainerKit
 
-// MARK: Services
-struct SimpleSession: ServiceSession {
-    let key: AnyHashable
-    var value: String = ""
-    
-    init(key: AnyHashable) {
-        self.key = key
-    }
-}
-
-protocol ServiceValue: class {
-    init()
-    var value: String { get set }
-    var isActive: Bool { get set }
-}
-
-protocol ServiceParamsValue: class {
-    var value: String { get set }
-}
-
-@objc protocol ServiceValueObjC {
-    var value: String { get set }
-}
-
-class ServiceSingleton: ServiceValue {
-    required init() { }
-    var value: String = "Default"
-    var isActive: Bool = true
-}
-
-class ServiceLazy: ServiceValue {
-    required init() { }
-    var value: String = "DefaultLazy"
-    var isActive: Bool = true
-}
-
-class ServiceWeak: ServiceValue {
-    required init() { }
-    var value: String = "DefaultWeak"
-    var isActive: Bool = true
-}
-
-class ServiceMany: ServiceValue {
-    required init() { }
-    var value: String = "DefaultMany"
-    var isActive: Bool = true
-}
-
-class ServiceNested {
-    let service: ServiceMany
-    init(service: ServiceMany) {
-        self.service = service
-    }
-}
-
-class ServiceParams: ServiceParamsValue {
-    struct Params {
-        let value: String
-        let error: Error?
-    }
-
-    var value: String
-    init(value: String) {
-        self.value = value
-    }
-}
-
-class ServiceObjCParams: NSObject {
-    @objc let value: String
-    @objc let error: Error?
-
-    @objc init(value: String, error: Error?) {
-        self.value = value
-        self.error = error
-    }
-}
-
-class ServiceObjC: NSObject, ServiceValueObjC {
-    @objc var value: String
-    init(value: String = "Default") {
-        self.value = value
-        super.init()
-    }
-}
-
-
-// MARK: Factory
 enum ServiceCreateError: Error, Equatable {
     case someError
 }
@@ -284,71 +197,5 @@ class SpyServiceSessionFactory<T: ServiceValue, S: ServiceSession>: ServiceConta
         callActiveCount += 1
         lastSession = session
         service.isActive = true
-    }
-}
-
-
-// MARK: Objc Factory
-class SpyServiceSingletonObjCFactory: ServiceContainerKit.ServiceFactory {
-    var error: Error?
-    var callCount: Int = 0
-
-    init(error: Error? = nil) {
-        self.error = error
-    }
-
-    let mode: ServiceFactoryMode = .atOne
-    func makeService() throws -> ServiceObjC {
-        callCount += 1
-        if let error = error {
-            throw error
-        } else {
-            return ServiceObjC()
-        }
-    }
-}
-
-class SpyServiceParamsObjCFactory: ServiceContainerKit.ServiceParamsFactory {
-    var callCount: Int = 0
-
-    func makeService(params: ServiceObjCParams) throws -> ServiceObjC {
-        callCount += 1
-        if let error = params.error {
-            throw error
-        } else {
-            return ServiceObjC(value: params.value)
-        }
-    }
-}
-
-class SpyServiceSingletonValueObjCFactory: ServiceContainerKit.ServiceFactory {
-    var error: Error?
-    var callCount: Int = 0
-
-    init(error: Error? = nil) {
-        self.error = error
-    }
-
-    let mode: ServiceFactoryMode = .atOne
-    func makeService() throws -> ServiceValueObjC {
-        callCount += 1
-        if let error = error {
-            throw error
-        } else {
-            return ServiceObjC()
-        }
-    }
-}
-
-class SpyServiceParamsValueObjCFactory: ServiceContainerKit.ServiceParamsFactory {
-    var callCount: Int = 0
-
-    func makeService(params: ServiceObjCParams) throws -> ServiceValueObjC {
-        callCount += 1
-        if let error = params.error {
-            throw error
-        } else {
-            return ServiceObjC(value: params.value)
-        }
     }
 }

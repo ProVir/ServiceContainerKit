@@ -8,6 +8,7 @@
 
 import Foundation
 import ServiceContainerKit
+import ExampleServiceLocators
 
 /// Variant key 3 - used static variable in service
 extension LazyService {

@@ -8,6 +8,8 @@
 
 import UIKit
 import ServiceContainerKit
+import ServiceInjects
+import ExampleServiceLocators
 
 struct SimpleKeyModel {
     @SLInject(ServiceLocatorKeys.firstService, lazy: true) var firstService
