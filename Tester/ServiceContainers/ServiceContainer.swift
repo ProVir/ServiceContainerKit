@@ -8,6 +8,7 @@
 
 import Foundation
 import ServiceContainerKit
+import ServiceInjects
 
 /// DI Continer for swift
 struct ServiceContainer {
@@ -40,13 +41,15 @@ struct ServiceContainer {
 @objc(ServiceContainer)
 class ServiceContainerObjC: NSObject {
     init(container: ServiceContainer) {
-        firstServiceProvider = ServiceProviderObjC(container.firstServiceProvider)
+        // Not supported for Injects
         sharedFirstService = container.sharedFirstService
         
         super.init()
     }
     
-    @objc let firstServiceProvider: ServiceProviderObjC
+    @ServiceProviderInject(objc: \ServiceContainer.firstServiceProvider)
+    @objc var firstServiceProvider
+    
     @objc let sharedFirstService: FirstService
 }
 

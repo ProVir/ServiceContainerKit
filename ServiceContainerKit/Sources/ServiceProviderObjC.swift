@@ -38,6 +38,17 @@ public class ServiceProviderObjC: NSObject {
     @objc public func getService() -> Any? {
         return try? swiftProvider.getServiceBindingObjC(params: Void())
     }
+    
+    /// Get Service if there are no errors or fatal with debug details when failure obtain.
+    @objc public func getServiceOrFatal() -> Any {
+        do {
+            return try swiftProvider.getServiceBindingObjC(params: Void())
+        } catch let error as ServiceObtainError {
+            fatalError(error.fatalMessage)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
 }
 
 /// Wrapper ServiceParamsProvider for use in ObjC code.
@@ -64,6 +75,17 @@ public class ServiceParamsProviderObjC: NSObject {
     /// Get Service if there are no errors.
     @objc public func getService(params: Any) -> Any? {
         return try? swiftProvider.getServiceBindingObjC(params: params)
+    }
+    
+    /// Get Service if there are no errors or fatal with debug details when failure obtain.
+    @objc public func getServiceOrFatal(params: Any) -> Any {
+        do {
+            return try swiftProvider.getServiceBindingObjC(params: params)
+        } catch let error as ServiceObtainError {
+            fatalError(error.fatalMessage)
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
 }
 

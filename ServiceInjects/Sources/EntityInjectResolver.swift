@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ServiceContainerKit
 
 /// Token for register entity
 public protocol EntityInjectToken: class { }

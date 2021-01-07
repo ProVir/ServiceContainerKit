@@ -9,6 +9,8 @@
 import Foundation
 import ServiceContainerKit
 
+typealias LogRecorder = ServiceContainerKit.LogRecorder
+
 /// Logger for injects
 public protocol ServiceInjectLogger: Logger {
     func entityInjectResolverDidAutoRemove(entityType: Any.Type, delay: TimeInterval)
