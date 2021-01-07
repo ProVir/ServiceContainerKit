@@ -432,6 +432,7 @@ The default is `NSLock`, but you can choose `DispatchSemaphore` or a separate qu
 `Service[Params]SafeProvider` является наследником обычных провайдеров, поэтому доступен весь стандартный набор методов и можно хранить и передавать такой провайдер как обычный. Но в дополнение есть один метод - `getServiceAsResultNotSafe()`, который проигнорирует любые блокировки и выполнит обычное не безопасное получение сервиса.
 
 
+#### An example use ServiceSafeProvider:
 ```swift
 struct ServiceContainer {
     let firstService: ServiceProvider<FirstService>
@@ -450,6 +451,49 @@ extension ServiceContainer {
 let service = container.firstService.getServiceAsOptional()
 ```
 
+### ServiceObtainError
+
+If an error occurs as a result of getting the service, the provider returns `ServiceObtainError` with the original error and detailed information.
+The error will contain information about the service in whose factory the error was throwed. Since services are dependent on each other and there is nesting when getting, the error may occur when getting a dependent service, and not when getting the original one - for this purpose, the error contains information about the path to the service with the error.
+
+#
+
+Если в результате получения сервиса возникла ошибка, то провайдер вернет `ServiceObtainError` с исходной ошибкой и подробной информацией.
+В ошибке будет информацией об сервисе, в фабрике которого была получена ошибка. Т.к. сервисы зависимы между собой и при получении есть вложенность, то ошибка может возникнуть при получении зависимого сервиса, а не при запросе исходного - для этого в ошибке есть информация о пути до сервиса с ошибкой.
+
+
+#### An example get ServiceObtainError and nested services:
+```swift
+struct FirstServiceFactory: ServiceFactory {
+    let mode: ServiceFactoryMode = .lazy
+    func makeService() throws -> FirstService {
+        throw SomeError()
+    }
+}
+
+struct SecondServiceFactory: ServiceFactory {
+    let firstService: ServiceProvider<FirstService>
+
+    let mode: ServiceFactoryMode = .many
+    func makeService() throws -> SecondService {
+        return SecondServiceImpl(
+            firstService: try firstService.getService()
+        )
+    }
+}
+
+do {
+    let service = try secondServiceProvider.getService()
+} catch {
+    // error is ServiceObtainError
+    // error.error is SomeError
+    
+    // error.service = FirstService
+    // error.pathServices = [SecondService, FirstService]
+    // error.isNested = true
+}
+```
+
 
 ### Support Objective-C
 
@@ -457,8 +501,14 @@ Creating and configuring the container is only available for swift code, but for
 
 `ServiceProviderObjC` (in Objective-C is visible as `ServiceProvider`) and `ServiceParamsProviderObjC` (in Objective-C is visible as `ServiceParamsProvider`) can be created from any `Service[Params]Provider`, passing it (swift option) to the constructor in the swift code.
 
+You can get the service through selectors:
+ - `[ServiceProvider getService]`, 
+ - `[ServiceProvider getServiceOrFatal]`, 
+ - `[ServiceProvider getServiceAndReturnError:]`,
+ - `[ServiceParamsProvider getServiceWithParams:]`,
+ - `[ServiceParamsProvider getServiceOrFatalWithParams:]`,
+ - `[ServiceParamsProvider getServiceWithParams:andReturnError:]`.
 
-You can get the service through selectors `[ServiceProvider getService]` and `[ServiceProvider getServiceAndReturnError:]`, also `[ServiceParamsProvider getServiceWithParams:]` and `[ServiceProvider getServiceWithParams:andReturnError:]`.
 
 #### An example use ServiceProvider:
 ```objc
