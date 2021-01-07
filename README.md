@@ -694,6 +694,7 @@ func testSecond() {
     // userService inject success
 }
 ```
+
 To inject a service from a provider with parameters, use `@ServiceParamsInject`. Parameters can be set immediately or later.
 Parameters can only be specified once, until they are set, the service will not be injected.
 

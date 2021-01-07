@@ -1,7 +1,9 @@
 Pod::Spec.new do |s|
+  version = '3.0.0'
+    
   s.name         = "ServiceInjects"
-  s.version      = "3.0.0-rc1"
-  s.summary      = "Simple services and entities injects"
+  s.version      = version
+  s.summary      = "Simple injects for services and entities"
   s.description  = <<-DESC
 			Written in Swift.
             ServiceInject used for injects services in presentation layer.
@@ -20,7 +22,7 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '10.0'
   s.watchos.deployment_target = '3.0'
   
-  s.dependency 'ServiceContainerKit', '3.0.0-rc1'
+  s.dependency 'ServiceContainerKit', version
   s.source_files = ['ServiceInjects/Sources/*.swift', 'ServiceInjects/Sources/*.h']
   s.public_header_files = 'ServiceInjects/Sources/*.h'
   

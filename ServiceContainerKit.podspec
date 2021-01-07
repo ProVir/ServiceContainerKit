@@ -1,6 +1,8 @@
 Pod::Spec.new do |s|
+  version = '3.0.0'
+
   s.name         = "ServiceContainerKit"
-  s.version      = "3.0.0-rc1"
+  s.version      = version
   s.summary      = "Kit to create your own IoC Container or ServiceLocator."
   s.description  = <<-DESC
 			Written in Swift.
