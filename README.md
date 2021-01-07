@@ -19,6 +19,7 @@
   - [Installation](#installation)
   - [Usage ServiceFactory (English / Русский)](#usage-servicefactory)
   - [Usage ServiceProvider (English / Русский)](#usage-serviceprovider)
+  - [Usage ServiceInjects (English / Русский)](#usage-serviceinjects)
   - [Author](#author)
   - [License](#license)
   
@@ -168,7 +169,7 @@ Copy files from directory `ServiceContainerKit/Sources` and `ServiceInjects/Sour
 ---
 
 
-**Note:** To use the library, remember to include it in each file: `import ServiceContainerKit` and  `import ServiceInjects`.
+**Note:** To use the library, remember to include it in each file: `import ServiceContainerKit`.
 
 The project has a less abstract example of using the library, which can be downloaded separately.
 
@@ -518,6 +519,339 @@ NSError* error = nil;
 SecondService* secondService = [serviceContainer.secondService getServiceAndReturnError:&error];
 
 ThirdService* thirdService = [serviceContainer.thirdService getServiceWithParams:@"test"];
+```
+
+
+## Usage ServiceInjects 
+
+**Important:** To use the library, remember to include it in each file:  `import ServiceInjects`.
+
+### Introduction
+
+The ServiceContainerKit framework assumes that the project can be divided into two layers - the presentation and service layers.
+The presentation layer is the application screens, its visible part of the program, where each screen consists of Views, ViewControllers and their business logic.
+The service layer is the business logic of the application itself, auxiliary entities, and everything that is used throughout the application.
+To make services and build relationships between them, use `ServiceProvider`.
+To provide services for the presentation layer, you can use a container, using which the `ServiceInjects` framework inject dependencies.
+
+It is important to treat the `ServiceInjects` framework like this - this framework is only for the presentation layer, and therefore should only be used from the main thread.
+It should not be used to create links between services - only for simple implementation of ready-made services in the screen entity.
+
+For a more visual example, download the project and study the `Example` target.
+
+#
+
+Фреймворк ServiceContainerKit предполагает что проект можно разделить на два слоя - слои презентации и сервисов. 
+Слой презентации - это экраны приложения, его видимая часть программы, где каждый экран состоит из Views, ViewControllers и их бизнес логики.
+Слой сервисов - это бизнес логика самого приложения, вспомогательные сущности и все что используется во всем приложении. 
+Для создания и построения связей между сервисами используется `ServiceProvider`.
+Для предоставления сервисов для слоя презентации можно использовать контейнер, используя которой уже фреймворк `ServiceInjects` внедряет зависимости.
+
+Важно относится к фреймворку `ServiceInjects` так - этот фреймворк только для слоя презентации, а значит должен использоваться только из главного потока.
+Его не следует использовать для создания связей между сервисами - только для простого внедрения готовых сервисов в сущности экрана.
+
+Для более наглядного примера скачайте проект и изучите таргет `Example`.
+
+
+### Container and ServiceInjectResolver
+
+In order to be able to inject services anywhere in the application, you need to make at least one container with a simple but necessary rule - its fields must be stored by service providers. Services in the container that do not follow this rule will not be inject in the application.
+The field with the service must be of the type `ServiceProvider` or `ServiceParamsProvider`, field nesting is supported because the key is used as a KeyPath.
+The container itself can be specified as a protocol - then it only remains to register its implementation.
+You must register the container once before using it.
+
+You can find out if the container is already registered - `ServiceInjectResolver.contains(Type.self)`.
+You can also subscribe to its registration - `ServiceInjectResolver.addReadyContainerHandler(Type.self) { }`, the clojure will be called immediately if the container is already registered.
+
+#
+
+Для того чтобы была возможность внедрять сервисы в любом месте приложения, требуется создать как минимум один контейнер с простым, но необходимым правилом - его поля должны хранить првайдеры сервисов. Сервисы в контейнере, которые не следуют такому правилу внедрять в приложении не получится. 
+Поле с сервисом должно быть типа `ServiceProvider` или `ServiceParamsProvider`, поддерживается вложенность полей т.к. в качестве ключа используется KeyPath.
+Сам контейнер может быть указан в виде протокола - тогда остается только зарегистрировать его реализацию.
+Перед использованием необходимо зарегистрировать контейнер один раз.
+
+Можно узнать зарегистрирован ли уже контейнер - `ServiceInjectResolver.contains(Type.self)`.
+Также можно подписаться на его регистрацию - `ServiceInjectResolver.addReadyContainerHandler(Type.self) { }`, кложур будет вызван сразу если контейнер уже зарегистрирован. 
+
+
+####  Example of making and registering a container:
+```swift
+struct Services {
+    struct Folders {
+        let manager: ServiceProvider<NoteFoldersManager>
+    }
+    
+    struct Notes {
+        let manager: ServiceParamsProvider<NoteRecordsManager, NoteRecordsManagerParams>
+        let editService: ServiceParamsProvider<NoteRecordEditService, NoteRecordEditServiceParams>
+    }
+    
+    let userService: ServiceProvider<UserService>
+    
+    let folders: Folders
+    let notes: Notes
+}
+
+enum ServicesFactory {
+    static func makeDefault() -> Services {
+        let core = ServicesCore.makeDefault()
+        
+        let folders = Services.Folders.makeDefault(core: core)
+        let notes = Services.Notes.makeDefault(core: core, folders: folders)
+        
+        return Services(
+            userService: core.userService,
+            folders: folders,
+            notes: notes
+        )
+    }
+}
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        let services = ServicesFactory.makeDefault()
+        ServiceInjectResolver.register(services)
+        
+        ...
+    
+        return true
+    }
+}
+
+final class SimpleViewController: UIViewController {
+    @ServiceInject(\Services.userService)
+    private var userService
+
+    @ServiceInject(\Services.folders.manager)
+    private var foldersManager
+    
+    ...
+}
+```
+
+### @ServiceInject and @ServiceParamsInject
+
+To inject the service, you need to use `@ServiceInject` and `@ServiceParamsInject`. As a rule, you only need to know its full path - the container type and the path to the provider in it.
+Dependency injection can be delayed (`lazyInject = true`), then the service will be getted only when the field is first accessed, or it will not be getted at all if it was not used.
+
+The order of dependency inject and container registration is not important - it is only important that the container is registered before the first access to the service being injected.
+If an object was created in which the service is injected before the container is registered, the dependency injection will actually be performed later - immediately after the container is registered (if `lazyInject = false`).
+
+If, for some reason, the service is not injected for the first time and there is not enough information for this (no container or parameters) - there will be a crash. The line on the file in crash will indicate the place of injection of the service.
+If during the injection of the service there is an error getting the service - it will also crash, because the `getServiceOrFatal` method is used inside.
+
+#
+
+Для внедрения сервиса нужно использовать `@ServiceInject` и `@ServiceParamsInject`. Как правило необходимо знать только его полный путь - тип контейнера и путь до провайдера в нем.
+Внедрение зависимости может быть отложенным (`lazyInject = true`), тогда сервис будет получен только при первом обращении к полю, либо не будет получен вовсе если он не был использован. 
+
+Порядок внедрения зависимости и регистрация контейнера не важна - важно только чтобы контейнер был зарегистрирован до первого обращения к внедряемому сервису.
+Если был создан объект в котором внедряется сервис до регистрации контейнера - инъекция зависимости в реальности будет произведена позже - сразу после регистрации контейнера (если `lazyInject = false`).
+
+Если по каким-либо причинам при первом обращении сервис не будет внедрен и не будет достаточно информации для этого (нет контейнера или параметров) - будет краш. Строка на файл в краше при этому будет указывать на место внедрения сервиса. 
+Если во время внедрения сервиса будет ошибка получения сервиса - тоже будет краш, т.к. внутри используется метод `getServiceOrFatal`.
+
+#### Example of the order of dependency injection and lazy injection:
+```swift
+class UserPresenter {
+    @ServiceInject(\Services.userService, lazyInject: true)
+    private var userService
+
+    @ServiceInject(\Services.folders.manager)
+    private var foldersManager
+    
+    func logout() {
+        userService.logout()
+        foldersManager.refresh()
+    }
+}
+
+func testFirst() {
+    // ServiceInjectResolver.contains(Services.self) == false
+
+    let presenter = UserPresenter()
+    // userService not injected because not found container
+    // foldersManager not injected because not found container
+
+    let services = ServicesFactory.makeDefault()
+    ServiceInjectResolver.register(services)
+    // userService not injected because lazyInject = true
+    // foldersManager inject success
+
+    presenter.logout()
+    // userService inject success
+}
+
+func testSecond() {
+    let services = ServicesFactory.makeDefault()
+    ServiceInjectResolver.register(services)
+
+    let presenter = UserPresenter()
+    // userService not injected because lazyInject = true
+    // foldersManager inject success
+
+    presenter.logout()
+    // userService inject success
+}
+```
+To inject a service from a provider with parameters, use `@ServiceParamsInject`. Parameters can be set immediately or later.
+Parameters can only be specified once, until they are set, the service will not be injected.
+
+You can also get the current injection status from `@ServiceInject` and `@ServiceParamsInject` and even subscribe to it.
+The `$setReadyHandler { service in }` method will be called immediately after injection, but before use. If the service is already injected during the handler set, handler will be called immediately.
+
+#
+
+Для внедрения сервиса из провайдера с параметрами нужно использовать `@ServiceParamsInject`. Параметры можно задать сразу или позже.
+Параметры указать можно только один раз, пока они не будут указаны, сервис не будет внедрен.
+
+Также у `@ServiceInject` и `@ServiceParamsInject` можно получить текущее состояние внедрения и даже подписаться на него.
+Метод `$setReadyHandler { service in }`  будет вызван сразу после инъекции, но до использования. Если во время установки обработчика сервис уже внедрен - он будет вызван сразу.
+
+#### Example of injecting a service with parameters:
+```swift
+struct Dependencies {
+    @ServiceParamsInject(\Services.firstService, params: .init(value: "Default")) var firstService
+    @ServiceParamsInject(\Services.secondService, lazyInject: true) var secondService
+    
+    init(secondValue: String) {
+        $secondService.setParameters(.init(value: secondValue))
+    }
+}
+
+let dependencies = Dependencies(secondValue: "Custom")
+
+// dependencies.$firstService.isReady == true
+// dependencies.$secondService.isReady == false
+dependencies.$secondService.setReadyHandler { service in
+    // Executed in the future before first use, because lazyInject = true
+}
+```
+
+### @ServiceProviderInject
+
+In some cases, you may not need the service itself, but its source provider. For this purpose, use `@ServiceProviderInject`, passing also the path to the provider.
+
+#
+
+В некоторых случаях может потребоваться не сам сервис, а его исходный провайдер. Для этих целей используется `@ServiceProviderInject`, передав также путь до провайдера. 
+
+#### Example of injecting a provider:
+```swift
+struct Dependencies {
+    @ServiceProviderInject(\Services.firstService) var firstServiceProvider
+    @ServiceProviderInject(\Services.secondService) var secondServiceProvider
+}
+
+let dependencies = Dependencies()
+let firstService = dependencies.firstServiceProvider.getServiceOrFatal()
+let secondService = dependencies.secondServiceProvider.getServiceAsOptional()
+```
+
+
+### EntityInjectResolver and @EntityInject
+
+In addition to services it is sometimes necessary to transfer from one place to another in a certain instance.
+It is not always possible to use methods or constructors for this, for example, when creating a ViewController through a storyboard.
+
+Such an entity can be temporarily registered in the `EntityInjectResolver`, where the entity will be stored until the first injection or until the corresponding token is deleted.
+Entities can be re-registered as many times as you want - the latest version will be used for inject.
+
+To inject an instance for the first use, you need to register using the `EntityInjectResolver.registerForFirstInject(:autoRemoveDelay:)` method.
+The entity will be removed automatically from `EntityInjectResolver` after the first injection, but not immediately - but in the next iteration of the main thread cycle, providing the opportunity to inject this entity in several places within the same general main thread cycle. If `autoRemoveDelay != nil` is specified, the instance will also be deleted after the specified number of seconds, if there was no single injection by that time.
+
+If you need to manage the lifetime of an entity in `EntityInjectResolver` yourself, then use the `EntityInjectResolver.register()` method. It will return a token that needs to be stored somewhere. As soon as the token is no longer used, the entity will also be immediately deleted.
+
+For the injection entity, you need to use `@EntityInject(Type.self)` - the original entity will be injected.
+You can injected the value of an entity field of any nesting - `@EntityInject(\Type.path)`.
+
+`@EntityInject` can be created before the entity being injected is registered and will be injected as soon as it is registered.
+
+#
+
+Помимо сервисов, иногда необходимо передать из одного места в другое некоторый экземпляр.
+Не всегда есть возможность для этого использовать методы или конструкторы, к примеру при создании ViewController-а через сториборд.
+
+Такой объект можно временно зарегистрировать в `EntityInjectResolver`, в котором экземпляр будет храниться до первого внедрения или пока не будет удален соотвествующий ему токен.
+Экземпляры можно сколько угодно раз регистрировать повторно - при внедрении будет использоваться самая поздняя версия.
+
+Чтобы внедрить экземпляр до первого использования, нужно зарегистрировать используя метод `EntityInjectResolver.registerForFirstInject(:autoRemoveDelay:)`.
+Экземпляр будет удален автоматически из `EntityInjectResolver` после первого внедрения, но не сразу - а в следующей интерации цикла главного потока, предоставляя возможность в рамках одного общего цикла главного потока внедрить этот экземпляр в нескольких местах. Если указан `autoRemoveDelay != nil`, то экземпляр также будет удален спустя указанное кол-во секунд, если к этому времени не было не единого внедрения.
+
+Если временем существования экземпляра в `EntityInjectResolver` нужно управлять самим, то следует использовать метод `EntityInjectResolver.register()`. Он вернет токен, который нужно где-то хранить. Как только токен перестанет использоваться, экземпляр также будет сразу удален.
+
+Для внедрения экземпляра нужно использовать `@EntityInject(Type.self)` - будет внедрен исходный экземпляр.
+Можно внедрить значение поля экземпляра любой вложенности - `@EntityInject(\Type.path)`.
+
+`@EntityInject` может быть создан до регистрации внедряемого экземпляра и будет внедрен сразу как он будет зарегистрирован.
+
+
+#### Example of injecting a entity:
+```swift
+var token: EntityInjectToken?
+token = EntityInjectResolver.register(appSettings)
+
+extension SimpleViewController {
+    /// Maked in Storyboard, perform `prepareForMake()` can be before or after make.
+    static func prepareForMake() {
+        let presenter = SimplePresenterImpl()
+        EntityInjectResolver.registerForFirstInject(presenter)
+    }
+}
+
+class SimpleViewController: UIViewController {
+    @EntityInject(SimplePresenter.self)
+    private var presenter
+    
+    @EntityInject(\AppSettings.common.uiConfig)
+    private var uiConfig
+    
+    ...
+}
+```
+
+### Support Objective-C
+
+In Objective-C, KeyPath and structs are not supported, so using `@ServiceInject` and `@EntityInject` is not possible.
+But there is support for `ServiceProviderObjC`, using which you can access services.
+
+One of the ways to solve the problem is to use a separate container for objc code, when creating which objc providers will be injected.
+Or use a singleton container with all services at once.
+
+To inject providers with the `ServiceProviderObjC` type, use `@ServiceProviderInject` with the objc version of the constructor.
+
+#
+
+В Objective-C не поддерживается KeyPath и структуры, поэтому испоьзование `@ServiceInject` и `@EntityInject` невозможно.
+Но есть поддержка `ServiceProviderObjC`, используя который можно получить доступ к сервисам.
+
+Один из вариантов как можно решить проблему - использовать отдельный контейнер для objc кода, создавая который будут внедряться провайдеры.
+Либо использовать контейнер синглетон со всеми сервисами сразу.
+
+Для внедрения провайдеров с типом `ServiceProviderObjC` используется `@ServiceProviderInject` с objc версией конструктора.
+
+#### Example objc container:
+```swift
+@objc(Services)
+class ServicesObjC: NSObject {
+    @objc static let shared = ServicesObjC()
+
+    @ServiceProviderInject(objc: \Services.firstService)
+    @objc var firstService
+    
+    @ServiceProviderInject(objc: \Services.secondService)
+    @objc var secondService
+    
+    @ServiceProviderInject(objc: \Services.withParamsService)
+    @objc var withParamsService
+}
+```
+```objc
+FirstService* firstService = [Services.shared.firstService getService];
+WithParamsService* withParamsService = [Services.shared.withParamsService getServiceWithParams:@"test"];
+
+NSError* error = nil;
+SecondService* secondService = [Services.shared.secondService getServiceAndReturnError:&error];
 ```
 
 
