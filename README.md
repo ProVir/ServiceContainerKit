@@ -9,9 +9,20 @@
   
   High percentage of unit test coverage **(~ 90%)**.
   
-  **P.S.**: We recommend that you download and study the `Example` project, which is made as one of the examples of using the 
+  **P.S.**: We recommend that you download and study the `Example` project, which is made as one of the usage examples.
   
-#
+  - [Introduction](#introduction)
+  - [Features](#features)
+  - [Requirements](#requirements)
+  - [Communication](#communication)
+  - [Migration from 2.0 to 3.0](#migration-from-20-to-30)
+  - [Installation](#installation)
+  - [Usage ServiceFactory (English / Русский)](#usage-servicefactory)
+  - [Usage ServiceProvider (English / Русский)](#usage-serviceprovider)
+  - [Author](#author)
+  - [License](#license)
+  
+## Introduction
   
       *Dependency Inversion Principle (DIP from SOLI**D**)* allows you to create classes as independent as possible between each other. But developing the services using Dependency Injection, you are faced with the difficulty - how and where to set up services and communications, and how to provide these services to instances that are created during the application process, usually a presentation layer.
 
@@ -29,19 +40,9 @@
 
       Вы можете создать свой собственный контейнер для конкретного проекта с учетом его специфики и архитектуры. Один из простых способов создать свой контейнер - это использовать структуру с набором созданных и настроенных заранее сервисов либо их фабрик. А еще лучше - использовать обертку над сервисами (`ServiceProvider`), скрывающую способ создания сервиса - за ранее или по необходимости, а также его зависимости и используемые настройки.
 
-      Для внедрения зависимостей на слое представления можно использовать `ServiceInject`, который только требует создать и зарегистрировать свой контейнер с сервисами, созданный по простым определенным правилам. 
+      Для внедрения зависимостей на слое представления можно использовать `ServiceInject`, который только требует создать и зарегистрировать свой контейнер с сервисами, созданный по определенным простым правилам. 
 
 #
-
-- [Features](#features)
-- [Requirements](#requirements)
-- [Communication](#communication)
-- [Migration from 2.0 to 3.0](#migration-from-20-to-30)
-- [Installation](#installation)
-- [Usage ServiceFactory (English / Русский)](#usage-servicefactory)
-- [Usage ServiceProvider (English / Русский)](#usage-serviceprovider)
-- [Author](#author)
-- [License](#license)
 
 
 ## Features
@@ -94,7 +95,7 @@ $ gem install cocoapods
 
 > CocoaPods 1.9.0+ is required to build ServiceContainerKit 3.0.0+.
 
-To integrate ServiceContainerKit (without Injects) into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate ServiceContainerKit into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
@@ -102,13 +103,7 @@ platform :ios, '10.0'
 
 target '<Your Target Name>' do
   pod 'ServiceContainerKit', '~> 3.0'
-end
-```
-
-If you also need to use ServiceInject and EntityInject, then use:
-```ruby
-target '<Your Target Name>' do
-  pod 'ServiceContainerKit/Injects', '~> 3.0'
+  pod 'ServiceInjects', '~> 3.0'
 end
 ```
 
@@ -117,6 +112,7 @@ Then, run the following command:
 ```bash
 $ pod install
 ```
+
 
 ### Carthage
 
@@ -135,7 +131,9 @@ To integrate ServiceContainerKit into your Xcode project using Carthage, specify
 github "ProVir/ServiceContainerKit" ~> 3.0
 ```
 
-Run `carthage update` to build the framework and drag the built `ServiceContainerKit.framework` into your Xcode project.
+Run `carthage update` to build the framework and drag the built `ServiceContainerKit.framework` and `ServiceInjects.framework`  into your Xcode project.
+
+
 
 ### Swift Package Manager
 
@@ -144,22 +142,33 @@ The [Swift Package Manager](https://swift.org/package-manager/) is a tool for au
 Once you have your Swift package set up, adding ServiceContainerKit as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift`.
 
 ```swift
-dependencies: [
-  .package(url: "https://github.com/ProVir/ServiceContainerKit", .upToNextMajor(from: "3.0.0"))
-]
+let package = Package(
+    dependencies: [
+        .package(url: "https://github.com/ProVir/ServiceContainerKit", .upToNextMajor(from: "3.0.0"))
+    ],
+    targets: [
+        .target(
+            dependencies: [
+                .byName(name: "ServiceContainerKit"), 
+                .product(name: "ServiceInjects", package: "ServiceContainerKit")
+            ]
+        )
+    ]
+)
 ```
+
 
 ### Manually
 
 If you prefer not to use any of the aforementioned dependency managers, you can integrate ServiceContainerKit into your project manually.
 
-Copy files from directory `Sources` in your project. 
+Copy files from directory `ServiceContainerKit/Sources` and `ServiceInjects/Sources` in your project. 
 
 
 ---
 
 
-**Note:** To use the library, remember to include it in each file: `import ServiceContainerKit`.
+**Note:** To use the library, remember to include it in each file: `import ServiceContainerKit` and  `import ServiceInjects`.
 
 The project has a less abstract example of using the library, which can be downloaded separately.
 
